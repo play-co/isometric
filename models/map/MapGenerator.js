@@ -1,0 +1,219 @@
+import event.Emitter as Emitter;
+
+import src.constants.gameConstants as gameConstants;
+
+exports = Class(Emitter, function (supr) {
+	this.init = function (opts) {
+		supr(this, 'init', arguments);
+
+		this._model = opts.model;
+		this._settings = opts.settings;
+
+		this._map = opts.map;
+		this._done = true;
+
+		this._width = this._map.getWidth();
+		this._height = this._map.getHeight();
+
+		this._steps = this._initGeneratorSteps(this._settings.generatorSteps);
+
+		this.generate();
+	};
+
+	this._initGeneratorSteps = function (generatorSteps) {
+		var i = generatorSteps.length;
+		while (i) {
+			var step = generatorSteps[--i];
+			if (step.accept) {
+				var j = step.accept.length;
+				while (j) {
+					j--;
+					var t = {};
+					step.accept[j].tiles.map(function (a) { t[a] = true; }, {});
+					step.accept[j].tiles = t;
+				}
+			}
+		}
+
+		return generatorSteps;
+	};
+
+	this.generate = function () {
+		var map = this._map;
+		var total = this._height * this._width;
+
+		this._done = false;
+
+		map.clear();
+		map.zeroLayer(0, gameConstants.tileGroups.GROUND);
+
+		// Progress:
+		this._totalCount = this._steps.reduce(
+			function (a, b) {
+				if (b.type === 'fill') {
+					return total + a;
+				}
+				return b.repeat + a;
+			},
+			0
+		);
+
+		this._currentCount = 0;
+
+		this._stepIndex = 0;
+		this._startStep();
+	};
+
+	this._startStep = function () {
+		var step = this._steps[this._stepIndex];
+
+		this._repeatIndex = step.repeat;
+		this._layer = step.layer;
+		this._group = step.group;
+		this._count = step.count;
+		this._accept = step.accept;
+		this._type = step.type;
+		this._chance = step.chance;
+		this._stepsPerFrame = step.stepsPerFrame;
+
+		switch (this._type) {
+			case 'rectangles':
+				this._startRectangles(step.width, step.height);
+				break;
+
+			case 'fill':
+				this._startFill();
+				break;
+		}
+	};
+
+	this._step = function () {
+		if (this._done) {
+			return true;
+		}
+
+		this._currentCount++;
+
+		var step = this._steps[this._stepIndex];
+
+		this._repeatIndex--;
+		if (this._repeatIndex <= 0) {
+			this._stepIndex++;
+			this._done = (this._stepIndex >= this._steps.length);
+			if (!this._done) {
+				this._startStep();
+			}
+		} else {
+			switch (this._type) {
+				case 'rectangles':
+					this._stepRectangle();
+					break;
+
+				case 'fill':
+					this.stepFill();
+					break;
+			}
+		}
+	};
+
+	this._stepRectangle = function () {
+		this._count--;
+		if (this._count < 0) {
+			var step = this._steps[this._stepIndex];
+			this._count = step.count;
+			this._startRectangles(step.width, step.height);
+		}
+
+		var rect = this._rect;
+		var w = 2 + (Math.random() * this._rectWidth) | 0;
+		var h = 2 + (Math.random() * this._rectHeight) | 0;
+
+		var dir = this._lastDir;
+		if (Math.random() < 0.4) {
+			dir = (Math.random() * 4) | 0;
+		}
+		this._lastDir = dir;
+
+		switch (dir) {
+			case 0:
+				this._rect = this._createRect(rect.x - w + 2, rect.y - h + 2, w, h);
+				break;
+			case 1:
+				this._rect = this._createRect(rect.x + rect.w - 2, rect.y - h + 2, w, h);
+				break;
+			case 2:
+				this._rect = this._createRect(rect.x + rect.w - 2, rect.y + rect.h - 2, w, h);
+				break;
+			case 3:
+				this._rect = this._createRect(rect.x - w + 2, rect.y + rect.h - 2, w, h);
+				break;
+		}
+	};
+
+	this.stepFill = function () {
+		var map = this._map;
+		var x = this._repeatIndex % this._width;
+		var y = (this._repeatIndex / this._height) | 0;
+
+		if (this._accept && !map.isTiles(this._accept[0].layer, x, y, 1, 1, this._accept)) {
+			return;
+		}
+
+		if (Math.random() < this._chance) {
+			map.drawTile(this._layer, x, y, this._group, 0, false);
+		}
+	};
+
+	this.generateStep = function () {
+		if (this._done) {
+			return true;
+		}
+
+		for (var i = 0; i < this._stepsPerFrame; i++) {
+			this._step();
+		}
+
+		this._model.emit('Progress', this._currentCount / this._totalCount);
+
+		return false;
+	};
+
+	this._startRectangles = function (rectWidth, rectHeight) {
+		this._rectWidth = rectWidth;
+		this._rectHeight = rectHeight;
+		this._lastDir = -1;
+
+		this._rect = this._createRect(
+			2 + (Math.random() * this._width) | 0,
+			2 + (Math.random() * this._height) | 0,
+			this._rectWidth + (Math.random() * this._rectWidth) | 0,
+			this._rectHeight + (Math.random() * this._rectHeight) | 0
+		);
+	};
+
+	this._startFill = function () {
+		this._repeatIndex = this._height * this._width;
+	};
+
+	this._createRect = function (x, y, w, h) {
+		var rect = {
+			x: this._width + x,
+			y: this._height + y,
+			w: w,
+			h: h
+		};
+
+		var map = this._map;
+		if (this._accept && !map.isTiles(this._layer, rect.x, rect.y, rect.w, rect.h, this._accept)) {
+			return rect;
+		}
+
+		map.drawRect(
+			this._layer,
+			rect.x, rect.y, rect.w, rect.h,
+			this._group, [[8, 12, 4], [10, 15, 5], [2, 3, 1]]
+		);
+
+		return rect;
+	};
+});
