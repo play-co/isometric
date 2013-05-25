@@ -5,7 +5,7 @@ exports = Class(Emitter, function (supr) {
 		supr(this, 'init', arguments);
 
 		this._gridView = opts.gridView;
-		this._modelInfo = {};
+		this._modelInfo = [];
 	};
 
 	this.tick = function (dt) {
@@ -39,10 +39,10 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.registerModel = function (model, layer) {
-		this._modelInfo[model.getId()] = {
+		this._modelInfo.push({
 			model: model,
 			view: null,
 			layer: layer
-		};
+		});
 	};
 });

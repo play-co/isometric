@@ -1,16 +1,12 @@
 import ui.View as View;
 import ui.TextView as TextView;
 import ui.ImageView as ImageView;
-
 import ui.resource.Image as Image;
+import ui.ViewPool as ViewPool;
 
-import src.lib.ViewPool as ViewPool;
+import isometric.views.item.ItemView as ItemView;
 
 import .tiles.TileGroups as TileGroups;
-
-import src.views.item.ItemView as ItemView;
-
-var debug = false;
 
 var cursorYes = new Image({url: 'resources/images/cursorYes.png'});
 var cursorNo = new Image({url: 'resources/images/cursorNo.png'});

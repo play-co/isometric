@@ -3,10 +3,8 @@ import ui.TextView as TextView;
 
 import menus.views.components.ButtonView as ButtonView;
 
-import src.views.GridView as GridView;
-import src.views.GridControlView as GridControlView;
-
-import src.settings.tileSettings as tileSettings;
+import .GridView as GridView;
+import .GridControlView as GridControlView;
 
 exports = Class(View, function (supr) {
 	this.init = function (opts) {
@@ -23,7 +21,7 @@ exports = Class(View, function (supr) {
 
 		this._gridView = new GridView({
 			superview: this,
-			tileSettings: tileSettings,
+			tileSettings: opts.tileSettings,
 			tileWidth: 150,
 			tileHeight: ~~(150 * 0.8),
 			visible: false
