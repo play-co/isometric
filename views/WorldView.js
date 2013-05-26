@@ -21,6 +21,7 @@ exports = Class(View, function (supr) {
 
 		this._gridView = new GridView({
 			superview: this,
+			itemSettings: opts.itemSettings,
 			tileSettings: opts.tileSettings,
 			tileWidth: 150,
 			tileHeight: ~~(150 * 0.8),

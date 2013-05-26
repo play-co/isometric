@@ -39,8 +39,8 @@ exports = Class(View, function (supr) {
 		this._needsBuild = true;
 		this._hasSelection = false;
 
+		this._itemSettings = opts.itemSettings;
 		this._tileGroups = new TileGroups(opts);
-
 		this._sizes = {};
 		for (var i = 0; i < opts.tileSettings.length; i++) {
 			var tileSetting = opts.tileSettings[i];
@@ -72,6 +72,7 @@ exports = Class(View, function (supr) {
 			ctor: ItemView,
 			initOpts: {
 				superview: layerView.container,
+				itemSettings: this._itemSettings
 			}
 		});
 

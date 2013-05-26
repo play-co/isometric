@@ -7,7 +7,14 @@ exports = Class(StaticModel, function (supr) {
 		this._validPath = {};
 		this._validPathKeys = [];
 
-		this._modelCtors = opts.modelCtors;
+		this._modelInfo = opts.modelInfo;
+		this._modelInfoCount = [];
+		this._modelInfoTotal = 0;
+		for (var i = 0; i < this._modelInfo.length; i++) {
+			this._modelInfoCount[i] = this._modelInfo[i].count;
+			this._modelInfoTotal += this._modelInfo[i].count;
+		}
+
 		this._modelCount = 0;
 		this._models = [];
 
@@ -97,16 +104,21 @@ exports = Class(StaticModel, function (supr) {
 		return clone;
 	};
 
-	this._randomCtor = function () {
-		var random = Math.random();
-		var chance = 0;
-		var modelCtors = this._modelCtors;
-		var i = modelCtors.length;
+	this._randomInfo = function () {
+		var result = null;
+		var modelInfo = this._modelInfo;
+		var i = modelInfo.length;
 
-		while (i) {
-			chance += modelCtors[--i].chance;
-			if (random < chance) {
-				return modelCtors[i].ctor;
+		if (!this._modelInfoTotal) {
+			return false;
+		}
+
+		while (!result) {
+			var i = (Math.random() * this._modelInfo.length) | 0;
+			if (this._modelInfoCount[i]) {
+				this._modelInfoCount[i]--;
+				this._modelInfoTotal--;
+				return modelInfo[i];
 			}
 		}
 
@@ -129,12 +141,11 @@ exports = Class(StaticModel, function (supr) {
 			model.updateOpts(opts);
 			this.emit('WakeupModel', model);
 		} else {
-			var modelCtor = this._randomCtor();
-			if (!modelCtor) {
+			var modelInfo = this._randomInfo();
+			if (!modelInfo) {
 				return;
 			}
-
-		 	var model = new modelCtor(opts);
+		 	var model = new modelInfo.ctor(merge(opts, modelInfo.opts));
 			model.on('Sleep', bind(this, 'onModelSleep'));
 			this.emit('AddModel', model);
 		}

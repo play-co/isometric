@@ -10,14 +10,25 @@ exports = Class(View, function (supr) {
 				backgroundColor: 'red'
 			}
 		);
+
 		supr(this, 'init', [opts]);
+
+		this._itemSettings = opts.itemSettings;
 	};
 
 	this.create = function (opts, tileOnScreen) {
 		this.style.visible = false;
+		this._item = opts.item;
 	};
 
 	this.onUpdate = function (opts) {
+		var itemSetting = this._itemSettings[this._item];
+
+		if (itemSetting) {
+			if (itemSetting.color) {
+				this.style.backgroundColor = itemSetting.color;
+			}
+		}
 		this.style.visible = opts.visible;
 	};
 
