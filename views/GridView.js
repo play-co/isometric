@@ -2,11 +2,12 @@ import ui.View as View;
 import ui.TextView as TextView;
 import ui.ImageView as ImageView;
 import ui.resource.Image as Image;
-import ui.ViewPool as ViewPool;
 
 import isometric.views.item.ItemView as ItemView;
 
 import .tiles.TileGroups as TileGroups;
+
+import .ViewPool as ViewPool;
 
 var cursorYes = new Image({url: 'resources/images/cursorYes.png'});
 var cursorNo = new Image({url: 'resources/images/cursorNo.png'});
@@ -100,7 +101,7 @@ exports = Class(View, function (supr) {
 
 				view.startX = view.style.x;
 				view.startY = view.style.y;
-				view.startZ = view.style.zIndex;
+				view.startZ = (y * maxCountX + x) * 100;
 				view.left = offsetX + x * this._tileWidth;
 				view.bottom = y * this._tileHeight * 0.5 + this._tileHeight;
 				line.push(view);
@@ -119,6 +120,7 @@ exports = Class(View, function (supr) {
 		var gridHeight = data.gridHeight;
 		var countX = this._countX;
 		var countY = this._countY;
+		var offsetZ = (this._maxCountX * this._maxCountY) * 100;
 		var gridX = data.gridX;
 		var gridY = data.gridY;
 		var grid = data.grid;
@@ -148,11 +150,13 @@ exports = Class(View, function (supr) {
 					tileOnScreen.currentPopulation = currentPopulation;
 					tileOnScreen.tileX = tileView.startX;
 					tileOnScreen.tileY = tileView.startY;
+					tileOnScreen.z = tileView.startZ + offsetZ;
 				} else {
 					tilesOnScreen[d + '_' + e] = {
 						currentPopulation: currentPopulation,
 						x: tileView.startX,
 						y: tileView.startY,
+						z: tileView.startZ + offsetZ,
 						tileX: tileView.startX,
 						tileY: tileView.startY
 					}
@@ -167,7 +171,7 @@ exports = Class(View, function (supr) {
 					var style = tileView.style;
 					var tile = gridTile[i];
 
-					if ((tile.index === -1) || (tile.index === 0xFFFF)) {
+					if ((tile.index === -1) || (tile.group >= 10000)) {
 						style.visible = false;
 					} else {
 						var size = sizes[tile.group];
@@ -175,7 +179,7 @@ exports = Class(View, function (supr) {
 						style.height = size.height;
 						style.x = tileView.left + size.x;
 						style.y = tileView.bottom - size.height + size.y;
-						style.zIndex = tileView.startZ + (size.z || 0);
+						style.zIndex = tileView.startZ + size.z[0] * offsetZ + size.z[1];
 						style.visible = true;
 
 						tileGroups.setImage(tileView, tile);

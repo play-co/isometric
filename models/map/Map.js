@@ -148,6 +148,7 @@ exports = Class(function () {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
+		var models = {};
 		var mw = width * 10;
 		var mh = height * 10;
 
@@ -160,8 +161,22 @@ exports = Class(function () {
 				var indexY = (h > 2) ? (((j + h - 3) / (h - 2)) | 0) : (j * 2);
 				var tile = grid[gridY][gridX];
 
-				tile.model && tile.model.onUpdateMap && tile.model.onUpdateMap();
+				if (tile.model) {
+					var modelIndex = 10001 + gridY * width + gridX;
+					models[modelIndex] = true;
+				} else if (tile[1].group > 10000) {
+					models[tile[1].group] = true;
+				}
 			}
+		}
+
+		for (var modelIndex in models) {
+			var index = parseInt(modelIndex, 10) - 10001;
+			var gridX = index % width;
+			var gridY = (index / width) | 0;
+			var model = grid[gridY][gridX].model;
+
+			model && model.onUpdateMap && model.onUpdateMap();
 		}
 	};
 
@@ -387,6 +402,61 @@ exports = Class(function () {
 		}
 
 		return true;
+	};
+
+	this.acceptRect = function (rect, conditions) {
+		if (!conditions) {
+			return false;
+		}
+
+		var result = false;
+		var accept = conditions.accept;
+
+		for (var i = 0; i < accept.length && !result; i++) {
+			var condition = accept[i];
+			switch (condition.type) {
+				case 'emptyOrZero':
+					result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h);
+					break;
+
+				case 'group':
+					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups);
+					break;
+			}
+		}
+		return result;
+	};
+
+	this.declineRect = function (rect, conditions) {
+		if (!conditions) {
+			return false;
+		}
+
+		var result = false;
+		var decline = conditions.decline;
+
+		if (decline) {
+			for (var i = 0; i < decline.length && !result; i++) {
+				var condition = decline[i];
+				switch (condition.type) {
+					case 'notEmpty':
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h)) {
+							result = true;
+						}
+						break;
+
+					case 'notEmptyAndNotGroup':
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h) &&
+							!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups)) {
+							result = true;
+						}
+						break;
+
+				}
+			}
+		}
+
+		return result;
 	};
 
 	this.floodFill = function (layer, fromGroup, toGroup, x, y) {

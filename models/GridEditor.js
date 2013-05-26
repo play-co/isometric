@@ -11,68 +11,6 @@ exports = Class(Emitter, function (supr) {
 		this._settings = opts.settings;
 	};
 
-	this._acceptRect = function (rect) {
-		var conditions = this._tool.conditions;
-
-		if (!conditions) {
-			return false;
-		}
-
-		var result = false;
-		var map = this._gridModel.getMap();
-		var accept = conditions.accept;
-
-		for (var i = 0; i < accept.length && !result; i++) {
-			var condition = accept[i];
-			switch (condition.type) {
-				case 'emptyOrZero':
-					result = map.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h);
-					break;
-
-				case 'group':
-					result = map.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups);
-					break;
-			}
-		}
-		return result;
-	};
-
-	this._declineRect = function (rect) {
-		var conditions = this._tool.conditions;
-
-		if (!conditions) {
-			return false;
-		}
-
-		var result = false;
-		var map = this._gridModel.getMap();
-		var decline = conditions.decline;
-
-		if (decline) {
-			for (var i = 0; i < decline.length && !result; i++) {
-				var condition = decline[i];
-				switch (condition.type) {
-					case 'notEmpty':
-						if (!map.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h)) {
-							result = true;
-						}
-						break;
-
-					case 'notEmptyAndNotGroup':
-						if (!map.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h) &&
-							!map.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups)) {
-							console.log('decline:');
-							result = true;
-						}
-						break;
-
-				}
-			}
-		}
-
-		return result;
-	};
-
 	this.onApplySelection = function (selection) {
 		var tool = this._tool;
 
@@ -117,7 +55,8 @@ exports = Class(Emitter, function (supr) {
 				break;
 
 			case 'item':
-				var modelInstance = false;
+				var model = false;
+				var modelIndex = 10000;
 				var layer = tool.layer;
 				var group = tool.group;
 				var index = tool.index;
@@ -125,27 +64,38 @@ exports = Class(Emitter, function (supr) {
 				var y = rect.y;
 
 				if (tool.model) {
-					modelInstance = new tool.model({
-						map: map,
-						layer: layer,
-						group: group,
-						index: index,
-						x: rect.x,
-						y: rect.y,
-						surrounding: tool.surrounding
-					}).on('Refresh', bind(this, 'publish', 'RefreshMap'));
-					group = modelInstance.getGroup();
-					index = modelInstance.getIndex();
+					model = new tool.model(
+						merge(
+							{
+								gridModel: this._gridModel,
+								layer: layer,
+								group: group,
+								index: index,
+								x: x,
+								y: y,
+								width: tool.width,
+								height: tool.height,
+								surrounding: tool.surrounding
+							},
+							tool.modelOpts || {}
+						)
+					).on('Refresh', bind(this, 'publish', 'RefreshMap'));
+
+					group = model.getGroup();
+					index = model.getIndex();
+					modelIndex = 10001 + y * map.getWidth() + x;
+
+					this.emit('AddModel', model);
 				} else if (tool.surrounding) {
 					map.drawSurrounding(x, y, layer, tool.surrounding);
 				}
 
 				for (var j = 0; j < tool.height; j++) {
 					for (var i = 0; i < tool.width; i++) {
-						map.drawTile(tool.layer, x + i, y + j, 0xFFFF, 0xFFFF, false);
+						map.drawTile(tool.layer, x + i, y + j, modelIndex, 0, false);
 					}
 				}
-				map.drawTile(tool.layer, x, y + tool.height - 1, group, index, modelInstance);
+				map.drawTile(tool.layer, x, y + tool.height - 1, group, index, model);
 				this.emit('RefreshMap');
 				break;
 
@@ -167,7 +117,8 @@ exports = Class(Emitter, function (supr) {
 
 		var conditions = this._tool.conditions;
 		if (conditions) {
-			selection.accept = this._acceptRect(rect) && !this._declineRect(rect);
+			var map = this._gridModel.getMap();
+			selection.accept = map.acceptRect(rect, conditions) && !map.declineRect(rect, conditions);
 		}
 	};
 

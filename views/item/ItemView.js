@@ -5,8 +5,8 @@ exports = Class(View, function (supr) {
 		opts = merge(
 			opts,
 			{
-				width: 20,
-				height: 20,
+				width: 16,
+				height: 40,
 				backgroundColor: 'red'
 			}
 		);
@@ -14,14 +14,16 @@ exports = Class(View, function (supr) {
 	};
 
 	this.create = function (opts, tileOnScreen) {
+		this.style.visible = false;
 	};
 
 	this.onUpdate = function (opts) {
+		this.style.visible = opts.visible;
 	};
 
 	this.setTileOnScreen = function (opts, tileOnScreen) {
-		this.style.x = tileOnScreen.x - 10;
-		this.style.y = tileOnScreen.y - 10;
-		this.style.visible = true;
+		this.style.x = tileOnScreen.x - 8;
+		this.style.y = tileOnScreen.y - 40;
+		this.style.zIndex = tileOnScreen.z;
 	};
 });

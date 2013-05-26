@@ -1,4 +1,14 @@
+import lib.Enum as Enum;
+
 import event.Emitter as Emitter;
+
+var tickResult = Enum(
+		'CONTINUE',
+		'SLEEP',
+		'REMOVE'
+	);
+
+var id = 0;
 
 exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
@@ -6,6 +16,26 @@ exports = Class(Emitter, function (supr) {
 
 		this._gridModel = opts.gridModel;
 
+		this._path = null;
+		this._pathIndex = 0;
+		this._pathDT = 200;
+
+		this._target = {x: 0, y: 0};
+		this._targetTile = null;
+		this._speed = 1;
+
+		this._maxTileX = this._gridModel.getWidth() - 1;
+		this._maxTileY = this._gridModel.getHeight() - 1;
+
+		this._onScreen = false;
+		this._offScreenCount = 0;
+
+		this._id = ++id;
+
+		this.updateOpts(opts);
+	};
+
+	this.updateOpts = function (opts) {
 		this._opts = merge(
 			opts,
 			{
@@ -18,17 +48,10 @@ exports = Class(Emitter, function (supr) {
 
 		this._destX = opts.x;
 		this._destY = opts.y;
+	};
 
-		this._path = null;
-		this._pathIndex = 0;
-		this._pathDT = 200;
-
-		this._target = {x: 0, y: 0};
-		this._targetTile = null;
-		this._speed = 1;
-
-		this._maxTileX = this._gridModel.getWidth() - 1;
-		this._maxTileY = this._gridModel.getHeight() - 1;
+	this.getId = function () {
+		return this._id;
 	};
 
 	this.getOpts = function (opts) {
@@ -38,6 +61,16 @@ exports = Class(Emitter, function (supr) {
 	this.setPos = function (x, y) {
 		this._opts.x = x;
 		this._opts.y = y;
+	};
+
+	this.setPath = function (path) {
+		this._path = path;
+		this._pathIndex = path.length - 1;
+		this._targetTile = path[this._pathIndex];
+	};
+
+	this.setOnScreen = function (onScreen) {
+		this._onScreen = onScreen;
 	};
 
 	this.moveTo = function (destTileX, destTileY, x, y) {
@@ -53,11 +86,7 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.onFindPath = function (path) {
-		if (path.length) {
-			this._path = path;
-			this._pathIndex = path.length - 1;
-			this._targetTile = path[this._pathIndex];
-		}
+		path.length && this.setPath(path);
 	};
 
 	/**
@@ -202,8 +231,26 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.tick = function (dt) {
-		this._move(dt);
+		var update = false;
 
-		this.publish('Update', this._opts);
+		if (this._onScreen) {
+			update = true;
+		} else {
+			this._offScreenCount++;
+			if (this._offScreenCount > 10) {
+				this._offScreenCount = 0;
+				update = true;
+				dt *= 10;
+			}
+		}
+
+		if (update) {
+			this._move(dt);
+			this.publish('Update', this._opts);
+		}
+
+		return tickResult.CONTINUE;
 	};
 });
+
+exports.tickResult = tickResult;

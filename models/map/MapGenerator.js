@@ -70,6 +70,7 @@ exports = Class(Emitter, function (supr) {
 		this._repeatIndex = step.repeat;
 		this._layer = step.layer;
 		this._group = step.group;
+		this._index = step.index;
 		this._count = step.count;
 		this._accept = step.accept;
 		this._type = step.type;
@@ -160,7 +161,7 @@ exports = Class(Emitter, function (supr) {
 		}
 
 		if (Math.random() < this._chance) {
-			map.drawTile(this._layer, x, y, this._group, 0, false);
+			map.drawTile(this._layer, x, y, this._group, this._index, false);
 		}
 	};
 
