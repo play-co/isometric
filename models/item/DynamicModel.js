@@ -37,7 +37,10 @@ exports = Class(Emitter, function (supr) {
 
 	this.updateOpts = function (opts) {
 		this._opts = merge(
-			opts,
+			merge(
+				opts,
+				this._opts
+			),
 			{
 				tileX: 0,
 				tileY: 0,

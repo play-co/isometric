@@ -21,7 +21,7 @@ exports = Class(View, function (supr) {
 				y: 0,
 				width: GC.app.baseWidth,
 				height: GC.app.baseHeight,
-				blockEvents: true
+				//blockEvents: true
 			}
 		);
 
@@ -57,13 +57,19 @@ exports = Class(View, function (supr) {
 		this.style.scale = 1;
 	};
 
-	this._createLayer = function (data) {
+	this._createLayer = function (data, inputEvents) {
 		var tileViews = this._tileViews;
 		var maxCountX = this._maxCountX;
 		var maxCountY = this._maxCountY;
 		var layer = this._layers.length;
 		var layerView = {
-				container: new View({superview: this}),
+				container: new View({
+					superview: this,
+					x: 0,
+					y: 0,
+					width: maxCountX * this._tileWidth,
+					height: maxCountY * this._tileHeight
+				}),
 				tileViews: []
 			};
 
@@ -106,6 +112,15 @@ exports = Class(View, function (supr) {
 				view.left = offsetX + x * this._tileWidth;
 				view.bottom = y * this._tileHeight * 0.5 + this._tileHeight;
 				line.push(view);
+
+				if (inputEvents) {
+					(bind(this, function (x, y, view) {
+						view.gridTile = null;
+						view.onInputSelect = bind(this, function () {
+							this.onSelectItem(view, view.gridTile);
+						});
+					}))(x, y, view);
+				}
 			}
 
 			layerView.tileViews.push(line);
@@ -183,6 +198,8 @@ exports = Class(View, function (supr) {
 						style.zIndex = tileView.startZ + size.z[0] * offsetZ + size.z[1];
 						style.visible = true;
 
+						tileView.gridTile = gridTile;
+
 						tileGroups.setImage(tileView, tile);
 					}
 				}
@@ -243,7 +260,7 @@ exports = Class(View, function (supr) {
 
 		this._layers = [];
 		this._layers.push(this._createLayer(data));
-		this._layers.push(this._createLayer(data));
+		this._layers.push(this._createLayer(data, true));
 		this._needsBuild = false;
 
 		this._selection = new ViewPool({
@@ -334,6 +351,10 @@ exports = Class(View, function (supr) {
 		while (selection.length > count) {
 			selection.releaseView(views[selection.length - 1]);
 		}
+	};
+
+	this.onSelectItem = function (view, gridTile) {
+		this.emit('SelectItem', view, gridTile);
 	};
 
 	this.onUpdate = function (data) {

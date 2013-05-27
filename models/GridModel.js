@@ -6,6 +6,8 @@ import .map.Map as Map;
 import .map.MapGenerator as MapGenerator;
 import .map.AStar as AStar;
 
+import .StaticModels;
+
 var selectModes = Enum(
 		'AREA',
 		'LINE',
@@ -53,6 +55,10 @@ exports = Class(Emitter, function (supr) {
 		this._mapGenerator.on('Ready', bind(this, 'onMapReady'));
 		this._mapGenerator.generate();
 
+		this._staticModels = new StaticModels({
+			gridModel: this
+		});
+
 		this._lockHorizontal = -1;
 		this._selectMode = selectModes.AREA;
 
@@ -89,6 +95,7 @@ exports = Class(Emitter, function (supr) {
 		if (this._mapGenerator.generateStep()) {
 			this._aStar.update();
 			this.emit('Update', this._data);
+			this._staticModels.tick();
 		}
 	};
 
@@ -263,6 +270,10 @@ exports = Class(Emitter, function (supr) {
 
 	this.getHeight = function () {
 		return this._data.gridHeight;
+	};
+
+	this.getStaticModels = function () {
+		return this._staticModels;
 	};
 
 	this.clearSelection = function () {

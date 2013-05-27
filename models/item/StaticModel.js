@@ -21,6 +21,14 @@ exports = Class(Emitter, function (supr) {
 		this.onUpdateMap();
 	};
 
+	this.getX = function () {
+		return this._x;
+	};
+
+	this.getY = function () {
+		return this._y;
+	};
+
 	this.getGroup = function () {
 		return this._group;
 	};

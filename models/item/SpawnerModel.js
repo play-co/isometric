@@ -24,6 +24,8 @@ exports = Class(StaticModel, function (supr) {
 		this._conditions = opts.conditions;
 		this._spawnInterval = opts.spawnInterval || 1000;
 
+		this._scheduledPath = null;
+
 		supr(this, 'init', arguments);
 	};
 
@@ -135,9 +137,10 @@ exports = Class(StaticModel, function (supr) {
 				conditions: this._conditions,
 				spawner: this
 			};
+		var model = null;
 
 		if (this._models.length) {
-			var model = this._models.pop();
+			model = this._models.pop();
 			model.updateOpts(opts);
 			this.emit('WakeupModel', model);
 		} else {
@@ -145,12 +148,32 @@ exports = Class(StaticModel, function (supr) {
 			if (!modelInfo) {
 				return;
 			}
-		 	var model = new modelInfo.ctor(merge(opts, modelInfo.opts));
+		 	model = new modelInfo.ctor(merge(opts, modelInfo.opts));
 			model.on('Sleep', bind(this, 'onModelSleep'));
 			this.emit('AddModel', model);
 		}
+		if (model && this._scheduledPath) {
+			var s = this._scheduledPath;
+			var i = s.length;
+			while (i) {
+				i--;
+				console.log(s[i].x, s[i].y);
+			}
+			model.setPath(this._scheduledPath);
+			this._scheduledPath = null;
+		}
 
 		this._modelCount++;
+	};
+
+	this.schedulePath = function (path) {
+		var i = path.length - 1;
+		while (i) {
+			i--;
+			path.push({x: path[i].x, y: path[i].y});
+		}
+		this._scheduledPath = path;
+		console.log('schedule:', path);
 	};
 
 	this.tick = function (dt) {
@@ -163,5 +186,13 @@ exports = Class(StaticModel, function (supr) {
 		if (this._validPathKeys.length && (this._modelCount < 3)) {
 			this.spawnModel();
 		}
+	};
+
+	this.getValidPath = function () {
+		return this._validPath;
+	};
+
+	this.getValidPathKeys = function () {
+		return this._validPathKeys;
 	};
 });

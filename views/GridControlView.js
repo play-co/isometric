@@ -39,73 +39,6 @@ exports = Class(View, function (supr) {
 		this._dragInitialScale = null;
 
 		this._lastScale = null;
-
-		this._inputMode = ('inputMode' in opts) ? opts.inputMode : inputModes.DRAG;
-
-		(this._inputMode === inputModes.BUTTON) && this._initButtons();
-	};
-
-	this._initButtons = function () {
-		this._views = [];
-		var offsetY = 0;
-		for (var y = 0; y < 3; y++) {
-			var offsetX = 0;
-			for (var x = 0; x < 3; x++) {
-				var view = new View({
-					superview: this,
-					x: offsetX,
-					y: offsetY,
-					width: sizeX[x],
-					height: sizeY[y],
-					backgroundColor: '#FFFFFF',
-					opacity: 0
-				});
-				(bind(this, function () {
-					var index = y * 3 + x;
-					view.onInputStart = bind(this, 'onStart', index);
-					view.onInputMove = bind(this, 'onMove', index);
-					view.onInputOut = bind(this, 'onOut', index);
-					view.onInputSelect = bind(this, 'onEnd', index);
-					this._views.push(view);
-				}))();
-
-				offsetX += sizeX[x];
-			}
-			offsetY += sizeY[y];
-		}
-	};
-
-	this.onStart = function (index, evt) {
-		var scale = GC.app.scale * this._gridView.getScale();
-		var point = {x: evt.srcPoint.x / scale, y: evt.srcPoint.y / scale};
-
-		this._downIndex = index;
-		this._downIndexStart = index;
-
-		this.emit('Start', index + 1, point);
-
-		if (index !== 4) {
-			this._views[index].style.opacity = 0.3;
-		}
-	};
-
-	this.onMove = function (index, evt) {
-		if (this._downIndexStart === 4) {
-			var scale = GC.app.scale * this._gridView.getScale();
-			this.emit('Move', 5, {x: evt.srcPoint.x / scale, y: evt.srcPoint.y / scale});
-		}
-	};
-
-	this.onOut = function (index) {
-		if (this._downIndexStart !== 4) {
-			this._downIndex = -1;
-			this.emit('End', index + 1);
-		}
-	};
-
-	this.onEnd = function (index) {
-		this._downIndex = -1;
-		this.emit('End', index + 1);
 	};
 
 	this.onInputStart = function (evt) {
@@ -183,22 +116,6 @@ exports = Class(View, function (supr) {
 	this.onInputOut = function () {
 		this.emit('End', 5);
 		this._dragPointCount = Math.max(this._dragPointCount - 1, 0);
-	};
-
-	this.tick = function (dt) {
-		if (this._inputMode === inputModes.DRAG) {
-			return;
-		}
-
-		var views = this._views;
-		var i = views.length;
-
-		while (i) {
-			var view = views[--i];
-			if (view && (i !== this._downIndex) && (view.style.opacity > 0)) {
-				view.style.opacity = Math.max(view.style.opacity - dt / 500, 0);
-			}
-		}
 	};
 
 	this.setDragMode = function (dragMode) {

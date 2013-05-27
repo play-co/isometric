@@ -13,8 +13,9 @@ exports = Class(DynamicModel, function (supr) {
 	this.updateOpts = function (opts) {
 		supr(this, 'updateOpts', arguments);
 
-		this._needsPath = true;
 		this._opts.visible = false;
+
+		this._needsPath = true;
 		this._startPath = opts.startPath || [];
 		this._spawner = opts.spawner || this._spawner;
 		this._conditions = opts.conditions || this._conditions;
@@ -51,7 +52,7 @@ exports = Class(DynamicModel, function (supr) {
 				path.push({x: x, y: y});
 			};
 
-		while (path.length < 20) {
+		while (path.length < 5) {
 			var directionsTested = 0;
 			directionTest++;
 			while ((direction === null) && (directionsTested < 4)) {
@@ -130,5 +131,11 @@ exports = Class(DynamicModel, function (supr) {
 		opts.visible = !((opts.tileX === tile.x) && (opts.tileY === tile.y));
 
 		return DynamicModel.tickResult.CONTINUE;
+	};
+
+	this.setPath = function (path) {
+		supr(this, 'setPath', arguments);
+
+		this._needsPath = false;
 	};
 });
