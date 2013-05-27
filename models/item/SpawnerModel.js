@@ -153,12 +153,6 @@ exports = Class(StaticModel, function (supr) {
 			this.emit('AddModel', model);
 		}
 		if (model && this._scheduledPath) {
-			var s = this._scheduledPath;
-			var i = s.length;
-			while (i) {
-				i--;
-				console.log(s[i].x, s[i].y);
-			}
 			model.setPath(this._scheduledPath);
 			this._scheduledPath = null;
 		}

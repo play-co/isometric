@@ -191,6 +191,7 @@ exports = Class(View, function (supr) {
 						style.visible = false;
 					} else {
 						var size = sizes[tile.group];
+
 						style.width = size.width;
 						style.height = size.height;
 						style.x = tileView.left + size.x;
