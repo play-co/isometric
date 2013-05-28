@@ -11,7 +11,7 @@ exports = Class(Emitter, function (supr) {
 		this._settings = opts.settings;
 	};
 
-	this.onApplySelection = function (selection) {
+	this.onSelectionApply = function (selection) {
 		var tool = this._tool;
 
 		if (!tool || !selection || !selection.accept) {
@@ -105,20 +105,24 @@ exports = Class(Emitter, function (supr) {
 		}
 	};
 
-	this.onChangeSelection = function (selection) {
+	this.onSelectionChange = function (selection) {
 		if (!this._tool) {
 			return;
 		}
 
+		var tool = this._tool;
 		var gridModel = this._gridModel;
 		var rect = gridModel.getRect(selection.startPoint, selection.endPoint);
 
 		selection.accept = false;
 
-		var conditions = this._tool.conditions;
+		var conditions = tool.conditions;
 		if (conditions) {
 			var map = this._gridModel.getMap();
 			selection.accept = map.acceptRect(rect, conditions) && !map.declineRect(rect, conditions);
+
+			var count = selection.accept ? map.countTiles(tool.layer, tool.group, rect) : false;
+			this.emit('SelectionCount', count);
 		}
 	};
 

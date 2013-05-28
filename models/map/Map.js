@@ -505,4 +505,31 @@ exports = Class(function () {
 			}
 		}
 	};
+
+	this.countTiles = function (layer, group, rect) {
+		var result = {total: 0, changed: 0};
+		var width = this._width;
+		var height = this._height;
+		var grid = this._grid;
+		var x = rect.x;
+		var w = rect.w;
+		var y = rect.y;
+		var h = rect.h;
+
+		for (var i = 0; i < w; i++) {
+			var gridX = (x + i + width) % width;
+
+			for (var j = 0; j < h; j++) {
+				var gridY = (y + j + height) % height;
+				var tile = grid[gridY][gridX];
+
+				result.total++;
+				if (tile[layer].group !== group) {
+					result.changed++;
+				}
+			}
+		}
+
+		return result;
+	};
 });

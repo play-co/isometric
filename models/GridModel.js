@@ -95,7 +95,7 @@ exports = Class(Emitter, function (supr) {
 		if (this._mapGenerator.generateStep()) {
 			this._aStar.update();
 			this.emit('Update', this._data);
-			this._staticModels.tick();
+			this._staticModels.tick(dt);
 		}
 	};
 
@@ -213,7 +213,7 @@ exports = Class(Emitter, function (supr) {
 			}
 		}
 
-		this.emit('ChangeSelection', selection);
+		this.emit('SelectionChange', selection);
 	};
 
 	this.getRect = function (point1, point2) {

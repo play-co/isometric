@@ -92,6 +92,9 @@ exports = Class(Emitter, function (supr) {
 		path.length && this.setPath(path);
 	};
 
+	this.onNewTile = function () {
+	};
+
 	/**
 	 * Move from one tile to another.
 	 * field1 = 'tileX' or 'tileY', field2 = 'x' or 'y'
@@ -189,12 +192,13 @@ exports = Class(Emitter, function (supr) {
 		this._reachedX = false;
 		this._reachedY = false;
 
+		var opts = this._opts;
 		var targetTileX = this._targetTile.x;
 		var targetTileY = this._targetTile.y;
-		var tileX = this._opts.tileX;
-		var tileY = this._opts.tileY;
-		var x = this._opts.x;
-		var y = this._opts.y;
+		var tileX = opts.tileX;
+		var tileY = opts.tileY;
+		var x = opts.x;
+		var y = opts.y;
 
 		if ((targetTileX === 0) && (tileX === this._maxTileX)) {
 			x = 0;
@@ -216,8 +220,11 @@ exports = Class(Emitter, function (supr) {
 			y = 1;
 		}
 
-		this._opts.tileX = targetTileX;
-		this._opts.tileY = targetTileY;
+		if ((opts.tileX !== targetTileX) || (opts.tileY !== targetTileY)) {
+			opts.tileX = targetTileX;
+			opts.tileY = targetTileY;
+			this.onNewTile();
+		}
 
 		if (this._path) {
 			this._pathIndex--;
@@ -229,8 +236,8 @@ exports = Class(Emitter, function (supr) {
 		} else {
 			this._targetTile = null;
 		}
-		this._opts.x = x;
-		this._opts.y = y;
+		opts.x = x;
+		opts.y = y;
 	};
 
 	this.tick = function (dt) {

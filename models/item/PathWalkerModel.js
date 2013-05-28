@@ -19,6 +19,7 @@ exports = Class(DynamicModel, function (supr) {
 		this._startPath = opts.startPath || [];
 		this._spawner = opts.spawner || this._spawner;
 		this._conditions = opts.conditions || this._conditions;
+		this._maxPathLength = opts.maxPathLength || this._maxPathLength || 20;
 	};
 
 	this._tileValid = function (gridX, gridY) {
@@ -40,11 +41,11 @@ exports = Class(DynamicModel, function (supr) {
 		var directionTest = 0;
 		var denyDirection = null;
 
-		var startX = opts.tileX;
-		var startY = opts.tileY;
+		var path = this._startPath;
+		var startX = path[path.length - 1].x;
+		var startY = path[path.length - 1].y;
 		var x = startX;
 		var y = startY;
-		var path = this._startPath;
 
 		var addPoint = function () {
 				x = (x + mapWidth + direction.x) % mapWidth;
@@ -52,7 +53,7 @@ exports = Class(DynamicModel, function (supr) {
 				path.push({x: x, y: y});
 			};
 
-		while (path.length < 5) {
+		while (path.length < this._maxPathLength) {
 			var directionsTested = 0;
 			directionTest++;
 			while ((direction === null) && (directionsTested < 4)) {

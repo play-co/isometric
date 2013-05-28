@@ -38,7 +38,7 @@ exports = Class(StaticModel, function (supr) {
 		this._pathCount && this._findPaths();
 	};
 
-	this._addValidPath = function (sourceGridX, sourceGridY, gridX, gridY) {
+	this._addValidPath = function (sourceGridX, sourceGridY, gridX, gridY, tag) {
 		var index = gridX + '_' + gridY;
 		if (!this._validPath[index]) {
 			var map = this._map;
@@ -55,6 +55,7 @@ exports = Class(StaticModel, function (supr) {
 					y: (gridY + mapHeight) % mapHeight
 				},
 			];
+			this._validPath[index].tag = tag;
 			this._validPathKeys = Object.keys(this._validPath);
 			this._pathCount--;
 		}
@@ -77,22 +78,22 @@ exports = Class(StaticModel, function (supr) {
 			var gridX = x + i;
 			var gridY = y - 1;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX, gridY + 1, gridX, gridY);
+			this._tileValid(gridX, gridY) && this._addValidPath(gridX, gridY + 1, gridX, gridY, 1);
 
 			gridY = y + height;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX, gridY - 1, gridX, gridY);
+			this._tileValid(gridX, gridY) && this._addValidPath(gridX, gridY - 1, gridX, gridY, 2);
 		}
 
 		for (var i = 0; i < height; i++) {
 			var gridX = x - 1;
 			var gridY = y + i;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX + 1, gridY, gridX, gridY);
+			this._tileValid(gridX, gridY) && this._addValidPath(gridX + 1, gridY, gridX, gridY, 3);
 
 			gridX = x + width;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX - 1, gridY, gridX, gridY);
+			this._tileValid(gridX, gridY) && this._addValidPath(gridX - 1, gridY, gridX, gridY, 4);
 		}
 	};
 
@@ -127,37 +128,44 @@ exports = Class(StaticModel, function (supr) {
 		return false;
 	};
 
+	this._pathOpts = function () {
+		var index = (Math.random() * this._validPathKeys.length) | 0;
+		var path = this._validPath[this._validPathKeys[index]];
+
+		return {
+			gridModel: this._gridModel,
+			tileX: path[0].x,
+			tileY: path[0].y,
+			startPath: this._clonePath(path),
+			conditions: this._conditions,
+			spawner: this
+		};
+	};
+
 	this.spawnModel = function () {
-		var path = this._validPath[this._validPathKeys[(Math.random() * this._validPathKeys.length) | 0]];
-		var opts = {
-				gridModel: this._gridModel,
-				tileX: path[0].x,
-				tileY: path[0].y,
-				startPath: this._clonePath(path),
-				conditions: this._conditions,
-				spawner: this
-			};
 		var model = null;
 
 		if (this._models.length) {
 			model = this._models.pop();
-			model.updateOpts(opts);
+			model.updateOpts(this._pathOpts());
 			this.emit('WakeupModel', model);
 		} else {
 			var modelInfo = this._randomInfo();
 			if (!modelInfo) {
 				return;
 			}
-		 	model = new modelInfo.ctor(merge(opts, modelInfo.opts));
+		 	model = new modelInfo.ctor(merge(this._pathOpts(), modelInfo.opts));
 			model.on('Sleep', bind(this, 'onModelSleep'));
-			this.emit('AddModel', model);
-		}
-		if (model && this._scheduledPath) {
-			model.setPath(this._scheduledPath);
-			this._scheduledPath = null;
+			this.emit('SpawnedModel', model);
 		}
 
-		this._modelCount++;
+		if (model) {
+			if (this._scheduledPath) {
+				model.setPath(this._scheduledPath);
+				this._scheduledPath = null;
+			}
+			this._modelCount++;
+		}
 	};
 
 	this.schedulePath = function (path) {

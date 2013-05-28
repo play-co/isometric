@@ -7,7 +7,8 @@ import isometric.views.item.ItemView as ItemView;
 
 import .tiles.TileGroups as TileGroups;
 
-import .ViewPool as ViewPool;
+import .ViewPool;
+import .SelectedItemView;
 
 var cursorYes = new Image({url: 'resources/images/cursorYes.png'});
 var cursorNo = new Image({url: 'resources/images/cursorNo.png'});
@@ -116,8 +117,9 @@ exports = Class(View, function (supr) {
 				if (inputEvents) {
 					(bind(this, function (x, y, view) {
 						view.gridTile = null;
-						view.onInputSelect = bind(this, function () {
-							this.onSelectItem(view, view.gridTile);
+						view.onInputStart = bind(this, function (evt) {
+							evt.cancel();
+							view.gridTile.model && this.onSelectItem(view, view.gridTile);
 						});
 					}))(x, y, view);
 				}
@@ -277,6 +279,8 @@ exports = Class(View, function (supr) {
 		this._deltaX = this._tileWidth * 0.5;
 		this._deltaY = this._tileHeight * 0.5;
 
+		this._selectedItem = new SelectedItemView({superview: this});
+
 		console.log('Tiles per view:', this._maxCountY * this._maxCountX);
 	};
 
@@ -333,7 +337,7 @@ exports = Class(View, function (supr) {
 			for (x = minX; x <= maxX; x++) {
 				var point = this.gridToPoint(data, {x: x, y: y});
 				if (point) {
-					if (selection.length <= count) {
+					if (selection.getLength() <= count) {
 						selection.obtainView();
 					}
 					var view = views[count];
@@ -349,13 +353,21 @@ exports = Class(View, function (supr) {
 			}
 		}
 
-		while (selection.length > count) {
-			selection.releaseView(views[selection.length - 1]);
+		while (selection.getLength() > count) {
+			selection.releaseView(views[selection.getLength() - 1]);
+		}
+	};
+
+	this.onInputStart = function () {
+		if (this._selectedItem.style.visible) {
+			this.emit('UnselectItem');
+			this._selectedItem.style.visible = false;
 		}
 	};
 
 	this.onSelectItem = function (view, gridTile) {
 		this.emit('SelectItem', view, gridTile);
+		this._selectedItem.setView(view, this._offsetX, this._offsetY);
 	};
 
 	this.onUpdate = function (data) {
@@ -482,5 +494,9 @@ exports = Class(View, function (supr) {
 
 	this.getTileWidth = function () {
 		return this._tileWidth;
+	};
+
+	this.hideSelectedItem = function () {
+		this._selectedItem.style.visible = false;
 	};
 });

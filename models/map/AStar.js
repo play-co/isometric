@@ -32,7 +32,7 @@ exports = Class(function () {
 
     this._valid = function (x, y) {
         var tile = this._map.getTile(x, y)[this._layer];
-        return (tile.group === this._group) && (tile.index !== -1);
+        return this._group[tile.group] && (tile.index !== -1);
     };
 
     this._tile = function (index) {
@@ -56,7 +56,11 @@ exports = Class(function () {
         this._startX = search.startX;
         this._startY = search.startY;
         this._layer = search.layer;
-        this._group = search.group;
+        this._group = {};
+
+        for (var i = 0; i < search.group.length; i++) {
+            this._group[search.group[i]] = true;
+        }
 
         this._t++;
     };
