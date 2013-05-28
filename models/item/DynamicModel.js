@@ -256,6 +256,7 @@ exports = Class(Emitter, function (supr) {
 
 		if (update) {
 			this._move(dt);
+			this._opts.dt = dt;
 			this.publish('Update', this._opts);
 		}
 

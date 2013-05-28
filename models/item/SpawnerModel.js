@@ -7,7 +7,7 @@ exports = Class(StaticModel, function (supr) {
 		this._validPath = {};
 		this._validPathKeys = [];
 
-		this._modelInfo = opts.modelInfo;
+		this._modelInfo = opts.modelInfo || [];
 		this._modelInfoCount = [];
 		this._modelInfoTotal = 0;
 		for (var i = 0; i < this._modelInfo.length; i++) {

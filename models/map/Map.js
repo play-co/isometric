@@ -2,7 +2,7 @@ exports = Class(function () {
 	this.init = function (opts) {
 		var width = opts.width;
 		var height = opts.height;
-		var layers = opts.layers;
+		var layers = opts.layers.length;
 		var grid = [];
 
 		for (var y = 0; y < height; y++) {

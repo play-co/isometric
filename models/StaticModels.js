@@ -53,4 +53,8 @@ exports = Class(Emitter, function (supr) {
 			list[--i].tick(dt);
 		}
 	};
+
+	this.getList = function () {
+		return this._list;
+	};
 });

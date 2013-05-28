@@ -22,6 +22,8 @@ import .ModelViewConnector;
  *      Select an item.
  * - UnselectItem
  *      Unselect by clicking on an "empty" spot.
+ * - Edit
+ *      Published when map is editted.
  */
 exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
@@ -53,6 +55,8 @@ exports = Class(Emitter, function (supr) {
 		this._gridModel.
 			on('Update', bind(gridView, 'onUpdate')).
 			on('RefreshMap', bind(gridView, 'onRefreshMap')).
+			on('AddParticles', bind(gridView, 'onAddParticles')).
+			on('Edit', bind(this, 'emit', 'Edit')).
 			on('SelectionChange', bind(this._gridEditor, 'onSelectionChange')).
 			on('Selection', bind(this._gridEditor, 'onSelectionApply')).
 			on('Progress', bind(this, 'onProgress')).
@@ -76,7 +80,10 @@ exports = Class(Emitter, function (supr) {
 
 		gridView.
 			on('SelectItem', bind(this, 'emit', 'SelectItem')).
-			on('UnselectItem', bind(this, 'emit', 'UnselectItem'));
+			on('UnselectItem', bind(this, 'emit', 'UnselectItem')).
+			on('InputStart', bind(gridControlView, 'onInputStart')).
+			on('InputMove', bind(gridControlView, 'onInputMove')).
+			on('InputSelect', bind(gridControlView, 'onInputSelect'));
 
 		this._modelViewConnector = new ModelViewConnector({
 			gridView: gridView
@@ -104,7 +111,10 @@ exports = Class(Emitter, function (supr) {
 		this._gridModel.getStaticModels().add(model);
 
 		model.on('SpawnedModel', bind(this, 'onAddDynamicModel'));
+		model.on('SpawnedModel', bind(this, 'emit', 'DynamicModel'));
 		model.on('WakeupModel', bind(this, 'onWakeupDynamicModel'));
+
+		this.emit('StaticModel', model);		
 	};
 
 	this.onAddDynamicModel = function (model) {
@@ -113,6 +123,14 @@ exports = Class(Emitter, function (supr) {
 
 	this.onWakeupDynamicModel = function (model) {
 		this._modelViewConnector.wakeupModel(model);
+	};
+
+	this.getGridModel = function () {
+		return this._gridModel;
+	};
+
+	this.getStaticModels = function () {
+		return this._gridModel.getStaticModels();
 	};
 
 	this.getGridEditor = function () {

@@ -122,6 +122,7 @@ exports = Class(DynamicModel, function (supr) {
 
 		if (!this._path) {
 			opts.visible = false;
+			opts.dt = dt;
 			this.emit('Update', opts);
 			this.emit('Sleep', this);
 

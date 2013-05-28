@@ -108,12 +108,12 @@ exports = Class(View, function (supr) {
 	};
 
 	this.onInputSelect = function () {
-		this.emit('End', 5);
+		this.emit('End');
 		this._dragPointCount = Math.max(this._dragPointCount - 1, 0);
 	};
 
 	this.onInputOut = function () {
-		this.emit('End', 5);
+		this.emit('End');
 		this._dragPointCount = Math.max(this._dragPointCount - 1, 0);
 	};
 

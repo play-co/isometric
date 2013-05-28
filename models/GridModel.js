@@ -35,7 +35,16 @@ exports = Class(Emitter, function (supr) {
 					cursor: false,
 					selection: null,
 
-					layers: 2
+					layers: [
+						{
+							blockEvents: true,
+							dynamicViews: 0
+						},
+						{
+							blockEvents: false,
+							dynamicViews: 30
+						}
+					]
 				}
 			);
 
@@ -283,6 +292,10 @@ exports = Class(Emitter, function (supr) {
 
 	this.onMapReady = function () {
 		this.emit('RefreshMap');
+	};
+
+	this.addParticles = function (type, tileX, tileY, x, y) {
+		this.emit('AddParticles', type, tileX, tileY, x, y);
 	};
 });
 

@@ -1,5 +1,7 @@
 import ui.View as View;
 
+import shooter.particle.ParticleSystem as ParticleSystem;
+
 exports = Class(View, function (supr) {
 	this.init = function (opts) {
 		opts = merge(
@@ -12,6 +14,14 @@ exports = Class(View, function (supr) {
 		);
 
 		supr(this, 'init', [opts]);
+
+		if (opts.particleSettings) {
+			this._particleSystem = new ParticleSystem({
+				superview: this,
+				initCount: 10,
+				types: opts.particleSettings
+			});
+		}
 
 		this._itemSettings = opts.itemSettings;
 	};
@@ -30,6 +40,19 @@ exports = Class(View, function (supr) {
 			}
 		}
 		this.style.visible = opts.visible;
+
+		var particleSystem = this._particleSystem;
+		var particles = opts.particles;
+		if (particles) {
+			var i = particles.length;
+			while (i) {
+				var particle = particles[--i];
+				particleSystem.activateType(particle.type);
+				particleSystem.addParticles({x: particle.x || 0, y: particle.y || 0});
+			}
+		}
+
+		particleSystem.tick(opts.dt);
 	};
 
 	this.setTileOnScreen = function (opts, tileOnScreen) {

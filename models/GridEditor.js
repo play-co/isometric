@@ -20,10 +20,14 @@ exports = Class(Emitter, function (supr) {
 
 		var rect = this._gridModel.getRect(selection.startPoint, selection.endPoint);
 		var map = this._gridModel.getMap();
+		var selected;
 
 		switch (tool.type) {
 			case 'area':
 				if ((rect.w >= tool.minWidth) && (rect.h >= tool.minHeight)) {
+					// Get the selected value before drawing!
+					selected = map.countTiles(tool.layer, tool.group, rect);
+
 					map.drawRect(
 						tool.layer,
 						rect.x, rect.y, rect.w, rect.h,
@@ -35,6 +39,9 @@ exports = Class(Emitter, function (supr) {
 				break;
 
 			case 'line':
+				// Get the selected value before drawing!
+				selected = map.countTiles(tool.layer, tool.group, rect);
+
 				if (rect.w > rect.h) {
 					map.drawLineHorizontal(
 						tool.layer,
@@ -90,6 +97,11 @@ exports = Class(Emitter, function (supr) {
 					map.drawSurrounding(x, y, layer, tool.surrounding);
 				}
 
+				// Get the selected value before drawing!
+				rect.w = tool.width;
+				rect.h = tool.height;
+				selected = map.countTiles(tool.layer, tool.group, rect);
+
 				for (var j = 0; j < tool.height; j++) {
 					for (var i = 0; i < tool.width; i++) {
 						map.drawTile(tool.layer, x + i, y + j, modelIndex, 0, false);
@@ -98,11 +110,9 @@ exports = Class(Emitter, function (supr) {
 				map.drawTile(tool.layer, x, y + tool.height - 1, group, index, model);
 				this.emit('RefreshMap');
 				break;
-
-			case 'point':
-				this._gridModel.emit('Point', rect.x, rect.y);
-				break;
 		}
+
+		selected && this._gridModel.emit('Edit', selected);
 	};
 
 	this.onSelectionChange = function (selection) {
@@ -122,7 +132,13 @@ exports = Class(Emitter, function (supr) {
 			selection.accept = map.acceptRect(rect, conditions) && !map.declineRect(rect, conditions);
 
 			var count = selection.accept ? map.countTiles(tool.layer, tool.group, rect) : false;
+			if (count) {
+				count.accept = true;
+			}
 			this.emit('SelectionCount', count);
+			if (count && (count.accept === false)) {
+				selection.accept = false;
+			}
 		}
 	};
 

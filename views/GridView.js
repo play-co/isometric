@@ -3,12 +3,13 @@ import ui.TextView as TextView;
 import ui.ImageView as ImageView;
 import ui.resource.Image as Image;
 
-import isometric.views.item.ItemView as ItemView;
+import .item.ItemView as ItemView;
 
 import .tiles.TileGroups as TileGroups;
 
 import .ViewPool;
 import .SelectedItemView;
+import .ParticleSystemView;
 
 var cursorYes = new Image({url: 'resources/images/cursorYes.png'});
 var cursorNo = new Image({url: 'resources/images/cursorNo.png'});
@@ -21,8 +22,7 @@ exports = Class(View, function (supr) {
 				x: 0,
 				y: 0,
 				width: GC.app.baseWidth,
-				height: GC.app.baseHeight,
-				//blockEvents: true
+				height: GC.app.baseHeight
 			}
 		);
 
@@ -55,33 +55,57 @@ exports = Class(View, function (supr) {
 		this._minScale = opts.minScale || 0.6;
 		this._maxScale = opts.maxScale || 2;
 
+		this._gridSettings = opts.gridSettings;
+
+		this._particleSettings = opts.particleSettings;
+		this._particleSystems = {};
+
 		this.style.scale = 1;
 	};
 
-	this._createLayer = function (data, inputEvents) {
+	this._createLayer = function (data, layer) {
 		var tileViews = this._tileViews;
 		var maxCountX = this._maxCountX;
 		var maxCountY = this._maxCountY;
-		var layer = this._layers.length;
+		var layerIndex = this._layers.length;
 		var layerView = {
 				container: new View({
 					superview: this,
 					x: 0,
 					y: 0,
 					width: maxCountX * this._tileWidth,
-					height: maxCountY * this._tileHeight
+					height: maxCountY * this._tileHeight,
+					blockEvents: layer.blockEvents
 				}),
 				tileViews: []
 			};
 
-		layerView.viewPool = new ViewPool({
-			initCount: 20,
-			ctor: ItemView,
-			initOpts: {
-				superview: layerView.container,
-				itemSettings: this._itemSettings
-			}
-		});
+		if (layer.dynamicViews) {
+			layerView.viewPool = new ViewPool({
+				initCount: layer.dynamicViews,
+				ctor: ItemView,
+				initOpts: {
+					superview: layerView.container,
+					itemSettings: this._itemSettings,
+					particleSettings: this._particleSettings
+				}
+			});
+		}
+
+		if (layer.particleSystems) {
+			layerView.particleSystems = new ViewPool({
+				initCount: layer.dynamicViews,
+				ctor: ParticleSystemView,
+				initOpts: {
+					superview: layerView.container,
+					particleSettings: this._particleSettings,
+					particleSystemsCB: function () { return layerView.particleSystems; },
+					particleSystemSize: layer.particleSystemSize,
+					tileWidth: this._tileWidth,
+					tileHeight: this._tileHeight
+				}
+			});
+		}
 
 		for (y = 0; y < maxCountY; y++) {
 			if (!tileViews[y]) {
@@ -105,7 +129,7 @@ exports = Class(View, function (supr) {
 						visible: false
 					});
 
-				tileViews[y][x][layer] = view;
+				tileViews[y][x][layerIndex] = view;
 
 				view.startX = view.style.x;
 				view.startY = view.style.y;
@@ -114,7 +138,7 @@ exports = Class(View, function (supr) {
 				view.bottom = y * this._tileHeight * 0.5 + this._tileHeight;
 				line.push(view);
 
-				if (inputEvents) {
+				if (!layer.blockEvents) {
 					(bind(this, function (x, y, view) {
 						view.gridTile = null;
 						view.onInputStart = bind(this, function (evt) {
@@ -166,17 +190,15 @@ exports = Class(View, function (supr) {
 
 				if (tileOnScreen) {
 					tileOnScreen.currentPopulation = currentPopulation;
-					tileOnScreen.tileX = tileView.startX;
-					tileOnScreen.tileY = tileView.startY;
+					tileOnScreen.x = tileView.startX;
+					tileOnScreen.y = tileView.startY;
 					tileOnScreen.z = tileView.startZ + offsetZ;
 				} else {
 					tilesOnScreen[d + '_' + e] = {
 						currentPopulation: currentPopulation,
 						x: tileView.startX,
 						y: tileView.startY,
-						z: tileView.startZ + offsetZ,
-						tileX: tileView.startX,
-						tileY: tileView.startY
+						z: tileView.startZ + offsetZ
 					}
 				}
 
@@ -204,7 +226,6 @@ exports = Class(View, function (supr) {
 						tileView.gridTile = gridTile;
 
 						tileGroups.setImage(tileView, tile);
-						//console.log(tileView.__input);//.blockEvents = ignoreSubviews;
 					}
 				}
 			}
@@ -263,8 +284,12 @@ exports = Class(View, function (supr) {
 		this._countY = (this.style.height / (this._tileHeight * this.style.scale) * 2 + 7) | 0;
 
 		this._layers = [];
-		this._layers.push(this._createLayer(data));
-		this._layers.push(this._createLayer(data, true));
+
+		var layers = this._gridSettings.layers;
+		for (var i = 0; i < layers.length; i++) {
+			this._layers.push(this._createLayer(data, layers[i]));
+		}
+
 		this._needsBuild = false;
 
 		this._selection = new ViewPool({
@@ -359,7 +384,7 @@ exports = Class(View, function (supr) {
 		}
 	};
 
-	this.onInputStart = function () {
+	this.onInputStart = function (evt) {
 		if (this._selectedItem.style.visible) {
 			this.emit('UnselectItem');
 			this._selectedItem.style.visible = false;
@@ -380,19 +405,41 @@ exports = Class(View, function (supr) {
 
 		var offsetX = -this._tileWidth * 2 + data.offsetX;
 		var offsetY = -this._tileHeight * 2 + data.offsetY;
-		var i = this._layers.length;
 
-		while (i) {
-			var layer = this._layers[--i];
-			layer.container.style.x = offsetX;
-			layer.container.style.y = offsetY;
+		if ((this._offsetX !== offsetX) || (this._offsetY !== offsetY)) {
+			var i = this._layers.length;
+
+			while (i) {
+				var layer = this._layers[--i];
+				layer.container.style.x = offsetX;
+				layer.container.style.y = offsetY;
+			}
+
+			this._waterView.style.x = offsetX;
+			this._waterView.style.y = offsetY;
+
+			this._offsetX = offsetX;
+			this._offsetY = offsetY;
+
+			var tilesOnScreen = this._tilesOnScreen;
+			var particleSystems = this._particleSystems;
+			var currentPopulation = this._currentPopulation;
+
+			for (var index in particleSystems) {
+				var tileOnScreen = tilesOnScreen[index];
+				var particleSystem = particleSystems[index];
+
+				if (tileOnScreen.currentPopulation === currentPopulation) {
+					var style = particleSystem.style;
+
+					style.x = tileOnScreen.x;
+					style.y = tileOnScreen.y;
+					style.zIndex = tileOnScreen.z + 50;
+				} else {
+					particleSystem.release();
+				}
+			}
 		}
-
-		this._waterView.style.x = offsetX;
-		this._waterView.style.y = offsetY;
-
-		this._offsetX = offsetX;
-		this._offsetY = offsetY;
 
 		if (data.selection) {
 			this._hasSelection = true;
@@ -400,6 +447,28 @@ exports = Class(View, function (supr) {
 		} else if (this._hasSelection) {
 			this._hasSelection = false;
 			this._selection.releaseAllViews();
+		}
+	};
+
+	this.tick = function (dt) {
+		var layers = this._layers;
+
+		if (!layers) {
+			return;
+		}
+
+		var i = layers.length;
+
+		while (i) {
+			var layer = layers[--i];
+			var particleSystems = layer.particleSystems;
+			if (particleSystems) {
+				var j = particleSystems.getLength();
+				var views = particleSystems.getViews();
+				while (j) {
+					views[--j].update(dt);
+				}
+			}
 		}
 	};
 
@@ -425,23 +494,37 @@ exports = Class(View, function (supr) {
 		}
 	};
 
-	this.isTileVisible = function (tileX, tileY, x, y) {
-		if (!this._gridWidth) {
-			return false;
-		}
-		var tileOnScreen = this._tilesOnScreen[tileX + '_' + tileY];
+	this.onAddParticles = function (type, tileX, tileY, x, y) {
+		var index = tileX + '_' + tileY;
+		var tileOnScreen = this._tilesOnScreen[index];
+		var particleSystems = this._particleSystems;
 
 		if (tileOnScreen) {
 			if (tileOnScreen.currentPopulation === this._currentPopulation) {
-				tileOnScreen.x = tileOnScreen.tileX + y * this._deltaX + x * this._deltaX;
-				tileOnScreen.y = tileOnScreen.tileY + this._deltaX - x * this._deltaY + y * this._deltaY;
+				var particleSystem = tileOnScreen.particleSystem;
+				if (!particleSystem) {
+					particleSystem = this._layers[1].particleSystems.obtainView()
 
-				return tileOnScreen;
-			} else {
-				return false;
+					particleSystem.onRelease = function () {
+						delete particleSystems[index];
+						tileOnScreen.particleSystem = false;
+					};
+
+					tileOnScreen.particleSystem = particleSystem;
+					particleSystems[index] = particleSystem;
+
+					var style = particleSystem.style;
+
+					style.x = tileOnScreen.x;
+					style.y = tileOnScreen.y;
+					style.zIndex = tileOnScreen.z + 50;
+				}
+
+				particleSystem.addParticle('hit', x, y);
+			} else if (tileOnScreen.particleSystem) {
+				tileOnScreen.particleSystem.release();
+				tileOnScreen.particleSystem = false;
 			}
-		} else {
-			return false;
 		}
 	};
 
