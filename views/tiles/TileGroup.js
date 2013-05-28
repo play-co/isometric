@@ -25,6 +25,7 @@ exports = Class(function () {
 			}
 
 			if (this._images[index]) {
+				this._images[index].blockEvents = !!image.blockEvents;
 				this._images[index].flipX = !!image.flipX;
 				this._images[index].flipY = !!image.flipY;
 			}
@@ -45,6 +46,7 @@ exports = Class(function () {
 			}
 			tileView.style.flipX = image.flipX;
 			tileView.style.flipY = image.flipY;
+			tileView.__input.blockEvents = image.blockEvents;
 		} else {
 			tileView.style.visible = false;			
 		}

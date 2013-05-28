@@ -43,7 +43,6 @@ exports = Class(View, function (supr) {
 
 	this.onInputStart = function (evt) {
 		var index = 'p' + evt.id;
-
 		this.emit('SelectCancel');
 
 		this._dragPoints[index] = {x: evt.srcPoint.x, y: evt.srcPoint.y};

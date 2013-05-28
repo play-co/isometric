@@ -204,6 +204,7 @@ exports = Class(View, function (supr) {
 						tileView.gridTile = gridTile;
 
 						tileGroups.setImage(tileView, tile);
+						//console.log(tileView.__input);//.blockEvents = ignoreSubviews;
 					}
 				}
 			}
