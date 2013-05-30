@@ -32,6 +32,11 @@ exports = Class(Emitter, function (supr) {
 
 		this._id = ++id;
 
+		this._lastX = 0;
+		this._lastY = 0;
+		this._movedX = 0;
+		this._movedY = 0;
+
 		this.updateOpts(opts);
 	};
 
@@ -172,12 +177,38 @@ exports = Class(Emitter, function (supr) {
 		this._opts[field] = n;
 	};
 
+	this._updateMoved = function () {
+		var opts = this._opts;
+
+		if (opts.x < this._lastX) {
+			this._movedX = -1;
+		} else if (opts.x > this._lastX) {
+			this._movedX = 1;
+		} else {
+			this._movedX = 0;
+		}
+		this._lastX = opts.x;
+
+		if (opts.y < this._lastY) {
+			this._movedY = -1;
+		} else if (opts.y > this._lastY) {
+			this._movedY = 1;
+		} else {
+			this._movedY = 0;
+		}
+		this._lastY = opts.y;
+	};
+
 	this._move = function (dt) {
 		var speed = this._speed * dt / 1000;
+
+		this._movedX = 0;
+		this._movedY = 0;
 
 		if (!this._targetTile) {
 			this._moveOnTile(speed, 'x');
 			this._moveOnTile(speed, 'y');
+			this._updateMoved();
 			return;
 		}
 
@@ -185,6 +216,7 @@ exports = Class(Emitter, function (supr) {
 		// Both functions have to be called for proper movement!!!
 		this._reachedX = this._reachedX || this._moveToTile(speed, 'tileX', 'x', this._maxTileX);
 		this._reachedY = this._reachedY || this._moveToTile(speed, 'tileY', 'y', this._maxTileY);
+		this._updateMoved();
 		if (!this._reachedX || !this._reachedY) {
 			return;
 		}

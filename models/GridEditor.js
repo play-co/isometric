@@ -94,7 +94,7 @@ exports = Class(Emitter, function (supr) {
 
 					this.emit('AddModel', model);
 				} else if (tool.surrounding) {
-					map.drawSurrounding(x, y, layer, tool.surrounding);
+					map.drawSurrounding(layer, x, y, tool.surrounding);
 				}
 
 				// Get the selected value before drawing!
@@ -112,7 +112,10 @@ exports = Class(Emitter, function (supr) {
 				break;
 		}
 
-		selected && this._gridModel.emit('Edit', selected);
+		if (selected) {
+			selected.rect = rect;
+			this._gridModel.emit('Edit', selected);
+		}
 	};
 
 	this.onSelectionChange = function (selection) {

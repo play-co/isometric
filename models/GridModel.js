@@ -35,6 +35,9 @@ exports = Class(Emitter, function (supr) {
 					cursor: false,
 					selection: null,
 
+					underDrawX: 1,
+					underDrawY: 1,
+
 					layers: [
 						{
 							blockEvents: true,
@@ -88,8 +91,8 @@ exports = Class(Emitter, function (supr) {
 			x = arguments[0];
 			y = arguments[1];
 		}
-		x += data.tileWidth * 2 - data.offsetX;
-		y += data.tileHeight * 2 - data.offsetY;
+		x += data.tileWidth * data.underDrawX - data.offsetX;
+		y += data.tileHeight * data.underDrawY - data.offsetY;
 		return {
 			x: (data.gridX + data.gridWidth - Math.round((y / data.tileHeight) - (x / data.tileWidth))) % data.gridWidth,
 			y: (data.gridY + data.gridHeight - 1 + Math.round((y / data.tileHeight) + (x / data.tileWidth))) % data.gridHeight

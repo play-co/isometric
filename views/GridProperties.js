@@ -1,0 +1,76 @@
+import .tiles.TileGroups as TileGroups;
+
+exports = Class(function () {
+	this.initProperties = function (opts) {
+		this._grid = null;
+		this._gridX = null;
+		this._gridY = null;
+		this._gridWidth = null;
+		this._gridHeight = null;
+
+		this._gridSettings = opts.gridSettings;
+		this._tileWidth = this._gridSettings.tileWidth;
+		this._tileHeight = this._gridSettings.tileHeight;
+		this._itemSettings = opts.itemSettings;
+		this._particleSettings = opts.particleSettings;
+
+		this._deltaX = this._tileWidth * 0.5;
+		this._deltaY = this._tileHeight * 0.5;
+
+		this._needsBuild = true;
+
+		this._tileGroups = new TileGroups(opts);
+
+		this._sizes = {};
+		for (var i = 0; i < opts.tileSettings.length; i++) {
+			var tileSetting = opts.tileSettings[i];
+			this._sizes[tileSetting.group] = tileSetting;
+		}
+	};
+
+	this._buildViewProperties = function (data) {
+		this._underDrawX = data.underDrawX || 0;
+		this._underDrawY = data.underDrawY || 0;
+		this._overDrawX = data.overDrawX || 0;
+		this._overDrawY = data.overDrawY || 0;
+
+		this._grid = data.grid;
+		this._gridWidth = data.gridWidth;
+		this._gridHeight = data.gridHeight;		
+
+		if (this.style) {
+			var overDrawX = data.underDrawX + data.overDrawX;
+			var overDrawY = data.underDrawY + data.overDrawY;
+
+			this._maxCountX = (this.style.width / (this._tileWidth * this._minScale) + overDrawX) | 0;
+			this._maxCountY = (this.style.height / (this._tileHeight * this._minScale) * 2 + overDrawY) | 0;
+
+			this._countX = (this.style.width / (this._tileWidth * this.style.scale) + overDrawX) | 0;
+			this._countY = (this.style.height / (this._tileHeight * this.style.scale) * 2 + overDrawY) | 0;
+		}
+
+		this._needsBuild = false;
+	};
+
+	this.getProperties = function () {
+		return {
+			tileWidth: this._tileWidth,
+			tileHeight: this._tileHeight,
+			maxCountX: this._maxCountX,
+			maxCountY: this._maxCountY,
+			countX: this._countX,
+			countY: this._countY,
+			gridSettings: this._gridSettings,
+			itemSettings: this._itemSettings,
+			particleSettings: this._particleSettings
+		};
+	};
+
+	this.getTileWidth = function () {
+		return this._tileWidth;
+	};
+
+	this.getTileHeight = function () {
+		return this._tileHeight;
+	};
+});

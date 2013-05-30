@@ -144,6 +144,9 @@ exports = Class(function () {
 		this.setTile(tile, tile.index | index, group);
 	};
 
+	/**
+	 * Call `onUpdateMap` on all models which are located within the given rectangle.
+	 */
 	this._updateModels = function (x, y, w, h) {
 		var width = this._width;
 		var height = this._height;
@@ -266,7 +269,7 @@ exports = Class(function () {
 		this._updateModels(x - 1, y - 1, 3, l + 2);
 	};
 
-	this.drawSurrounding = function (x, y, layer, surrounding) {
+	this.drawSurrounding = function (layer, x, y, surrounding) {
 		var i = surrounding.length;
 		while (i) {
 			var s = surrounding[--i];

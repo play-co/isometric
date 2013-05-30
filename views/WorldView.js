@@ -4,7 +4,7 @@ import ui.TextView as TextView;
 import menus.views.components.ButtonView as ButtonView;
 
 import .GridView as GridView;
-import .GridControlView as GridControlView;
+import .GridInputView as GridInputView;
 
 exports = Class(View, function (supr) {
 	this.init = function (opts) {
@@ -25,8 +25,6 @@ exports = Class(View, function (supr) {
 			itemSettings: opts.itemSettings,
 			tileSettings: opts.tileSettings,
 			particleSettings: opts.particleSettings,
-			tileWidth: 150,
-			tileHeight: ~~(150 * 0.8),
 			visible: false
 		});
 		this._gridView.
@@ -44,7 +42,7 @@ exports = Class(View, function (supr) {
 			color: '#FFFFFF',
 			size: 36
 		});
-		this._gridControlView = new GridControlView({
+		this._gridInputView = new GridInputView({
 			superview: this,
 			gridView: this._gridView
 		});
@@ -54,8 +52,8 @@ exports = Class(View, function (supr) {
 		return this._gridView;
 	};
 
-	this.getGridControlView = function () {
-		return this._gridControlView;
+	this.getGridInputView = function () {
+		return this._gridInputView;
 	};
 
 	this.setProgress = function (progress) {

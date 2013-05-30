@@ -16,6 +16,14 @@ exports = Class(function () {
 		this._groups[group] = new TileGroup(opts);
 	};
 
+	this.getImage = function (tile) {
+		var group = this._groups[tile.group];
+		if (group) {
+			return group.getImage(tile);
+		}
+		return false;
+	};
+
 	this.setImage = function (tileView, tile) {
 		var group = this._groups[tile.group];
 		if (group) {

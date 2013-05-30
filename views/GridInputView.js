@@ -21,10 +21,6 @@ exports = Class(View, function (supr) {
 			);
 		supr(this, 'init', [opts]);
 
-		var size = this.style.width * 0.1;
-		var sizeX = [size, this.style.width - size * 2, size];
-		var sizeY = [size, this.style.height - size * 2, size];
-
 		this._gridView = opts.gridView;
 
 		this._downIndexStart = -1;
@@ -95,7 +91,7 @@ exports = Class(View, function (supr) {
 				scale = (d / this._dragInitialDistance * 100) | 0;
 				if (this._lastScale !== scale) {
 					this._lastScale = scale;
-					this.emit('Pinch', this._dragInitialScale * scale / 100);
+					this._gridView.setScale(this._dragInitialScale * scale / 100);
 				}
 			}
 		} else if (this._dragMode) {

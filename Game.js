@@ -1,7 +1,7 @@
 import event.Emitter as Emitter;
 
 import .models.GridModel as GridModel;
-import .models.GridControlModel as GridControlModel;
+import .models.GridInputModel as GridInputModel;
 import .models.GridEditor as GridEditor;
 import .models.item.DynamicModel as DynamicModel;
 
@@ -35,7 +35,7 @@ exports = Class(Emitter, function (supr) {
 			on('ChangeOffset', bind(this, 'onChangeOffset'));
 
 		var gridView = this._worldView.getGridView();
-		var gridControlView = this._worldView.getGridControlView();
+		var gridInputView = this._worldView.getGridInputView();
 
 		// Create models...
 		this._gridModel = new GridModel({
@@ -62,28 +62,28 @@ exports = Class(Emitter, function (supr) {
 			on('Progress', bind(this, 'onProgress')).
 			on('Point', bind(this, 'onPoint'));
 
-		this._gridControlModel = new GridControlModel({
+		this._gridInputModel = new GridInputModel({
 			gridModel: this._gridModel
 		});
-		this._gridControlModel.
+		this._gridInputModel.
 			on('Selection', bind(this._gridEditor, 'onSelectionApply'));
 
 		// Connect views...
-		gridControlView.
-			on('Start', bind(this._gridControlModel, 'onStart')).
-			on('Drag', bind(this._gridControlModel, 'onDrag')).
-			on('End', bind(this._gridControlModel, 'onEnd')).
-			on('End', bind(this, 'emit', 'SelectionEnd')).
-			on('Select', bind(this._gridControlModel, 'onSelect')).
-			on('SelectCancel', bind(this._gridControlModel, 'onSelectCancel')).
-			on('Pinch', bind(gridView, 'setScale'));
+		gridInputView.
+			on('Start', bind(this._gridInputModel, 'onStart')).
+			on('Drag', bind(this._gridInputModel, 'onDrag')).
+			on('End', bind(this._gridInputModel, 'onEnd')).
+			on('Select', bind(this._gridInputModel, 'onSelect')).
+			on('SelectCancel', bind(this._gridInputModel, 'onSelectCancel')).
+			on('End', bind(this, 'emit', 'SelectionEnd'));
 
 		gridView.
+			on('Ready', bind(this, 'emit', 'Ready')).
 			on('SelectItem', bind(this, 'emit', 'SelectItem')).
 			on('UnselectItem', bind(this, 'emit', 'UnselectItem')).
-			on('InputStart', bind(gridControlView, 'onInputStart')).
-			on('InputMove', bind(gridControlView, 'onInputMove')).
-			on('InputSelect', bind(gridControlView, 'onInputSelect'));
+			on('InputStart', bind(gridInputView, 'onInputStart')).
+			on('InputMove', bind(gridInputView, 'onInputMove')).
+			on('InputSelect', bind(gridInputView, 'onInputSelect'));
 
 		this._modelViewConnector = new ModelViewConnector({
 			gridView: gridView
@@ -101,10 +101,6 @@ exports = Class(Emitter, function (supr) {
 
 	this.onChangeOffset = function (offsetX, offsetY) {
 		this._gridModel.scrollBy(offsetX, offsetY);
-	};
-
-	this.onPinch = function (scale) {
-		this._worldView.getGridView().setScale(scale);
 	};
 
 	this.onAddStaticModel = function (model) {
@@ -141,7 +137,7 @@ exports = Class(Emitter, function (supr) {
 		return this._worldView.getGridView();
 	};
 
-	this.getGridControlView = function () {
-		return this._worldView.getGridControlView();
+	this.getGridInputView = function () {
+		return this._worldView.getGridInputView();
 	};
 });

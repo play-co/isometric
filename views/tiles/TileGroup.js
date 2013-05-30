@@ -51,4 +51,13 @@ exports = Class(function () {
 			tileView.style.visible = false;			
 		}
 	};
+
+	this.getImage = function (tile) {
+		var image = this._images[tile.index];
+		if (image) {
+			return isArray(image) ? image[0] : image;
+		}
+
+		return false;
+	};
 });
