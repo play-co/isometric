@@ -31,6 +31,8 @@ exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
 
+		this._modelType = opts.modelType;
+
 		this._gridModel = opts.gridModel;
 
 		this._path = null;
@@ -73,6 +75,10 @@ exports = Class(Emitter, function (supr) {
 
 		this._destX = opts.x;
 		this._destY = opts.y;
+	};
+
+	this.getModelType = function () {
+		return this._modelType;
 	};
 
 	this.getId = function () {

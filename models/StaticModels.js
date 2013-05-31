@@ -74,4 +74,23 @@ exports = Class(Emitter, function (supr) {
 	this.getList = function () {
 		return this._list;
 	};
+
+	this.getModelsByType = function () {
+		var modelByType = {};
+		var list = this._list;
+		var i = list.length;
+
+		while (i) {
+			var item = list[--i];
+			if (item.getModelType) {
+				var modelType = item.getModelType();
+				if (!modelByType[modelType]) {
+					modelByType[modelType] = [];
+				}
+				modelByType[modelType].push(item);
+			}
+		}
+
+		return modelByType;
+	};
 });

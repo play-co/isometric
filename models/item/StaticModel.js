@@ -21,6 +21,8 @@ exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
 
+		this._modelType = opts.modelType;
+
 		this._x = opts.x;
 		this._y = opts.y;
 		this._width = opts.width;
@@ -36,6 +38,10 @@ exports = Class(Emitter, function (supr) {
 		this._surrounding = opts.surrounding;
 
 		this.onUpdateMap();
+	};
+
+	this.getModelType = function () {
+		return this._modelType;
 	};
 
 	this.getX = function () {

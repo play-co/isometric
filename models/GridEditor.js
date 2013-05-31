@@ -24,6 +24,7 @@ exports = Class(Emitter, function (supr) {
 		supr(this, 'init', arguments);
 
 		this._gridModel = opts.gridModel;
+		this._toolName = '';
 		this._tool = null;
 		this._settings = opts.settings;
 	};
@@ -98,6 +99,7 @@ exports = Class(Emitter, function (supr) {
 					model = new tool.model(
 						merge(
 							{
+								modelType: this._toolName,
 								gridModel: this._gridModel,
 								layer: layer,
 								group: group,
@@ -173,6 +175,7 @@ exports = Class(Emitter, function (supr) {
 	this.setTool = function (tool) {
 		var gridModel = this._gridModel;
 
+		this._toolName = tool;
 		this._tool = this._settings[tool] || null;
 		if (this._tool) {
 			switch (this._tool.type) {

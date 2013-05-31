@@ -50,6 +50,5 @@ exports = Class(View, function (supr) {
 	};
 
 	this.onInputStart = function (evt) {
-		console.log('================>', evt);
 	};
 });
