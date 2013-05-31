@@ -149,6 +149,7 @@ exports = Class(Emitter, function (supr) {
 		var conditions = tool.conditions;
 		if (conditions) {
 			var map = this._gridModel.getMap();
+
 			selection.accept = map.acceptRect(rect, conditions) && !map.declineRect(rect, conditions);
 
 			var count = selection.accept ? map.countTiles(tool.layer, tool.group, rect) : false;

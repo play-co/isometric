@@ -48,4 +48,8 @@ exports = Class(View, function (supr) {
 	this.setGridMiniMapBuffer = function (gridMiniMapBuffer) {
 		this._gridMiniMapBuffer = gridMiniMapBuffer;
 	};
+
+	this.onInputStart = function (evt) {
+		console.log('================>', evt);
+	};
 });

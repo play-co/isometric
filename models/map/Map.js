@@ -36,6 +36,7 @@ exports = Class(function () {
 		}
 
 		this._settings = opts.settings;
+		this._rules = this._settings.rules || [];
 
 		this._width = width;
 		this._height = height;
@@ -154,11 +155,31 @@ exports = Class(function () {
 		return this._grid[y][x];
 	};
 
-	this.orTile = function (tile, group, index) {
-		if (tile.index === -1) {
-			tile.index = 0;
+	this.orTile = function (tile, group, index, validate) {
+		// Source group:
+		var ag = tile.group;
+		var ai = tile.index;
+		// Result group:
+		var rg = group;
+		var ri = tile.index;
+		if (ri === -1) {
+			ri = 0;
 		}
-		this.setTile(tile, tile.index | index, group);
+		ri = ri | index;
+
+		var rules = this._rules;
+		var i = rules.length;
+		while (i) {
+			var rule = rules[--i];
+			// If there's a rule for adding the two tiles then overwrite the initial
+			if ((rule.ag === ag) && (rule.ai === ai) && (rule.bg === group) && (rule.bi === index)) {
+				rg = rule.rg;
+				ri = rule.ri;
+				break;
+			}
+		}
+
+		this.setTile(tile, ri, rg);
 	};
 
 	/**
@@ -302,7 +323,23 @@ exports = Class(function () {
 		}
 	};
 
-	this.isEmpty = function (layer, x, y, w, h) {
+	this._isCap = function (x, y, w, h) {
+		if ((w < 1) && (h < 1)) {
+			return true;
+		}
+		if (w === 1) {
+			if (h === 1) {
+				return true;
+			} else {
+				return (y === 0) || (y === h - 1);
+			}
+		} else if (h === 1) {
+			return (x === 0) || (x === w - 1);
+		}
+		return (x === 0) || (x === w - 1) || (y === 0) || (y === h - 1);
+	};
+
+	this.isEmpty = function (layer, x, y, w, h, validator) {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
@@ -313,8 +350,10 @@ exports = Class(function () {
 			for (var j = 0; j < h; j++) {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
+				var isCap = this._isCap(w, h, i, j);
 
-				if (tile[layer].index !== -1) {
+				if ((tile[layer].index !== -1) &&
+					(!validator || (validator && !validator(this, gridX, gridY, isCap)))) {
 					return false;
 				}
 			}
@@ -323,7 +362,7 @@ exports = Class(function () {
 		return true;
 	};
 
-	this.isEmptyOrZero = function (layer, x, y, w, h) {
+	this.isEmptyOrZero = function (layer, x, y, w, h, validator) {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
@@ -334,8 +373,10 @@ exports = Class(function () {
 			for (var j = 0; j < h; j++) {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
+				var isCap = this._isCap(w, h, i, j);
 
-				if (tile[layer].index > 0) {
+				if ((tile[layer].index > 0) &&
+					(!validator || (validator && !validator(this, gridX, gridY, isCap)))) {
 					return false;
 				}
 			}
@@ -344,7 +385,7 @@ exports = Class(function () {
 		return true;
 	};
 
-	this.isGroup = function (layer, x, y, w, h, groups) {
+	this.isGroup = function (layer, x, y, w, h, groups, validator) {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
@@ -358,8 +399,10 @@ exports = Class(function () {
 			for (var j = 0; j < h; j++) {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
+				var isCap = this._isCap(w, h, i, j);
 
-				if (!(tile[layer].group in g)) {
+				if (!(tile[layer].group in g) &&
+					(!validator || (validator && !validator(this, gridX, gridY, isCap)))) {
 					return false;
 				}
 			}
@@ -368,7 +411,7 @@ exports = Class(function () {
 		return true;
 	};
 
-	this.isTiles = function (layer, x, y, w, h, tiles) {
+	this.isTiles = function (layer, x, y, w, h, tiles, validator) {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
@@ -391,7 +434,7 @@ exports = Class(function () {
 						break;
 					}
 				}
-				if (!found) {
+				if (!found && (!validator || (validator && !validator(this, gridX, gridY)))) {
 					return false;
 				}
 			}
@@ -400,7 +443,7 @@ exports = Class(function () {
 		return true;
 	};
 
-	this.isGroupOrEmpty = function (layer, x, y, w, h, groups) {
+	this.isGroupOrEmpty = function (layer, x, y, w, h, groups, validator) {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
@@ -436,11 +479,11 @@ exports = Class(function () {
 			var condition = accept[i];
 			switch (condition.type) {
 				case 'emptyOrZero':
-					result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h);
+					result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h, conditions.validator);
 					break;
 
 				case 'group':
-					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups);
+					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, conditions.validator);
 					break;
 			}
 		}
@@ -460,14 +503,14 @@ exports = Class(function () {
 				var condition = decline[i];
 				switch (condition.type) {
 					case 'notEmpty':
-						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h)) {
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, conditions.validator)) {
 							result = true;
 						}
 						break;
 
 					case 'notEmptyAndNotGroup':
-						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h) &&
-							!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups)) {
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, conditions.validator) &&
+							!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, conditions.validator)) {
 							result = true;
 						}
 						break;
