@@ -44,6 +44,9 @@ exports = Class(Emitter, function (supr) {
 				if ((rect.w >= tool.minWidth) && (rect.h >= tool.minHeight)) {
 					// Get the selected value before drawing!
 					selected = map.countTiles(tool.layer, tool.group, rect);
+					if (selected.changed === 0) {
+						return;
+					}
 
 					map.drawRect(
 						tool.layer,
@@ -58,6 +61,9 @@ exports = Class(Emitter, function (supr) {
 			case 'line':
 				// Get the selected value before drawing!
 				selected = map.countTiles(tool.layer, tool.group, rect);
+				if (selected.changed === 0) {
+					return;
+				}
 
 				if (rect.w > rect.h) {
 					map.drawLineHorizontal(

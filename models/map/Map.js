@@ -36,7 +36,7 @@ exports = Class(function () {
 		}
 
 		this._settings = opts.settings;
-		this._rules = this._settings.rules || [];
+		this._initRules();
 
 		this._width = width;
 		this._height = height;
@@ -53,6 +53,22 @@ exports = Class(function () {
 				this._randomTiles[randomTile.group] = [];
 			}
 			this._randomTiles[randomTile.group][randomTile.index] = randomTile.chances;
+		}
+	};
+
+	this._initRules = function () {
+		var rules = this._settings.rules || [];
+		this._rules = {};
+		this._ruleResult = {};
+
+		for (var r in rules) {
+			var rule = rules[r];
+			var aIndex = rule.ag + '_' + rule.ai;
+			if (!this._rules[aIndex]) {
+				this._rules[aIndex] = {};
+			}
+			this._rules[aIndex][rule.bg + '_' + rule.bi] = rule;
+			this._ruleResult[rule.rg + '_' + rule.ri] = true;
 		}
 	};
 
@@ -167,15 +183,13 @@ exports = Class(function () {
 		}
 		ri = ri | index;
 
-		var rules = this._rules;
-		var i = rules.length;
-		while (i) {
-			var rule = rules[--i];
-			// If there's a rule for adding the two tiles then overwrite the initial
-			if ((rule.ag === ag) && (rule.ai === ai) && (rule.bg === group) && (rule.bi === index)) {
+		var aIndex = ag + '_' + ai;
+		if (this._rules[aIndex]) {
+			var bIndex = group + '_' + index;
+			var rule = this._rules[aIndex][bIndex];
+			if (rule) {
 				rg = rule.rg;
 				ri = rule.ri;
-				break;
 			}
 		}
 
@@ -324,18 +338,6 @@ exports = Class(function () {
 	};
 
 	this._isCap = function (x, y, w, h) {
-		if ((w < 1) && (h < 1)) {
-			return true;
-		}
-		if (w === 1) {
-			if (h === 1) {
-				return true;
-			} else {
-				return (y === 0) || (y === h - 1);
-			}
-		} else if (h === 1) {
-			return (x === 0) || (x === w - 1);
-		}
 		return (x === 0) || (x === w - 1) || (y === 0) || (y === h - 1);
 	};
 
@@ -350,10 +352,9 @@ exports = Class(function () {
 			for (var j = 0; j < h; j++) {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
-				var isCap = this._isCap(w, h, i, j);
 
 				if ((tile[layer].index !== -1) &&
-					(!validator || (validator && !validator(this, gridX, gridY, isCap)))) {
+					(!validator || (validator && !validator(this, gridX, gridY, w, h, this._isCap(i, j, w, h))))) {
 					return false;
 				}
 			}
@@ -373,10 +374,9 @@ exports = Class(function () {
 			for (var j = 0; j < h; j++) {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
-				var isCap = this._isCap(w, h, i, j);
 
 				if ((tile[layer].index > 0) &&
-					(!validator || (validator && !validator(this, gridX, gridY, isCap)))) {
+					(!validator || (validator && !validator(this, gridX, gridY, w, h, this._isCap(i, j, w, h))))) {
 					return false;
 				}
 			}
@@ -399,10 +399,9 @@ exports = Class(function () {
 			for (var j = 0; j < h; j++) {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
-				var isCap = this._isCap(w, h, i, j);
 
 				if (!(tile[layer].group in g) &&
-					(!validator || (validator && !validator(this, gridX, gridY, isCap)))) {
+					(!validator || (validator && !validator(this, gridX, gridY, w, h, this._isCap(i, j, w, h))))) {
 					return false;
 				}
 			}
@@ -434,7 +433,7 @@ exports = Class(function () {
 						break;
 					}
 				}
-				if (!found && (!validator || (validator && !validator(this, gridX, gridY)))) {
+				if (!found && (!validator || (validator && !validator(this, gridX, gridY, w, h)))) {
 					return false;
 				}
 			}
@@ -458,13 +457,18 @@ exports = Class(function () {
 				var gridY = (y + j + height) % height;
 				var tile = grid[gridY][gridX];
 
-				if ((tile[layer].index !== -1) && !(tile[layer].group in g)) {
+				if ((tile[layer].index !== -1) && !(tile[layer].group in g) && 
+					(!validator || (validator && !validator(this, gridX, gridY, w, h)))) {
 					return false;
 				}
 			}
 		}
 
 		return true;
+	};
+
+	this.isRuleResult = function (group, index) {
+		return this._ruleResult[group + '_' + index];
 	};
 
 	this.acceptRect = function (rect, conditions) {
@@ -509,12 +513,12 @@ exports = Class(function () {
 						break;
 
 					case 'notEmptyAndNotGroup':
-						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator) &&
-							!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator)) {
-							result = true;
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator)) {
+							if (!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator)) {
+								result = true;
+							}
 						}
 						break;
-
 				}
 			}
 		}

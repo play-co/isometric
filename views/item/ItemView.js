@@ -45,6 +45,7 @@ exports = Class(ImageView, function (supr) {
 		this._itemSettings = opts.itemSettings;
 		this._images = null;
 		this._lastImageIndex = 0;
+		this._zIndex = 0;
 	};
 
 	this.create = function (opts, tileOnScreen) {
@@ -54,6 +55,8 @@ exports = Class(ImageView, function (supr) {
 
 	this.onUpdate = function (opts) {
 		var itemSetting = this._itemSettings[this._item];
+
+		this._zIndex = opts.zIndex || 0;
 
 		if (itemSetting) {
 			this._itemSetting = itemSetting;
@@ -98,6 +101,6 @@ exports = Class(ImageView, function (supr) {
 	this.setTileOnScreen = function (opts, tileOnScreen) {
 		this.style.x = tileOnScreen.x + this._itemSetting.offsetX;
 		this.style.y = tileOnScreen.y + this._itemSetting.offsetY;
-		this.style.zIndex = tileOnScreen.z;
+		this.style.zIndex = tileOnScreen.z + this._zIndex;
 	};
 });
