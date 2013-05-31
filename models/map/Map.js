@@ -479,11 +479,11 @@ exports = Class(function () {
 			var condition = accept[i];
 			switch (condition.type) {
 				case 'emptyOrZero':
-					result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h, conditions.validator);
+					result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator);
 					break;
 
 				case 'group':
-					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, conditions.validator);
+					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator);
 					break;
 			}
 		}
@@ -503,14 +503,14 @@ exports = Class(function () {
 				var condition = decline[i];
 				switch (condition.type) {
 					case 'notEmpty':
-						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, conditions.validator)) {
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator)) {
 							result = true;
 						}
 						break;
 
 					case 'notEmptyAndNotGroup':
-						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, conditions.validator) &&
-							!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, conditions.validator)) {
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator) &&
+							!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator)) {
 							result = true;
 						}
 						break;

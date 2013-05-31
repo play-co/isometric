@@ -74,7 +74,8 @@ exports = Class(Emitter, function (supr) {
 						tool.tileSet.vertical
 					);
 				}
-				tool.validator && tool.validator(map, tool, rect);
+
+				tool.updater && tool.updater(map, tool, rect);
 				this.emit('RefreshMap');
 				break;
 
