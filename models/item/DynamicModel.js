@@ -56,6 +56,9 @@ exports = Class(Emitter, function (supr) {
 		this._movedX = 0;
 		this._movedY = 0;
 
+		this._needsSleep = false;
+		this._needsRemove = false;
+
 		this.updateOpts(opts);
 	};
 
@@ -315,7 +318,26 @@ exports = Class(Emitter, function (supr) {
 			this.publish('Update', this._opts);
 		}
 
+		if (this._needsSleep) {
+			this._needsSleep = false;
+			this.emit('Sleep', this);
+			return tickResult.SLEEP;
+		}
+		if (this._needsRemove) {
+			this._needsRemove = false;
+			this.emit('Remove', this);
+			return tickResult.REMOVE;
+		}
+
 		return tickResult.CONTINUE;
+	};
+
+	this.needsSleep = function () {
+		this._needsSleep = true;
+	};
+
+	this.needsRemove = function () {
+		this._needsRemove = true;
 	};
 });
 

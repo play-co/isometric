@@ -32,8 +32,8 @@ exports = Class(StaticModel, function (supr) {
 			this._modelInfoTotal += this._modelInfo[i].count;
 		}
 
-		this._modelCount = 0;
 		this._models = [];
+		this._modelsAwake = [];
 
 		this._updateDT = 1000;
 
@@ -43,11 +43,22 @@ exports = Class(StaticModel, function (supr) {
 
 		this._scheduledPath = null;
 
+		this._canSpawn = true;
+
 		supr(this, 'init', arguments);
 	};
 
 	this.onModelSleep = function (model) {
-		this._modelCount--;
+		var modelsAwake = this._modelsAwake;
+		var i = modelsAwake.length;
+
+		while (i) {
+			if (modelsAwake[--i] === model) {
+				modelsAwake.splice(i, 1);
+				break;
+			}
+		}
+
 		this._models.push(model);
 	};
 
@@ -160,8 +171,11 @@ exports = Class(StaticModel, function (supr) {
 	};
 
 	this.spawnModel = function () {
-		var model = null;
+		if (!this._canSpawn) {
+			return null;
+		}
 
+		var model = null;
 		if (this._models.length) {
 			model = this._models.pop();
 			model.updateOpts(this._pathOpts());
@@ -181,18 +195,25 @@ exports = Class(StaticModel, function (supr) {
 				model.setPath(this._scheduledPath);
 				this._scheduledPath = null;
 			}
-			this._modelCount++;
+			this._modelsAwake.push(model);
 		}
+
+		return model;
 	};
 
 	this.schedulePath = function (path) {
+		if (!this._canSpawn) {
+			return false;
+		}
+
 		var i = path.length - 1;
 		while (i) {
 			i--;
 			path.push({x: path[i].x, y: path[i].y});
 		}
 		this._scheduledPath = path;
-		console.log('schedule:', path);
+
+		return true;
 	};
 
 	this.tick = function (dt) {
@@ -202,7 +223,7 @@ exports = Class(StaticModel, function (supr) {
 		}
 		this._updateDT = this._spawnInterval + Math.random() * this._spawnInterval;
 
-		if (this._validPathKeys.length && (this._modelCount < 3)) {
+		if (this._validPathKeys.length) {
 			this.spawnModel();
 		}
 	};
@@ -213,5 +234,13 @@ exports = Class(StaticModel, function (supr) {
 
 	this.getValidPathKeys = function () {
 		return this._validPathKeys;
+	};
+
+	this.getCanSpawn = function () {
+		return this._canSpawn;
+	};
+
+	this.setCanSpawn = function (canSpawn) {
+		this._canSpawn = canSpawn;
 	};
 });

@@ -128,7 +128,11 @@ exports = Class(DynamicModel, function (supr) {
 	};
 
 	this.tick = function (dt) {
-		supr(this, 'tick', arguments);
+		var result = supr(this, 'tick', arguments);
+
+		if (result !== DynamicModel.tickResult.CONTINUE) {
+			return result;
+		}
 
 		var opts = this._opts;
 
@@ -149,7 +153,7 @@ exports = Class(DynamicModel, function (supr) {
 		var tile = this._path[0];
 		opts.visible = !((opts.tileX === tile.x) && (opts.tileY === tile.y));
 
-		return DynamicModel.tickResult.CONTINUE;
+		return result;
 	};
 
 	this.setPath = function (path) {
