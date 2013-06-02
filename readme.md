@@ -124,42 +124,42 @@ exports = [
 		<th>Binairy</th>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround1.png"/></td>
+		<td><img src="doc/demoGround1.png"/></td>
 		<td>1</td>
 		<td>0001</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround2.png"/></td>
+		<td><img src="doc/demoGround2.png"/></td>
 		<td>1</td>
 		<td>0010</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround3.png"/></td>
+		<td><img src="doc/demoGround3.png"/></td>
 		<td>1</td>
 		<td>0011</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround4.png"/></td>
+		<td><img src="doc/demoGround4.png"/></td>
 		<td>1</td>
 		<td>0100</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround5.png"/></td>
+		<td><img src="doc/demoGround5.png"/></td>
 		<td>1</td>
 		<td>0101</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround6.png"/></td>
+		<td><img src="doc/demoGround6.png"/></td>
 		<td>1</td>
 		<td>0110</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround7.png"/></td>
+		<td><img src="doc/demoGround7.png"/></td>
 		<td>1</td>
 		<td>0111</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoadGround8.png"/></td>
+		<td><img src="doc/demoGround8.png"/></td>
 		<td>1</td>
 		<td>1000</td>
 	</tr>
