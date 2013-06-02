@@ -23,8 +23,8 @@ exports = Class(Emitter, function (supr) {
 
 		this._modelType = opts.modelType;
 
-		this._x = opts.x;
-		this._y = opts.y;
+		this._tileX = opts.tileX;
+		this._tileY = opts.tileY;
 		this._width = opts.width;
 		this._height = opts.height;
 
@@ -44,12 +44,12 @@ exports = Class(Emitter, function (supr) {
 		return this._modelType;
 	};
 
-	this.getX = function () {
-		return this._x;
+	this.getTileX = function () {
+		return this._tileX;
 	};
 
-	this.getY = function () {
-		return this._y;
+	this.getTileY = function () {
+		return this._tileY;
 	};
 
 	this.getGroup = function () {

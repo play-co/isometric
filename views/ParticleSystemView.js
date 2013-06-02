@@ -71,4 +71,8 @@ exports = Class(View, function (supr) {
 
 		this.style.visible = true;
 	};
+
+	this.clear = function () {
+		this._particleSystem.clear();
+	};
 });

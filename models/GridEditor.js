@@ -104,8 +104,8 @@ exports = Class(Emitter, function (supr) {
 								layer: layer,
 								group: group,
 								index: index,
-								x: x,
-								y: y,
+								tileX: x,
+								tileY: y,
 								width: tool.width,
 								height: tool.height,
 								surrounding: tool.surrounding

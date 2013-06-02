@@ -103,7 +103,7 @@ exports = Class(View, function (supr) {
 						view.gridTile = null;
 						view.onInputStart = bind(this, function (evt) {
 							evt.cancel();
-							view.gridTile.model && this._gridView.onSelectItem(view, view.gridTile);
+							view.gridTile.model && this._superview.onSelectItem(view, view.gridTile);
 						});
 					}))(x, y, view);
 				}

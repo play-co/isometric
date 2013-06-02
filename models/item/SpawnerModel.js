@@ -88,8 +88,8 @@ exports = Class(StaticModel, function (supr) {
 	this._findPaths = function () {
 		var width = this._width;
 		var height = this._height;
-		var x = this._x;
-		var y = this._y;
+		var x = this._tileX;
+		var y = this._tileY;
 
 		for (var i = 0; i < width; i++) {
 			var gridX = x + i;

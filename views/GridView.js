@@ -99,12 +99,14 @@ exports = Class([View, GridProperties], function (supr) {
 					tileOnScreen.x = tileView.startX;
 					tileOnScreen.y = tileView.startY;
 					tileOnScreen.z = tileView.startZ + offsetZ;
+					tileOnScreen.tileViews = tileViewTile;
 				} else {
 					tilesOnScreen[d + '_' + e] = {
 						currentPopulation: currentPopulation,
 						x: tileView.startX,
 						y: tileView.startY,
-						z: tileView.startZ + offsetZ
+						z: tileView.startZ + offsetZ,
+						tileViews: tileViewTile
 					}
 				}
 
@@ -277,21 +279,25 @@ exports = Class([View, GridProperties], function (supr) {
 		return false;
 	};
 
-	this.onRefreshMap = function (x, y) {
-		if (x === undefined) {
+	this.onRefreshMap = function (tileX, tileY) {
+		if (tileX === undefined) {
 			this._gridX = null;
 		} else {
-			var tileOnScreen = this._tilesOnScreen[x + '_' + y];
-			if (tileOnScreen) {
-				var tile = this._grid[y][x];
-				var tileViews = tileViews[y][x];
-				for (var i = 0; i < this._layers.length; i++) {
-					var tileView = tileViews[i].tileViews[y][x];
+			var tileOnScreen = this._tilesOnScreen[tileX + '_' + tileY];
+			if (tileOnScreen && (tileOnScreen.currentPopulation === this._currentPopulation)) {
+				var gridTile = this._grid[tileY][tileX];
+				var tileViews = tileOnScreen.tileViews;
+				var tileGroups = this._tileGroups;
+				var i = this._layers.length;
 
-					if (tile[i].index === -1) {
+				while (i) {
+					var tileView = tileViews[--i];
+					var tile = gridTile[i];
+
+					if (tile.index === -1) {
 						tileView.visible = false;
 					} else {
-						tileView.setImage(this._tileGroups.getImage(tile[i]));
+						tileGroups.setImage(tileView, tile);
 						tileView.visible = true;
 					}
 				}
@@ -299,13 +305,16 @@ exports = Class([View, GridProperties], function (supr) {
 		}
 	};
 
-	this.onAddParticles = function (type, tileX, tileY, x, y) {
+	this.onAddParticles = function (type, tileX, tileY, x, y, clearSystem, result) {
 		var index = tileX + '_' + tileY;
 		var tileOnScreen = this._tilesOnScreen[index];
 		var particleSystems = this._particleSystems;
 
 		if (tileOnScreen) {
 			if (tileOnScreen.currentPopulation === this._currentPopulation) {
+				if (result) {
+					result.success = true;
+				}
 				var particleSystem = tileOnScreen.particleSystem;
 				if (!particleSystem) {
 					particleSystem = this._layers[1].particleSystems.obtainView()
@@ -324,8 +333,9 @@ exports = Class([View, GridProperties], function (supr) {
 					style.y = tileOnScreen.y;
 					style.zIndex = tileOnScreen.z + 50;
 				}
+				clearSystem && particleSystem.clear();					
 
-				particleSystem.addParticle('hit', x, y);
+				particleSystem.addParticle(type, x, y);
 			} else if (tileOnScreen.particleSystem) {
 				tileOnScreen.particleSystem.release();
 				tileOnScreen.particleSystem = false;

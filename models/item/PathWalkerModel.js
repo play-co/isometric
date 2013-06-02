@@ -39,9 +39,9 @@ exports = Class(DynamicModel, function (supr) {
 		this._maxPathLength = opts.maxPathLength || this._maxPathLength || 20;
 	};
 
-	this._tileValid = function (gridX, gridY) {
-		this._rect.x = gridX;
-		this._rect.y = gridY;
+	this._tileValid = function (tileX, tileY) {
+		this._rect.x = tileX;
+		this._rect.y = tileY;
 
 		return this._map.acceptRect(this._rect, this._conditions);
 	};

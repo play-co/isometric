@@ -314,8 +314,10 @@ exports = Class(Emitter, function (supr) {
 		this.emit('RefreshMap');
 	};
 
-	this.addParticles = function (type, tileX, tileY, x, y) {
-		this.emit('AddParticles', type, tileX, tileY, x, y);
+	this.addParticles = function (type, tileX, tileY, x, y, clearSystem) {
+		var result = {success: false};
+		this.emit('AddParticles', type, tileX, tileY, x, y, clearSystem, result);
+		return result.success;
 	};
 });
 
