@@ -68,10 +68,12 @@ exports = Class(Emitter, function (supr) {
 			);
 
 		data.map = new Map({
-			settings: opts.mapSettings,
+			mapSettings: opts.mapSettings,
+			editorSettings: opts.editorSettings,
 			width: data.gridWidth,
 			height: data.gridHeight,
-			layers: data.layers
+			layers: data.layers,
+			itemOwner: this
 		});
 		data.grid = data.map.getGrid();
 
@@ -84,7 +86,8 @@ exports = Class(Emitter, function (supr) {
 		this._mapGenerator.generate();
 
 		this._staticModels = new StaticModels({
-			gridModel: this
+			gridModel: this,
+			map: data.map
 		});
 
 		this._lockHorizontal = -1;
@@ -330,6 +333,21 @@ exports = Class(Emitter, function (supr) {
 		data.selection = null;
 
 		this.emit('Clear');
+	};
+
+	this.toJSON = function () {
+		return {
+			map: this._data.map.toJSON(),
+			staticModels: this._staticModels.toJSON()
+		};
+	};
+
+	this.fromJSON = function (data) {
+		this.clear();
+		this._mapGenerator.setDone(true);
+		this._data.map.fromJSON(data.map);
+		this._staticModels.fromJSON(data.staticModels);
+		this._data.grid = this._data.map.getGrid();
 	};
 });
 

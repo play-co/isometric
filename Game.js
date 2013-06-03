@@ -57,7 +57,8 @@ exports = Class(Emitter, function (supr) {
 		// Create models...
 		this._gridModel = new GridModel({
 			gridSettings: opts.gridSettings,
-			mapSettings: opts.mapSettings
+			mapSettings: opts.mapSettings,
+			editorSettings: opts.editorSettings
 		});
 
 		this._gridEditor = new GridEditor({

@@ -24,7 +24,7 @@ exports = Class(Emitter, function (supr) {
 		supr(this, 'init', arguments);
 
 		this._gridModel = opts.gridModel;
-		this._toolName = '';
+		this._modelType = '';
 		this._tool = null;
 		this._settings = opts.settings;
 	};
@@ -87,53 +87,14 @@ exports = Class(Emitter, function (supr) {
 				break;
 
 			case 'item':
-				var model = false;
-				var modelIndex = 10000;
-				var layer = tool.layer;
-				var group = tool.group;
-				var index = tool.index;
-				var x = rect.x;
-				var y = rect.y;
-
-				if (tool.model) {
-					model = new tool.model(
-						merge(
-							{
-								modelType: this._toolName,
-								gridModel: this._gridModel,
-								layer: layer,
-								group: group,
-								index: index,
-								tileX: x,
-								tileY: y,
-								width: tool.width,
-								height: tool.height,
-								surrounding: tool.surrounding
-							},
-							tool.modelOpts || {}
-						)
-					).on('Refresh', bind(this, 'publish', 'RefreshMap'));
-
-					group = model.getGroup();
-					index = model.getIndex();
-					modelIndex = 10001 + y * map.getWidth() + x;
-
-					this.emit('AddModel', model);
-				} else if (tool.surrounding) {
-					map.drawSurrounding(layer, x, y, tool.surrounding);
-				}
-
 				// Get the selected value before drawing!
 				rect.w = tool.width;
 				rect.h = tool.height;
 				selected = map.countTiles(tool.layer, tool.group, rect);
 
-				for (var j = 0; j < tool.height; j++) {
-					for (var i = 0; i < tool.width; i++) {
-						map.drawTile(tool.layer, x + i, y + j, modelIndex, 0, false);
-					}
-				}
-				map.drawTile(tool.layer, x, y + tool.height - 1, group, index, model);
+				var model = map.putItem(this._modelType, rect.x, rect.y);
+				model && this.emit('AddModel', model);
+
 				this.emit('RefreshMap');
 				break;
 		}
@@ -172,11 +133,12 @@ exports = Class(Emitter, function (supr) {
 		}
 	};
 
-	this.setTool = function (tool) {
+	this.setTool = function (modelType) {
 		var gridModel = this._gridModel;
 
-		this._toolName = tool;
-		this._tool = this._settings[tool] || null;
+		this._modelType = modelType;
+		this._tool = this._settings[modelType] || null;
+
 		if (this._tool) {
 			switch (this._tool.type) {
 				case 'area':

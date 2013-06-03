@@ -68,4 +68,12 @@ exports = Class(Emitter, function (supr) {
 
 	this.tick = function (dt) {
 	};
+
+	this.toJSON = function () {
+		return {
+			modelType: this._modelType,
+			tileX: this._tileX,
+			tileY: this._tileY
+		};
+	};
 });

@@ -234,4 +234,8 @@ exports = Class(Emitter, function (supr) {
 
 		return rect;
 	};
+
+	this.setDone = function (done) {
+		this._done = done;
+	};
 });

@@ -21,6 +21,7 @@ exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
 
+		this._map = opts.map;
 		this._gridModel = opts.gridModel;
 		this._list = [];
 	};
@@ -96,5 +97,26 @@ exports = Class(Emitter, function (supr) {
 
 	this.clear = function () {
 		this._list = [];
+	};
+
+	this.toJSON = function () {
+		var result = [];
+		var list = this._list;
+		var i = list.length;
+
+		while (i) {
+			result.push(list[--i].toJSON());
+		}
+
+		return result;
+	};
+
+	this.fromJSON = function (data) {
+		var map = this._map;
+		var i = data.length;
+		while (i) {
+			item = data[--i];
+			map.putItem(item.modelType, item.tileX, item.tileY);
+		}
 	};
 });

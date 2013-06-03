@@ -35,7 +35,8 @@ exports = Class(function () {
 			grid.push(line);
 		}
 
-		this._settings = opts.settings;
+		this._mapSettings = opts.mapSettings;
+		this._editorSettings = opts.editorSettings;
 		this._initRules();
 
 		this._width = width;
@@ -46,7 +47,9 @@ exports = Class(function () {
 
 		this._randomTiles = [];
 
-		var randomTiles = this._settings.randomTiles;
+		this._itemOwner = opts.itemOwner;
+
+		var randomTiles = this._mapSettings.randomTiles;
 		for (var i = 0; i < randomTiles.length; i++) {
 			var randomTile = randomTiles[i];
 			if (!this._randomTiles[randomTile.group]) {
@@ -57,7 +60,7 @@ exports = Class(function () {
 	};
 
 	this._initRules = function () {
-		var rules = this._settings.rules || [];
+		var rules = this._mapSettings.rules || [];
 		this._rules = {};
 		this._ruleResult = {};
 
@@ -237,6 +240,50 @@ exports = Class(function () {
 
 			model && model.onUpdateMap && model.onUpdateMap();
 		}
+	};
+
+	this.putItem = function (modelType, tileX, tileY) {
+		var tool = this._editorSettings[modelType];
+		var model = null;
+		var modelIndex = 10000;
+		var layer = tool.layer;
+		var group = tool.group;
+		var index = tool.index;
+
+		if (tool.model) {
+			model = new tool.model(
+				merge(
+					{
+						modelType: modelType,
+						gridModel: this._itemOwner,
+						layer: layer,
+						group: group,
+						index: index,
+						tileX: tileX,
+						tileY: tileY,
+						width: tool.width,
+						height: tool.height,
+						surrounding: tool.surrounding
+					},
+					tool.modelOpts || {}
+				)
+			).on('Refresh', bind(this._itemOwner, 'emit', 'RefreshMap'));
+
+			group = model.getGroup();
+			index = model.getIndex();
+			modelIndex = 10001 + tileY * this._width + tileX;
+		} else if (tool.surrounding) {
+			this.drawSurrounding(layer, tileX, tileY, tool.surrounding);
+		}
+
+		for (var j = 0; j < tool.height; j++) {
+			for (var i = 0; i < tool.width; i++) {
+				this.drawTile(tool.layer, tileX + i, tileY + j, modelIndex, 0, false);
+			}
+		}
+		this.drawTile(tool.layer, tileX, tileY + tool.height - 1, group, index, model);
+
+		return model;
 	};
 
 	this.drawTile = function (layer, x, y, group, index, model) {
@@ -613,13 +660,28 @@ exports = Class(function () {
 		var dataHeader = {width: width, height: height, layers: layers};
 		var dataGrid = [];
 
-		var getValueChar = function (value) {
+		var getValueShort = function (value) {
 				if (value > 10000) {
 					value = -1;
 				} else if (value < 0) {
 					value = -1;
 				}
-				return String.fromCharCode(49 + value);
+				value++;
+
+				return String.fromCharCode(48 + value);
+			};
+
+		var getValueLong = function (value) {
+				if (value > 10000) {
+					value = -1;
+				} else if (value < 0) {
+					value = -1;
+				}
+				value++;
+
+				var hi = (value / 64) | 0;
+				var lo = value & 63;
+				return String.fromCharCode(48 + hi) + String.fromCharCode(48 + lo);
 			};
 
 		for (var y = 0; y < height; y++) {
@@ -629,7 +691,7 @@ exports = Class(function () {
 				var gridTile = gridLine[x];
 				for (var i = 0; i < layers; i++) {
 					var tile = gridTile[i];
-					dataGridStr += getValueChar(tile.group) + getValueChar(tile.index) + getValueChar(tile.randomIndex);
+					dataGridStr += getValueShort(tile.group) + getValueLong(tile.index) + getValueShort(tile.randomIndex);
 				}
 			}
 			dataGrid.push(dataGridStr);
@@ -641,9 +703,9 @@ exports = Class(function () {
 
 	this.fromJSON = function (data) {
 		var grid = [];
-		var width = data.width;
-		var height = data.height;
-		var layers = data.layers;
+		var width = data.header.width;
+		var height = data.header.height;
+		var layers = data.header.layers;
 
 		var dataGrid = data.grid;
 
@@ -651,14 +713,20 @@ exports = Class(function () {
 			var dataGridStr = dataGrid[y];
 			var gridLine = [];
 			var index = 0;
+
 			for (var x = 0; x < width; x++) {
 				var gridTile = [];
 
 				for (var i = 0; i < layers; i++) {
+					var a = dataGridStr.charCodeAt(index++) - 48;
+					var b = dataGridStr.charCodeAt(index++) - 48;
+					var c = dataGridStr.charCodeAt(index++) - 48;
+					var d = dataGridStr.charCodeAt(index++) - 48;
+
 					gridTile.push({
-						group: dateGridStr.charCodeAt(index++) - 49,
-						index: dateGridStr.charCodeAt(index++) - 49,
-						randomIndex: dateGridStr.charCodeAt(index++) - 49
+						group: a - 1,
+						index: b * 64 + c - 1,
+						randomIndex: d - 1
 					});
 				}
 
@@ -667,11 +735,9 @@ exports = Class(function () {
 			grid.push(gridLine);
 		}
 
-		var dataHeader = data.header;
-
 		this._grid = grid;
-		this._width = dataHeader.width;
-		this._height = dataHeader.height;
-		this._layers = dataHeader.layers;
+		this._width = width;
+		this._height = height;
+		this._layers = layers;
 	};
 });
