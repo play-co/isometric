@@ -161,4 +161,8 @@ exports = Class(DynamicModel, function (supr) {
 
 		this._needsPath = false;
 	};
+
+	this.getSpawner = function () {
+		return this._spawner;
+	};
 });

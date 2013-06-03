@@ -279,6 +279,23 @@ exports = Class([View, GridProperties], function (supr) {
 		return false;
 	};
 
+	this.onClear = function () {
+		var particleSystems = this._particleSystems;
+
+		for (var index in particleSystems) {
+			particleSystems[index].clear();
+		}
+
+		var layers = this._layers;
+		var i = this._layers.length;
+		while (i) {
+			var layer = layers[--i];
+			layer.viewPool && layer.viewPool.releaseAllViews();
+		}
+
+		this._gridX = null;
+	};
+
 	this.onRefreshMap = function (tileX, tileY) {
 		if (tileX === undefined) {
 			this._gridX = null;

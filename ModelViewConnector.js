@@ -112,4 +112,9 @@ exports = Class(Emitter, function (supr) {
 			console.warn('Failed to wakeup model', model.getId());
 		}
 	};
+
+	this.clear = function () {
+		this._activeList = [];
+		this._sleepList = [];		
+	};
 });

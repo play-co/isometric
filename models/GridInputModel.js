@@ -28,7 +28,6 @@ exports = Class(Emitter, function (supr) {
 
 	this.onStart = function (index, point) {
 		this._startPoint = this._gridModel.pointToGrid(point);
-		this._gridModel.setCursor(this._startPoint);
 		this._gridModel.setSelection(this._startPoint, this._startPoint);
 	};
 
@@ -47,7 +46,6 @@ exports = Class(Emitter, function (supr) {
 		selection && selection.accept && this.emit('Selection', selection);
 
 		this._gridModel.clearSelection();
-		this._gridModel.setCursor(false);
 		this._sideIndex = -1;
 		this._startPoint = null;
 	};

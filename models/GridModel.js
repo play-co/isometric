@@ -49,7 +49,6 @@ exports = Class(Emitter, function (supr) {
 					gridWidth: 64,
 					gridHeight: 64,
 
-					cursor: false,
 					selection: null,
 
 					underDrawX: 1,
@@ -179,10 +178,6 @@ exports = Class(Emitter, function (supr) {
 	this.scrollBy = function (offsetX, offsetY) {
 		(offsetX > 0) ? this.scrollLeft(offsetX) : this.scrollRight(-offsetX);
 		(offsetY > 0) ? this.scrollUp(offsetY) : this.scrollDown(-offsetY);
-	};
-
-	this.setCursor = function (cursor) {
-		this._data.cursor = cursor;
 	};
 
 	this.setSelection = function (startPoint, endPoint) {
@@ -318,6 +313,23 @@ exports = Class(Emitter, function (supr) {
 		var result = {success: false};
 		this.emit('AddParticles', type, tileX, tileY, x, y, clearSystem, result);
 		return result.success;
+	};
+
+	this.clear = function () {
+		this._data.map.clear();
+		this._staticModels.clear();
+
+		var data = this._data;
+
+		data.offsetX = 0;
+		data.offsetY = 0;
+
+		data.gridX = 0;
+		data.gridY = 0;
+
+		data.selection = null;
+
+		this.emit('Clear');
 	};
 });
 

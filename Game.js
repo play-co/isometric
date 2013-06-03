@@ -73,6 +73,7 @@ exports = Class(Emitter, function (supr) {
 			on('Update', bind(gridView, 'onUpdate')).
 			on('RefreshMap', bind(gridView, 'onRefreshMap')).
 			on('AddParticles', bind(gridView, 'onAddParticles')).
+			on('Clear', bind(gridView, 'onClear')).
 			on('Edit', bind(this, 'emit', 'Edit')).
 			on('SelectionChange', bind(this._gridEditor, 'onSelectionChange')).
 			on('Selection', bind(this._gridEditor, 'onSelectionApply')).
@@ -156,5 +157,11 @@ exports = Class(Emitter, function (supr) {
 
 	this.getGridInputView = function () {
 		return this._worldView.getGridInputView();
+	};
+
+	this.clear = function () {
+		this._gridModel.clear();
+		this._modelViewConnector.clear();
+		this._worldView.startLoading();
 	};
 });

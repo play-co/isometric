@@ -93,4 +93,8 @@ exports = Class(Emitter, function (supr) {
 
 		return modelByType;
 	};
+
+	this.clear = function () {
+		this._list = [];
+	};
 });

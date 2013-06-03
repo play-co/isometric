@@ -132,6 +132,10 @@ exports = Class(function () {
 		return this._height;
 	};
 
+	this.getLayers = function () {
+		return this._layers;
+	};
+
 	this.setTile = function (tile, index, group) {
 		var randomIndex = -1;
 		if (this._randomTiles[group]) {
@@ -598,5 +602,76 @@ exports = Class(function () {
 		}
 
 		return result;
+	};
+
+	this.toJSON = function () {
+		var grid = this._grid;
+		var width = this._width;
+		var height = this._height;
+		var layers = this._layers;
+
+		var dataHeader = {width: width, height: height, layers: layers};
+		var dataGrid = [];
+
+		var getValueChar = function (value) {
+				if (value > 10000) {
+					value = -1;
+				} else if (value < 0) {
+					value = -1;
+				}
+				return String.fromCharCode(49 + value);
+			};
+
+		for (var y = 0; y < height; y++) {
+			var dataGridStr = '';
+			var gridLine = grid[y];
+			for (var x = 0; x < width; x++) {
+				var gridTile = gridLine[x];
+				for (var i = 0; i < layers; i++) {
+					var tile = gridTile[i];
+					dataGridStr += getValueChar(tile.group) + getValueChar(tile.index) + getValueChar(tile.randomIndex);
+				}
+			}
+			dataGrid.push(dataGridStr);
+		}
+		var data = {header: dataHeader, grid: dataGrid};
+
+		return data;
+	};
+
+	this.fromJSON = function (data) {
+		var grid = [];
+		var width = data.width;
+		var height = data.height;
+		var layers = data.layers;
+
+		var dataGrid = data.grid;
+
+		for (var y = 0; y < height; y++) {
+			var dataGridStr = dataGrid[y];
+			var gridLine = [];
+			var index = 0;
+			for (var x = 0; x < width; x++) {
+				var gridTile = [];
+
+				for (var i = 0; i < layers; i++) {
+					gridTile.push({
+						group: dateGridStr.charCodeAt(index++) - 49,
+						index: dateGridStr.charCodeAt(index++) - 49,
+						randomIndex: dateGridStr.charCodeAt(index++) - 49
+					});
+				}
+
+				gridLine.push(gridTile);
+			}
+			grid.push(gridLine);
+		}
+
+		var dataHeader = data.header;
+
+		this._grid = grid;
+		this._width = dataHeader.width;
+		this._height = dataHeader.height;
+		this._layers = dataHeader.layers;
 	};
 });
