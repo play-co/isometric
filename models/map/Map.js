@@ -242,7 +242,7 @@ exports = Class(function () {
 		}
 	};
 
-	this.putItem = function (modelType, tileX, tileY) {
+	this.putItem = function (modelType, tileX, tileY, opts) {
 		var tool = this._editorSettings[modelType];
 		var model = null;
 		var modelIndex = 10000;
@@ -251,7 +251,8 @@ exports = Class(function () {
 		var index = tool.index;
 
 		if (tool.model) {
-			model = new tool.model(
+			opts = merge(
+				opts,
 				merge(
 					{
 						modelType: modelType,
@@ -267,7 +268,8 @@ exports = Class(function () {
 					},
 					tool.modelOpts || {}
 				)
-			).on('Refresh', bind(this._itemOwner, 'emit', 'RefreshMap'));
+			);
+			model = new tool.model(opts).on('Refresh', bind(this._itemOwner, 'emit', 'RefreshMap'));
 
 			group = model.getGroup();
 			index = model.getIndex();

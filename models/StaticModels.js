@@ -116,7 +116,7 @@ exports = Class(Emitter, function (supr) {
 		var i = data.length;
 		while (i) {
 			item = data[--i];
-			map.putItem(item.modelType, item.tileX, item.tileY);
+			map.putItem(item.modelType, item.tileX, item.tileY, item);
 		}
 	};
 });
