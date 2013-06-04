@@ -69,7 +69,7 @@ exports = Class(Emitter, function (supr) {
 
 		data.map = new Map({
 			mapSettings: opts.mapSettings,
-			editorSettings: opts.editorSettings,
+			editorSettings: opts.editorSettings || {},
 			width: data.gridWidth,
 			height: data.gridHeight,
 			layers: data.layers,
@@ -336,7 +336,15 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.toJSON = function () {
+		var data = this._data;
+
 		return {
+			grid: {
+				gridX: data.gridX,
+				gridY: data.gridY,
+				offsetX: data.offsetX,
+				offsetY: data.offsetY
+			},
 			map: this._data.map.toJSON(),
 			staticModels: this._staticModels.toJSON()
 		};
@@ -345,9 +353,15 @@ exports = Class(Emitter, function (supr) {
 	this.fromJSON = function (data) {
 		this.clear();
 		this._mapGenerator.setDone(true);
+
 		this._data.map.fromJSON(data.map);
-		this._staticModels.fromJSON(data.staticModels);
 		this._data.grid = this._data.map.getGrid();
+		this._data.gridX = data.grid.gridX;
+		this._data.gridY = data.grid.gridY;
+		this._data.offsetX = data.grid.offsetX;
+		this._data.offsetY = data.grid.offsetY;
+
+		this._staticModels.fromJSON(data.staticModels);
 	};
 });
 

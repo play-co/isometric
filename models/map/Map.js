@@ -36,7 +36,7 @@ exports = Class(function () {
 		}
 
 		this._mapSettings = opts.mapSettings;
-		this._editorSettings = opts.editorSettings;
+		this._editorSettings = opts.editorSettings || {};
 		this._initRules();
 
 		this._width = width;
@@ -49,7 +49,7 @@ exports = Class(function () {
 
 		this._itemOwner = opts.itemOwner;
 
-		var randomTiles = this._mapSettings.randomTiles;
+		var randomTiles = this._mapSettings.randomTiles || [];
 		for (var i = 0; i < randomTiles.length; i++) {
 			var randomTile = randomTiles[i];
 			if (!this._randomTiles[randomTile.group]) {
@@ -207,12 +207,17 @@ exports = Class(function () {
 	 * Call `onUpdateMap` on all models which are located within the given rectangle.
 	 */
 	this._updateModels = function (x, y, w, h) {
+		var grid = this._grid;
+		var modelLayer = grid[0][0].length - 1;
 		var width = this._width;
 		var height = this._height;
-		var grid = this._grid;
 		var models = {};
 		var mw = width * 10;
 		var mh = height * 10;
+
+		if (modelLayer === 0) {
+			return;
+		}
 
 		for (var i = 0; i < w; i++) {
 			var gridX = (x + i + mw) % width;
@@ -226,8 +231,8 @@ exports = Class(function () {
 				if (tile.model) {
 					var modelIndex = 10001 + gridY * width + gridX;
 					models[modelIndex] = true;
-				} else if (tile[1].group > 10000) {
-					models[tile[1].group] = true;
+				} else if (tile[modelLayer].group > 10000) {
+					models[tile[modelLayer].group] = true;
 				}
 			}
 		}
@@ -244,6 +249,11 @@ exports = Class(function () {
 
 	this.putItem = function (modelType, tileX, tileY, opts) {
 		var tool = this._editorSettings[modelType];
+
+		if (!tool) {
+			return null;
+		}
+
 		var model = null;
 		var modelIndex = 10000;
 		var layer = tool.layer;

@@ -46,6 +46,14 @@ exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
 
+		opts.gridSettings = merge(
+			opts.gridSettings,
+			{
+				gridWidth: 64,
+				gridHeight: 64				
+			}
+		);
+
 		// Create views...
 		this._worldView = new WorldView(opts);
 		this._worldView.
@@ -58,12 +66,12 @@ exports = Class(Emitter, function (supr) {
 		this._gridModel = new GridModel({
 			gridSettings: opts.gridSettings,
 			mapSettings: opts.mapSettings,
-			editorSettings: opts.editorSettings
+			editorSettings: opts.editorSettings || {}
 		});
 
 		this._gridEditor = new GridEditor({
 			gridModel: this._gridModel,
-			settings: opts.editorSettings
+			settings: opts.editorSettings || {}
 		});
 		this._gridEditor.
 			on('RefreshMap', bind(gridView, 'onRefreshMap')).
@@ -73,6 +81,7 @@ exports = Class(Emitter, function (supr) {
 		this._gridModel.
 			on('Update', bind(gridView, 'onUpdate')).
 			on('RefreshMap', bind(gridView, 'onRefreshMap')).
+			on('AddModel', bind(this, 'onAddStaticModel')).
 			on('AddParticles', bind(gridView, 'onAddParticles')).
 			on('Clear', bind(gridView, 'onClear')).
 			on('Edit', bind(this, 'emit', 'Edit')).
@@ -89,6 +98,8 @@ exports = Class(Emitter, function (supr) {
 
 		// Connect views...
 		gridInputView.
+			on('InputStart', bind(this, 'emit', 'InputStart')).
+			on('InputSelect', bind(this, 'emit', 'InputSelect')).
 			on('Start', bind(this._gridInputModel, 'onStart')).
 			on('Drag', bind(this._gridInputModel, 'onDrag')).
 			on('End', bind(this._gridInputModel, 'onEnd')).
@@ -100,6 +111,8 @@ exports = Class(Emitter, function (supr) {
 			on('Ready', bind(this, 'emit', 'Ready')).
 			on('SelectItem', bind(this, 'emit', 'SelectItem')).
 			on('UnselectItem', bind(this, 'emit', 'UnselectItem')).
+			on('InputStart', bind(this, 'emit', 'InputStart')).
+			on('InputSelect', bind(this, 'emit', 'InputSelect')).
 			on('InputStart', bind(gridInputView, 'onInputStart')).
 			on('InputMove', bind(gridInputView, 'onInputMove')).
 			on('InputSelect', bind(gridInputView, 'onInputSelect'));

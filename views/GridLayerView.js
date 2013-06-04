@@ -47,8 +47,8 @@ exports = Class(View, function (supr) {
 				ctor: ItemView,
 				initOpts: {
 					superview: this,
-					itemSettings: opts.itemSettings,
-					particleSettings: opts.particleSettings
+					itemSettings: opts.itemSettings || {},
+					particleSettings: opts.particleSettings || {}
 				}
 			});
 		}
@@ -59,7 +59,7 @@ exports = Class(View, function (supr) {
 				ctor: ParticleSystemView,
 				initOpts: {
 					superview: this,
-					particleSettings: opts.particleSettings,
+					particleSettings: opts.particleSettings || {},
 					particleSystemsCB: bind(this, function () { return this.particleSystems; }),
 					particleSystemSize: opts.particleSystemSize,
 					tileWidth: opts.tileWidth,

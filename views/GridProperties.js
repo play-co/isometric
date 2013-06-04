@@ -25,11 +25,20 @@ exports = Class(function () {
 		this._gridWidth = null;
 		this._gridHeight = null;
 
-		this._gridSettings = opts.gridSettings;
+		this._gridSettings = merge(
+			opts.gridSettings,
+			{
+				underDrawX: 2,
+				underDrawY: 2,
+				overDrawX: 2,
+				overDrawY: 3
+			}
+		);
+
 		this._tileWidth = this._gridSettings.tileWidth;
 		this._tileHeight = this._gridSettings.tileHeight;
-		this._itemSettings = opts.itemSettings;
-		this._particleSettings = opts.particleSettings;
+		this._itemSettings = opts.itemSettings || {};
+		this._particleSettings = opts.particleSettings || {};
 
 		this._deltaX = this._tileWidth * 0.5;
 		this._deltaY = this._tileHeight * 0.5;
@@ -40,16 +49,24 @@ exports = Class(function () {
 
 		this._sizes = {};
 		for (var i = 0; i < opts.tileSettings.length; i++) {
-			var tileSetting = opts.tileSettings[i];
+			var tileSetting = merge(
+					opts.tileSettings[i],
+					{
+						x: 0,
+						y: 0,
+						z: [0, 0]
+					}
+				);
+
 			this._sizes[tileSetting.group] = tileSetting;
 		}
 	};
 
 	this._buildViewProperties = function (data) {
-		this._underDrawX = data.underDrawX || 0;
-		this._underDrawY = data.underDrawY || 0;
-		this._overDrawX = data.overDrawX || 0;
-		this._overDrawY = data.overDrawY || 0;
+		this._underDrawX = data.underDrawX || 2;
+		this._underDrawY = data.underDrawY || 2;
+		this._overDrawX = data.overDrawX || 2;
+		this._overDrawY = data.overDrawY || 3;
 
 		this._grid = data.grid;
 		this._gridWidth = data.gridWidth;

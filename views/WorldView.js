@@ -39,9 +39,9 @@ exports = Class(View, function (supr) {
 		this._gridView = new GridView({
 			superview: this,
 			gridSettings: opts.gridSettings,
-			itemSettings: opts.itemSettings,
+			itemSettings: opts.itemSettings || {},
 			tileSettings: opts.tileSettings,
-			particleSettings: opts.particleSettings,
+			particleSettings: opts.particleSettings || {},
 			visible: false
 		});
 		this._gridView.

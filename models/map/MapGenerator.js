@@ -17,8 +17,6 @@
  */
 import event.Emitter as Emitter;
 
-import src.constants.gameConstants as gameConstants;
-
 exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
@@ -32,9 +30,14 @@ exports = Class(Emitter, function (supr) {
 		this._width = this._map.getWidth();
 		this._height = this._map.getHeight();
 
-		this._steps = this._initGeneratorSteps(this._settings.generatorSteps);
+		this._steps = this._initGeneratorSteps(this._settings.generatorSteps || []);
 
-		this.generate();
+		if (this._steps.length) {
+			this.generate();
+		} else {
+			this._map.clear();
+			this._map.zeroLayer(0, 1);			
+		}
 	};
 
 	this._initGeneratorSteps = function (generatorSteps) {
@@ -56,13 +59,18 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.generate = function () {
+		if (!this._steps.length) {
+			this._done = true;
+			return;
+		}
+
 		var map = this._map;
 		var total = this._height * this._width;
 
 		this._done = false;
 
 		map.clear();
-		map.zeroLayer(0, gameConstants.tileGroups.GROUND);
+		map.zeroLayer(0, 1);
 
 		// Progress:
 		this._totalCount = this._steps.reduce(
@@ -85,18 +93,18 @@ exports = Class(Emitter, function (supr) {
 		var step = this._steps[this._stepIndex];
 
 		this._repeatIndex = step.repeat;
-		this._layer = step.layer;
+		this._layer = step.layer || 0;
 		this._group = step.group;
 		this._index = step.index;
 		this._count = step.count;
 		this._accept = step.accept;
 		this._type = step.type;
 		this._chance = step.chance;
-		this._stepsPerFrame = step.stepsPerFrame;
+		this._stepsPerFrame = step.stepsPerFrame || 200;
 
 		switch (this._type) {
 			case 'rectangles':
-				this._startRectangles(step.width, step.height);
+				this._startRectangles(step.width || 3, step.height || 3);
 				break;
 
 			case 'fill':
@@ -139,7 +147,7 @@ exports = Class(Emitter, function (supr) {
 		if (this._count < 0) {
 			var step = this._steps[this._stepIndex];
 			this._count = step.count;
-			this._startRectangles(step.width, step.height);
+			this._startRectangles(step.width || 3, step.height || 3);
 		}
 
 		var rect = this._rect;

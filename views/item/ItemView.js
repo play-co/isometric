@@ -37,12 +37,12 @@ exports = Class(ImageView, function (supr) {
 			this._particleSystem = new ParticleSystem({
 				superview: this,
 				initCount: 10,
-				types: opts.particleSettings
+				types: opts.particleSettings || {}
 			});
 		}
 
 		this._itemSetting = {offsetX: 0, offsetY: 0};
-		this._itemSettings = opts.itemSettings;
+		this._itemSettings = opts.itemSettings || {};
 		this._images = null;
 		this._lastImageIndex = 0;
 		this._zIndex = 0;

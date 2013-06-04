@@ -56,7 +56,7 @@ exports = Class([View, GridProperties], function (supr) {
 		this._minScale = opts.minScale || 0.6;
 		this._maxScale = opts.maxScale || 2;
 
-		this._particleSettings = opts.particleSettings;
+		this._particleSettings = opts.particleSettings || {};
 		this._particleSystems = {};
 
 		this.style.scale = 1;

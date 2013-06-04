@@ -120,7 +120,7 @@ exports = Class(View, function (supr) {
 		}
 	};
 
-	this.onInputSelect = function () {
+	this.onInputSelect = this.onInputOut = function () {
 		this.emit('End');
 		this._dragPointCount = Math.max(this._dragPointCount - 1, 0);
 	};

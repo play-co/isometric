@@ -40,8 +40,8 @@ exports = Class(Emitter, function (supr) {
 		while (i) {
 			var staticModel = list[--i];
 			if ((staticModel !== exclude) && (staticModel.getGroup() === group)) {
-				var modelX = staticModel.getX();
-				var modelY = staticModel.getY();
+				var modelX = staticModel.getTileX();
+				var modelY = staticModel.getTileY();
 				var minX = min(x, modelX);
 				var maxX = max(x, modelX);
 				var minY = min(y, modelY);
@@ -116,7 +116,8 @@ exports = Class(Emitter, function (supr) {
 		var i = data.length;
 		while (i) {
 			item = data[--i];
-			map.putItem(item.modelType, item.tileX, item.tileY, item);
+			var model = map.putItem(item.modelType, item.tileX, item.tileY, item);
+			model && this._gridModel.emit('AddModel', model);
 		}
 	};
 });
