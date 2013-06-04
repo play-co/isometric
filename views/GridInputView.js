@@ -44,7 +44,6 @@ exports = Class(View, function (supr) {
 		this._downIndex = -1;
 
 		this._dragMode = true;
-		this._dragPointCount = 0;
 		this._dragPointFirst = null;
 		this._dragPoints = {};
 		this._dragPointIndex = [];
@@ -54,14 +53,23 @@ exports = Class(View, function (supr) {
 		this._lastScale = null;
 	};
 
+	this.getDragPointCount = function () {
+		var dragPointCount = 0;
+		for (var i in this._dragPoints) {
+			if (this._dragPoints[i]) {
+				dragPointCount++;
+			}
+		}
+		return dragPointCount;
+	};
+
 	this.onInputStart = function (evt) {
 		var index = 'p' + evt.id;
 		this.emit('SelectCancel');
 
 		this._dragPoints[index] = {x: evt.srcPoint.x, y: evt.srcPoint.y};
-		this._dragPointIndex[this._dragPointCount] = index;
 
-		if (this._dragPointCount === 0) {
+		if (this.getDragPointCount() === 1) {
 			this._dragPointFirst = index;
 
 			if (!this._dragMode) {
@@ -71,11 +79,10 @@ exports = Class(View, function (supr) {
 		}
 
 		this._dragInitialDistance = null;
-		this._dragPointCount++;
 	};
 
 	this.onInputMove = function (evt) {
-		if (this._dragPointCount === 0) {
+		if (this.getDragPointCount() === 0) {
 			return;
 		}
 
@@ -93,7 +100,7 @@ exports = Class(View, function (supr) {
 			this._dragPoints[index].y = point.y;
 		}
 
-		if (this._dragPointCount === 2) {
+		if (this.getDragPointCount() === 2) {
 			var p1 = this._dragPoints[this._dragPointIndex[0]];
 			var p2 = this._dragPoints[this._dragPointIndex[1]];
 			var dx = p2.x - p1.x;
@@ -120,14 +127,16 @@ exports = Class(View, function (supr) {
 		}
 	};
 
-	this.onInputSelect = this.onInputOut = function () {
+	this.onInputSelect = function (evt) {
+		var index = 'p' + evt.id;
+		this._dragPoints[index] = null;
 		this.emit('End');
-		this._dragPointCount = Math.max(this._dragPointCount - 1, 0);
 	};
 
-	this.onInputOut = function () {
+	this.onInputOut = function (evt) {
+		var index = 'p' + evt.id;
+		this._dragPoints[index] = null;
 		this.emit('End');
-		this._dragPointCount = Math.max(this._dragPointCount - 1, 0);
 	};
 
 	this.setDragMode = function (dragMode) {

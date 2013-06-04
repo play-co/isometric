@@ -173,9 +173,30 @@ exports = Class(Emitter, function (supr) {
 		return this._worldView.getGridInputView();
 	};
 
+	this.setTool = function (tool) {
+		var gridInputView = this._worldView.getGridInputView();
+		var gridView = this._worldView.getGridView();
+
+		if (tool) {
+			gridInputView.setDragMode(false);
+			gridInputView.style.visible = true;
+			gridView.getInput().blockEvents = true;
+			this._gridEditor.setTool(tool);
+		} else {
+			gridInputView.setDragMode(true);
+			gridInputView.style.visible = false;
+			gridView.getInput().blockEvents = false;
+		}
+	};
+
 	this.clear = function () {
 		this._gridModel.clear();
 		this._modelViewConnector.clear();
 		this._worldView.startLoading();
 	};
+
+	this.putItem = function (modelType, tileX, tileY, opts) {
+		var model = this._gridModel.getMap().putItem(modelType, tileX, tileY, opts);
+		model && this.onAddStaticModel(model);
+	}
 });

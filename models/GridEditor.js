@@ -130,6 +130,8 @@ exports = Class(Emitter, function (supr) {
 			if (count && (count.accept === false)) {
 				selection.accept = false;
 			}
+		} else {
+			selection.accept = true;
 		}
 	};
 
