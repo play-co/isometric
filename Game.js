@@ -173,6 +173,10 @@ exports = Class(Emitter, function (supr) {
 		return this._worldView.getGridInputView();
 	};
 
+	this.getMap = function () {
+		return this._gridModel.getMap();
+	};
+
 	this.setTool = function (tool) {
 		var gridInputView = this._worldView.getGridInputView();
 		var gridView = this._worldView.getGridView();
@@ -198,5 +202,21 @@ exports = Class(Emitter, function (supr) {
 	this.putItem = function (modelType, tileX, tileY, opts) {
 		var model = this._gridModel.getMap().putItem(modelType, tileX, tileY, opts);
 		model && this.onAddStaticModel(model);
-	}
+	};
+
+	this.putDynamicItem = function (ctor, opts) {
+		var model = new ctor(
+				merge(
+					opts,
+					{
+						gridModel: this._gridModel,
+						modelType: ctor.toString()
+					}
+				)
+			);
+
+		this.onAddDynamicModel(model);
+
+		return model;
+	};
 });
