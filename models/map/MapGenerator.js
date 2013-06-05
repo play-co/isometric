@@ -22,7 +22,7 @@ exports = Class(Emitter, function (supr) {
 		supr(this, 'init', arguments);
 
 		this._model = opts.model;
-		this._settings = opts.settings;
+		this._settings = opts.settings || {};
 
 		this._map = opts.map;
 		this._done = true;
