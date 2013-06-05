@@ -219,4 +219,8 @@ exports = Class(Emitter, function (supr) {
 
 		return model;
 	};
+
+	this.refreshMap = function (tileX, tileY) {
+		this._worldView.getGridView().onRefreshMap(tileX, tileY);
+	};
 });
