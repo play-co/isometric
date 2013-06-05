@@ -118,7 +118,7 @@ exports = Class(function () {
 		for (var y = 0; y < this._height; y++) {
 			var line = grid[y];
 			for (var x = 0; x < this._width; x++) {
-				this.setTile(line[x][layer], 0, group);
+				this.setTile(line[x][layer], group, 0);
 			}
 		}
 	};
@@ -139,7 +139,7 @@ exports = Class(function () {
 		return this._layers;
 	};
 
-	this.setTile = function (tile, index, group) {
+	this.setTile = function (tile, group, index) {
 		var randomIndex = -1;
 		if (this._randomTiles[group]) {
 			var chances = this._randomTiles[group][index];
@@ -200,7 +200,7 @@ exports = Class(function () {
 			}
 		}
 
-		this.setTile(tile, ri, rg);
+		this.setTile(tile, rg, ri);
 	};
 
 	/**
@@ -311,7 +311,7 @@ exports = Class(function () {
 		y = (y + mh) % height;
 
 		var tile = grid[y][x];
-		this.setTile(tile[layer], index, group);
+		this.setTile(tile[layer], group, index);
 		if (model && !tile.model) {
 			tile.model = model;
 		}

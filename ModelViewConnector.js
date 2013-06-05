@@ -64,7 +64,7 @@ exports = Class(Emitter, function (supr) {
 					var opts = model.getOpts();
 					var tileOnScreen = gridView.isTileVisible(opts.tileX, opts.tileY, opts.x, opts.y);
 
-					model.setOnScreen(tileOnScreen ? true : false);
+					model.setOnScreen(tileOnScreen);
 
 					if (tileOnScreen) {
 						if (!view) {

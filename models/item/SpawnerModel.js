@@ -164,6 +164,8 @@ exports = Class(StaticModel, function (supr) {
 			gridModel: this._gridModel,
 			tileX: path[0].x,
 			tileY: path[0].y,
+			x: 0.5,
+			y: 0.5,
 			startPath: this._clonePath(path),
 			conditions: this._conditions,
 			spawner: this
