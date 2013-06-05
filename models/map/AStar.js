@@ -22,6 +22,8 @@ exports = Class(function () {
         this._height = opts.map.getHeight();
         this._limit = this._width * this._height;
 
+        this._acceptLength = Math.min(this._width >> 1, this._height >> 1);
+
         this._grid = [];
         for (var y = 0; y < this._height; y++) {
             for (var x = 0; x < this._width; x++) {
@@ -45,11 +47,13 @@ exports = Class(function () {
         this._queue = [];
         this._currentSearch = null;
         this._currentPath = null;
+        this._rect = {x: 0, y: 0, w: 1, h: 1};
     };
 
     this._valid = function (x, y) {
-        var tile = this._map.getTile(x, y)[this._layer];
-        return this._group[tile.group] && (tile.index !== -1);
+        this._rect.x = x;
+        this._rect.y = y;
+        return this._map.acceptRect(this._rect, this._conditions);
     };
 
     this._tile = function (index) {
@@ -72,12 +76,7 @@ exports = Class(function () {
         this._open = [search.startY * this._width + search.startX];
         this._startX = search.startX;
         this._startY = search.startY;
-        this._layer = search.layer;
-        this._group = {};
-
-        for (var i = 0; i < search.group.length; i++) {
-            this._group[search.group[i]] = true;
-        }
+        this._conditions = search.conditions;
 
         this._t++;
     };
@@ -139,7 +138,7 @@ exports = Class(function () {
 
         var currentSearch = this._currentSearch;
 
-        for (i = 0; i < 20 && this._open.length; i++) {
+        for (i = 0; i < 100 && this._open.length; i++) {
             this._findPath();
         }
         if (!this._open.length) {
@@ -152,6 +151,10 @@ exports = Class(function () {
                     currentSearch.cb((this._currentPath.length < this._result.length) ? this._currentPath : this._result);
                 }
                 this._currentSearch = null;
+            } else if (this._result.length && (this._result.length < this._acceptLength)) {
+                // If we have a result without wrap and it has an acceptable length then quit searching...
+                currentSearch.cb(this._result);
+                this._currentSearch = null;
             } else {
                 currentSearch.wrap = true;
                 this._currentPath = this._result;
@@ -161,7 +164,7 @@ exports = Class(function () {
         }
     };
 
-    this.findPath = function (startX, startY, endX, endY, layer, group, cb) {
+    this.findPath = function (startX, startY, endX, endY, conditions, cb) {
         this._queue.push({
             startX: startX,
             startY: startY,
@@ -169,8 +172,7 @@ exports = Class(function () {
             endY: endY,
             cb: cb,
             wrap: false,
-            layer: layer,
-            group: group
+            conditions: conditions
         });
     };
 

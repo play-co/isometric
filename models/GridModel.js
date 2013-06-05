@@ -130,8 +130,8 @@ exports = Class(Emitter, function (supr) {
 		}
 	};
 
-	this.findPath = function (startX, startY, endX, endY, layer, group, cb) {
-		this._aStar.findPath(startX, startY, endX, endY, layer, group, cb);
+	this.findPath = function (startX, startY, endX, endY, conditions, cb) {
+		this._aStar.findPath(startX, startY, endX, endY, conditions, cb);
 	};
 
 	this.scrollLeft = function (speed) {

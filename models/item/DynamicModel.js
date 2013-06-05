@@ -59,6 +59,8 @@ exports = Class(Emitter, function (supr) {
 		this._needsSleep = false;
 		this._needsRemove = false;
 
+		this._conditions = opts.conditions;
+
 		this.updateOpts(opts);
 	};
 
@@ -116,7 +118,7 @@ exports = Class(Emitter, function (supr) {
 		this._reachedX = false;
 		this._reachedY = false;
 
-		this._gridModel.findPath(this._opts.tileX, this._opts.tileY, destTileX, destTileY, 1, 3, bind(this, 'onFindPath'));
+		this._gridModel.findPath(this._opts.tileX, this._opts.tileY, destTileX, destTileY, this._conditions, bind(this, 'onFindPath'));
 	};
 
 	this.onFindPath = function (path) {
