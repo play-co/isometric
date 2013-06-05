@@ -40,6 +40,11 @@ exports = Class(Emitter, function (supr) {
 		var map = this._gridModel.getMap();
 		var selected;
 
+		if (!('layer' in tool)) {
+			this._gridModel.emit('Edit', {rect: rect});
+			return;
+		}
+
 		switch (tool.type) {
 			case 'area':
 				if ((rect.w >= tool.minWidth) && (rect.h >= tool.minHeight)) {
@@ -111,6 +116,12 @@ exports = Class(Emitter, function (supr) {
 		}
 
 		var tool = this._tool;
+
+		if (!('layer' in tool)) {
+			selection.accept = true;
+			return;
+		}
+
 		var gridModel = this._gridModel;
 		var rect = gridModel.getRect(selection.startPoint, selection.endPoint);
 
@@ -153,8 +164,8 @@ exports = Class(Emitter, function (supr) {
 
 				case 'item':
 					gridModel.setSelectMode(GridModel.selectModes.FIXED);
-					gridModel.setFixedWidth(this._tool.width);
-					gridModel.setFixedHeight(this._tool.height);
+					gridModel.setFixedWidth(this._tool.width || 1);
+					gridModel.setFixedHeight(this._tool.height || 1);
 					break;
 
 				case 'point':
