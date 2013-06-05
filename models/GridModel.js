@@ -335,6 +335,10 @@ exports = Class(Emitter, function (supr) {
 		this.emit('Clear');
 	};
 
+	this.generate = function () {
+		this._mapGenerator.generate();
+	};
+
 	this.toJSON = function () {
 		var data = this._data;
 
@@ -355,6 +359,7 @@ exports = Class(Emitter, function (supr) {
 		this._mapGenerator.setDone(true);
 
 		this._data.map.fromJSON(data.map);
+
 		this._data.grid = this._data.map.getGrid();
 		this._data.gridX = data.grid.gridX;
 		this._data.gridY = data.grid.gridY;

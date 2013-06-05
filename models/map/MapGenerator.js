@@ -36,7 +36,7 @@ exports = Class(Emitter, function (supr) {
 			this.generate();
 		} else {
 			this._map.clear();
-			this._map.zeroLayer(0, 1);			
+			this._map.zeroLayer(0, 1);
 		}
 	};
 
@@ -60,6 +60,7 @@ exports = Class(Emitter, function (supr) {
 
 	this.generate = function () {
 		if (!this._steps.length) {
+			this._map.zeroLayer(0, 1);
 			this._done = true;
 			return;
 		}

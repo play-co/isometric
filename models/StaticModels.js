@@ -67,6 +67,7 @@ exports = Class(Emitter, function (supr) {
 	this.tick = function (dt) {
 		var list = this._list;
 		var i = list.length;
+
 		while (i) {
 			list[--i].tick(dt);
 		}
@@ -116,8 +117,7 @@ exports = Class(Emitter, function (supr) {
 		var i = data.length;
 		while (i) {
 			item = data[--i];
-			var model = map.putItem(item.modelType, item.tileX, item.tileY, item);
-			model && this._gridModel.emit('AddModel', model);
+			this._list.push(map.putItem(item.modelType, item.tileX, item.tileY, item));
 		}
 	};
 });

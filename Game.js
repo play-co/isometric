@@ -193,8 +193,9 @@ exports = Class(Emitter, function (supr) {
 		}
 	};
 
-	this.clear = function () {
+	this.clear = function (dontGenerate) {
 		this._gridModel.clear();
+		!dontGenerate && this._gridModel.generate();
 		this._modelViewConnector.clear();
 		this._worldView.startLoading();
 	};
@@ -222,5 +223,13 @@ exports = Class(Emitter, function (supr) {
 
 	this.refreshMap = function (tileX, tileY) {
 		this._worldView.getGridView().onRefreshMap(tileX, tileY);
+	};
+
+	this.toJSON = function () {
+		return this._gridModel.toJSON();
+	};
+
+	this.fromJSON = function (data) {
+		this._gridModel.fromJSON(data);
 	};
 });

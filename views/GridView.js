@@ -206,7 +206,11 @@ exports = Class([View, GridProperties], function (supr) {
 	};
 
 	this.onUpdate = function (data) {
-		this._needsBuild && this._buildView(data);
+		if (this._needsBuild) {
+			this._buildView(data);
+		} else if (this._grid === null) {
+			this._buildViewProperties(data);
+		}
 
 		if ((this._gridX !== data.gridX) || (this._gridY !== data.gridY)) {
 			this._populateTiles(data);
@@ -279,7 +283,7 @@ exports = Class([View, GridProperties], function (supr) {
 		return false;
 	};
 
-	this.onClear = function () {
+	this.onClear = function (data) {
 		var particleSystems = this._particleSystems;
 
 		for (var index in particleSystems) {
@@ -293,7 +297,9 @@ exports = Class([View, GridProperties], function (supr) {
 			layer.viewPool && layer.viewPool.releaseAllViews();
 		}
 
+		this._tilesOnScreen = {};
 		this._gridX = null;
+		this._grid = null;
 	};
 
 	this.onRefreshMap = function (tileX, tileY) {

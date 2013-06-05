@@ -279,6 +279,7 @@ exports = Class(function () {
 					tool.modelOpts || {}
 				)
 			);
+
 			model = new tool.model(opts).on('Refresh', bind(this._itemOwner, 'emit', 'RefreshMap'));
 
 			group = model.getGroup();
@@ -293,6 +294,7 @@ exports = Class(function () {
 				this.drawTile(tool.layer, tileX + i, tileY + j, modelIndex, 0, false);
 			}
 		}
+
 		this.drawTile(tool.layer, tileX, tileY + tool.height - 1, group, index, model);
 
 		return model;
