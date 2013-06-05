@@ -35,7 +35,7 @@ exports = Class(function () {
 			grid.push(line);
 		}
 
-		this._mapSettings = opts.mapSettings;
+		this._mapSettings = opts.mapSettings || {};
 		this._editorSettings = opts.editorSettings || {};
 		this._initRules();
 
@@ -534,6 +534,32 @@ exports = Class(function () {
 		return this._ruleResult[group + '_' + index];
 	};
 
+	this.hasGroup = function (layer, x, y, w, h, groups, validator) {
+		var width = this._width;
+		var height = this._height;
+		var grid = this._grid;
+
+		var g = {};
+		groups.map(function (a) { g[a] = true; }, {});
+
+		for (var i = 0; i < w; i++) {
+			var gridX = (x + i + width) % width;
+
+			for (var j = 0; j < h; j++) {
+				var gridY = (y + j + height) % height;
+				var tile = grid[gridY][gridX];
+
+				if (tile[layer].group in g) {
+					return true;
+				} else if (validator && validator(this, gridX, gridY, w, h)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	};
+
 	this.acceptRect = function (rect, conditions) {
 		if (!conditions) {
 			return false;
@@ -554,6 +580,7 @@ exports = Class(function () {
 					break;
 			}
 		}
+
 		return result;
 	};
 
@@ -582,6 +609,12 @@ exports = Class(function () {
 							}
 						}
 						break;
+
+					case 'group':
+						if (this.hasGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator)) {
+							result = true;
+						}
+					break;
 				}
 			}
 		}
