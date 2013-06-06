@@ -37,6 +37,7 @@ exports = Class(View, function (supr) {
 				y: 0,
 				width: maxCountX * opts.tileWidth,
 				height: maxCountY * opts.tileHeight,
+				blockEvents: true
 			}
 		);
 		supr(this, 'init', [opts]);
@@ -97,16 +98,6 @@ exports = Class(View, function (supr) {
 				view.startZ = (y * maxCountX + x) * 100;
 				view.left = offsetX + x * opts.tileWidth;
 				view.bottom = y * opts.tileHeight * 0.5 + opts.tileHeight;
-
-				if (!opts.blockEvents) {
-					(bind(this, function (x, y, view) {
-						view.gridTile = null;
-						view.onInputStart = bind(this, function (evt) {
-							evt.cancel();
-							view.gridTile.model && this._superview.onSelectItem(view, view.gridTile);
-						});
-					}))(x, y, view);
-				}
 			}
 		}
 	};
