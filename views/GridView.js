@@ -86,6 +86,11 @@ exports = Class([View, GridProperties], function (supr) {
 			itemOnScreen.y2 = itemOnScreen.y1 + clickRect.height;
 			itemOnScreen.model = model;
 
+			if (this._selectedRect && (this._selectedRect.view === tileView)) {
+				this._selectedRect = itemOnScreen;
+				this._selectedItem.setRect(itemOnScreen);
+			}
+
 			this._itemsOnScreenCount++;
 		}
 	};
@@ -190,6 +195,7 @@ exports = Class([View, GridProperties], function (supr) {
 
 		this._selection = new GridSelection({superview: this._layers[0], gridView: this});
 		this._selectedItem = new SelectedItemView({superview: this._layers[this._layers.length - 1]});
+		this._selectedRect = null;
 
 		console.log('Tiles per view:', this._maxCountY * this._maxCountX);
 
@@ -238,11 +244,13 @@ exports = Class([View, GridProperties], function (supr) {
 		}
 
 		if (found) {
+			this._selectedRect = found;
 			this._selectedItem.setRect(found);
 			this._selectedItem.style.zIndex = found.view.style.zIndex - 1;
 			this.emit('SelectItem', found.model);
 		} else if (this._selectedItem.style.visible) {
 			this.emit('UnselectItem');
+			this._selectedRect = null;
 			this._selectedItem.style.visible = false;
 		}
 	};
@@ -362,8 +370,7 @@ exports = Class([View, GridProperties], function (supr) {
 					if (tile.index === -1) {
 						tileView.visible = false;
 					} else {
-						this._updateTile(tileView, tile);
-						//tileGroups.setImage(tileView, tile);
+						this._updateTile(tileView, tile, gridTile.model);
 						tileView.visible = true;
 					}
 				}
