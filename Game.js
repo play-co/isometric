@@ -146,7 +146,6 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.onAddDynamicModel = function (model) {
-		console.log('add:', model);
 		this._modelViewConnector.registerModel(model, 1);
 	};
 
