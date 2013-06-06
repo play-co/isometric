@@ -178,7 +178,7 @@ exports = Class(function () {
 		return this._grid[y][x];
 	};
 
-	this.orTile = function (tile, group, index, validate) {
+	this.orTile = function (tile, group, index) {
 		// Source group:
 		var ag = tile.group;
 		var ai = tile.index;
@@ -419,7 +419,7 @@ exports = Class(function () {
 				var tile = grid[gridY][gridX];
 
 				if ((tile[layer].index !== -1) &&
-					(!validator || (validator && !validator(this, gridX, gridY, w, h, this._isCap(i, j, w, h))))) {
+					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h, this._isCap(i, j, w, h))))) {
 					return false;
 				}
 			}
@@ -441,7 +441,7 @@ exports = Class(function () {
 				var tile = grid[gridY][gridX];
 
 				if ((tile[layer].index > 0) &&
-					(!validator || (validator && !validator(this, gridX, gridY, w, h, this._isCap(i, j, w, h))))) {
+					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h, this._isCap(i, j, w, h))))) {
 					return false;
 				}
 			}
@@ -466,7 +466,7 @@ exports = Class(function () {
 				var tile = grid[gridY][gridX];
 
 				if (!(tile[layer].group in g) &&
-					(!validator || (validator && !validator(this, gridX, gridY, w, h, this._isCap(i, j, w, h))))) {
+					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h, this._isCap(i, j, w, h))))) {
 					return false;
 				}
 			}
@@ -498,7 +498,7 @@ exports = Class(function () {
 						break;
 					}
 				}
-				if (!found && (!validator || (validator && !validator(this, gridX, gridY, w, h)))) {
+				if (!found && (!validator || (validator && !validator(this, gridX, gridY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -523,7 +523,7 @@ exports = Class(function () {
 				var tile = grid[gridY][gridX];
 
 				if ((tile[layer].index !== -1) && !(tile[layer].group in g) && 
-					(!validator || (validator && !validator(this, gridX, gridY, w, h)))) {
+					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -553,7 +553,7 @@ exports = Class(function () {
 
 				if (tile[layer].group in g) {
 					return true;
-				} else if (validator && validator(this, gridX, gridY, w, h)) {
+				} else if (validator && validator(this, gridX, gridY, x, y, w, h)) {
 					return true;
 				}
 			}
