@@ -270,6 +270,11 @@ exports = Class([View, GridProperties], function (supr) {
 		var offsetY = -this._tileHeight * this._underDrawY + data.offsetY;
 
 		if ((this._offsetX !== offsetX) || (this._offsetY !== offsetY)) {
+			if (this._selectedRect) {
+				this._selectedRect = null;
+				this._selectedItem.style.visible = false;
+			}
+
 			var i = this._layers.length;
 
 			while (i) {
@@ -473,5 +478,6 @@ exports = Class([View, GridProperties], function (supr) {
 
 	this.hideSelectedItem = function () {
 		this._selectedItem.style.visible = false;
+		this._selectedRect = null;
 	};
 });
