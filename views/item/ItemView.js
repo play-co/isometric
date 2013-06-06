@@ -88,10 +88,15 @@ exports = Class(ImageView, function (supr) {
 		var particles = opts.particles;
 		if (particles) {
 			var i = particles.length;
-			while (i) {
-				var particle = particles[--i];
-				particleSystem.activateType(particle.type);
-				particleSystem.addParticles({x: particle.x || 0, y: particle.y || 0});
+			if (i) {
+				if (particles[0].clear) {
+					particleSystem.clear();
+				}
+				while (i) {
+					var particle = particles[--i];
+					particleSystem.activateType(particle.type);
+					particleSystem.addParticles({x: particle.x || 0, y: particle.y || 0});
+				}
 			}
 		}
 
