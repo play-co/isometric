@@ -42,7 +42,7 @@ exports = Class(function () {
 			}
 
 			if (this._images[index]) {
-				this._images[index].blockEvents = !!image.blockEvents;
+				this._images[index].selectable = !!image.selectable;
 				this._images[index].flipX = !!image.flipX;
 				this._images[index].flipY = !!image.flipY;
 			}
@@ -52,21 +52,41 @@ exports = Class(function () {
 	};
 
 	this.setImage = function (tileView, tile) {
+		var result = false;
 		var image = this._images[tile.index];
+
 		if (image) {
 			if (isArray(image)) {
 				if (image[tile.randomIndex]) {
-					tileView.setImage(image[tile.randomIndex]);
+					image = image[tile.randomIndex];
+					tileView.setImage(image);
 				}
 			} else {
 				tileView.setImage(image);
 			}
+
 			tileView.style.flipX = image.flipX;
 			tileView.style.flipY = image.flipY;
-			tileView.__input.blockEvents = image.blockEvents;
+			if (image.selectable) {
+				if (!image.clickRect) {
+					var map = image.getMap();
+					var scaleX = tileView.style.width / (map.marginLeft + map.width + map.marginRight);
+					var scaleY = tileView.style.height / (map.marginTop + map.height + map.marginBottom);
+
+					image.clickRect = {
+						x: map.marginLeft * scaleX,
+						y: map.marginTop * scaleY,
+						width: map.width * scaleX,
+						height: map.height * scaleY
+					};
+				}
+				result = image.clickRect;
+			}
 		} else {
 			tileView.style.visible = false;			
 		}
+
+		return result;
 	};
 
 	this.getImage = function (tile) {

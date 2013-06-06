@@ -16,21 +16,28 @@
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
 import ui.View as View;
+import ui.ImageView as ImageView;
 
 exports = Class(View, function (supr) {
 	this.init = function (opts) {
-		supr(this, 'init', arguments);
+		opts.blockEvents = true;
+
+		supr(this, 'init', [opts]);
+
+		this._view = null;
+		this._padding = 15;
 
 		this.style.visible = false;
 	};
 
-	this.setView = function (view, offsetX, offsetY) {
+	this.setRect = function (rect) {
 		var style = this.style;
 
-		style.x = offsetX + view.style.x - 10;
-		style.y = offsetY + view.style.y - 10;
-		style.width = view.style.width + 20;
-		style.height = view.style.height + 20;
+		this.style.x = rect.x - this._padding;
+		this.style.y = rect.y - this._padding;
+		this.style.width = rect.width + this._padding * 2;
+		this.style.height = rect.height + this._padding * 2;
+
 		style.visible = true;
 	};
 
@@ -39,6 +46,9 @@ exports = Class(View, function (supr) {
 		var width = style.width;
 		var height = style.height;
 		var lineWidth = 5;
+
+		ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+		ctx.fillRect(1, 1, width - 2, height - 2);
 
 		ctx.fillStyle = '#404040';
 		ctx.fillRect(0, 0, width, lineWidth);

@@ -44,7 +44,7 @@ exports = Class(function () {
 	this.setImage = function (tileView, tile) {
 		var group = this._groups[tile.group];
 		if (group) {
-			group.setImage(tileView, tile);
+			return group.setImage(tileView, tile);
 		}
 		return false;
 	};
