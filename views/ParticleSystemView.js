@@ -51,6 +51,7 @@ exports = Class(View, function (supr) {
 	};
 
 	this.release = function () {
+		this._particleSystem.clear();
 		this._particleSystemsCB().releaseView(this);
 	};
 

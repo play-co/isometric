@@ -431,9 +431,8 @@ exports = Class([View, GridProperties], function (supr) {
 		if (tileOnScreen && (tileOnScreen.currentPopulation === this._currentPopulation)) {
 			var particleSystem = tileOnScreen.particleSystem;
 			if (particleSystem) {
-				tileOnScreen.particleSystem.release();
+				particleSystem.release();
 				tileOnScreen.particleSystem = false;
-				delete particleSystems[index];
 			}
 		}
 	};
@@ -491,6 +490,10 @@ exports = Class([View, GridProperties], function (supr) {
 
 		var dir = (this.style.scale > scale) ? -0.5 : 0.5;
 		this.emit('ChangeOffset', (endWidth - startWidth) * dir, (endHeight - startHeight) * dir);
+	};
+
+	this.setBackgroundColor = function (backgroundColor) {
+		this.style.backgroundColor = backgroundColor;
 	};
 
 	this.hideSelectedItem = function () {
