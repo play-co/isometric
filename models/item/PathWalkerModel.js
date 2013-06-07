@@ -42,8 +42,10 @@ exports = Class(DynamicModel, function (supr) {
 	this._tileValid = function (tileX, tileY) {
 		this._rect.x = tileX;
 		this._rect.y = tileY;
-
-		return this._map.acceptRect(this._rect, this._conditions);
+var a = this._map.acceptRect(this._rect, this._conditions);
+//console.log(this._map.getTile(tileX, tileY)[1].group, a);
+//console.log(this._conditions, this._rect, a);
+		return a;
 	};
 
 	this._findPath = function () {
@@ -80,7 +82,6 @@ exports = Class(DynamicModel, function (supr) {
 					option.directionTest = directionTest;
 					if (this._tileValid(x + option.x, y + option.y)) {
 						if (denyDirection && (denyDirection.x === option.x) && (denyDirection.y === option.y)) {
-
 						} else {
 							direction = option;
 						}
@@ -94,12 +95,7 @@ exports = Class(DynamicModel, function (supr) {
 
 			if (this._tileValid(x + direction.x, y + direction.y)) {
 				var tile = map.getTile(x + direction.x, y + direction.y)[1];
-				if ((tile.index === 10) || (tile.index === 24) || (tile.index === 48) || (tile.index === 144)) {
-					if (!((startX === x) && (startY === y))) {
-						addPoint();
-						break;
-					}
-				} else if (!((tile.index === 56) || (tile.index === 146))) {
+				if (!((tile.index === 56) || (tile.index === 146))) {
 					addPoint();
 					denyDirection = {x: direction.x ? -direction.x : 0, y: direction.y ? -direction.y : 0};
 					direction = null;
