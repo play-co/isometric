@@ -30,9 +30,6 @@ import .GridSelection;
 import .GridLayerView;
 import .GridProperties;
 
-var cursorYes = new Image({url: 'resources/images/cursorYes.png'});
-var cursorNo = new Image({url: 'resources/images/cursorNo.png'});
-
 exports = Class([View, GridProperties], function (supr) {
 	this.init = function (opts) {
 		opts = merge(
@@ -193,7 +190,12 @@ exports = Class([View, GridProperties], function (supr) {
 			this._layers.push(new GridLayerView(opts));
 		}
 
-		this._selection = new GridSelection({superview: this._layers[0], gridView: this});
+		this._selection = new GridSelection({
+			superview: this._layers[0],
+			gridView: this,
+			cursorYes: this._opts.tileSettings.cursorYes,
+			cursorNo: this._opts.tileSettings.cursorNo
+		});
 		this._selectedItem = new SelectedItemView({superview: this._layers[this._layers.length - 1]});
 		this._selectedRect = null;
 

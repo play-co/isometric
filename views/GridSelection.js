@@ -21,9 +21,6 @@ import ui.resource.Image as Image;
 
 import .ViewPool;
 
-var cursorYes = new Image({url: 'resources/images/cursorYes.png'});
-var cursorNo = new Image({url: 'resources/images/cursorNo.png'});
-
 exports = Class(ViewPool, function (supr) {
 	this.init = function (opts) {
 		opts = merge(
@@ -33,13 +30,15 @@ exports = Class(ViewPool, function (supr) {
 				ctor: ImageView,
 				tag: 'Selection',
 				initOpts: {
-					superview: opts.superview,
-					image: cursorYes
+					superview: opts.superview
 				}
 			}
 		);
 
 		supr(this, 'init', [opts]);
+
+		this._cursorYes = new Image({url: opts.cursorYes});
+		this._cursorNo = new Image({url: opts.cursorNo});
 
 		this._gridView = opts.gridView;
 		this._tileWidth = this._gridView.getTileWidth();
@@ -67,7 +66,7 @@ exports = Class(ViewPool, function (supr) {
 
 		var views = this._views;
 		var count = 0;
-		var image = data.selection.accept ? cursorYes : cursorNo;
+		var image = data.selection.accept ? this._cursorYes : this._cursorNo;
 		for (y = minY; y <= maxY; y++) {
 			for (x = minX; x <= maxX; x++) {
 				var point = this._gridView.gridToPoint(data, {x: x, y: y});
