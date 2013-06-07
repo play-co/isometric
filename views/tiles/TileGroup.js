@@ -22,7 +22,7 @@ exports = Class(function () {
 		this._images = {};
 
 		var prefix = opts.prefix;
-		var images = opts.images;
+		var images = opts.images || [];
 
 		for (var i = 0; i < images.length; i++) {
 			var image = images[i];

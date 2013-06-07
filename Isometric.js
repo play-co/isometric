@@ -83,6 +83,7 @@ exports = Class(Emitter, function (supr) {
 			on('RefreshMap', bind(gridView, 'onRefreshMap')).
 			on('AddModel', bind(this, 'onAddStaticModel')).
 			on('AddParticles', bind(gridView, 'onAddParticles')).
+			on('ClearParticles', bind(gridView, 'onClearParticles')).
 			on('Clear', bind(gridView, 'onClear')).
 			on('Edit', bind(this, 'emit', 'Edit')).
 			on('SelectionChange', bind(this._gridEditor, 'onSelectionChange')).

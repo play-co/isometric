@@ -321,6 +321,10 @@ exports = Class(Emitter, function (supr) {
 		return result.success;
 	};
 
+	this.clearParticles = function (tileX, tileY) {
+		this.emit('ClearParticles', tileX, tileY);
+	};
+
 	this.clear = function () {
 		this._data.map.clear();
 		this._staticModels.clear();

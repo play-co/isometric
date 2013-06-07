@@ -37,8 +37,16 @@ exports = Class(ViewPool, function (supr) {
 
 		supr(this, 'init', [opts]);
 
-		this._cursorYes = new Image({url: opts.cursorYes});
-		this._cursorNo = new Image({url: opts.cursorNo});
+		var tileSettings = opts.tileSettings;
+		var i = tileSettings.length;
+		while (i) {
+			var tileSetting = tileSettings[--i];
+			if (tileSetting.cursorYes && tileSetting.cursorNo) {
+				this._cursorYes = new Image({url: tileSetting.cursorYes});
+				this._cursorNo = new Image({url: tileSetting.cursorNo});
+				break;
+			}
+		}
 
 		this._gridView = opts.gridView;
 		this._tileWidth = this._gridView.getTileWidth();

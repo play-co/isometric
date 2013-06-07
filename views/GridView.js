@@ -193,8 +193,7 @@ exports = Class([View, GridProperties], function (supr) {
 		this._selection = new GridSelection({
 			superview: this._layers[0],
 			gridView: this,
-			cursorYes: this._opts.tileSettings.cursorYes,
-			cursorNo: this._opts.tileSettings.cursorNo
+			tileSettings: this._opts.tileSettings
 		});
 		this._selectedItem = new SelectedItemView({superview: this._layers[this._layers.length - 1]});
 		this._selectedRect = null;
@@ -417,8 +416,24 @@ exports = Class([View, GridProperties], function (supr) {
 
 				particleSystem.addParticle(type, x, y);
 			} else if (tileOnScreen.particleSystem) {
+				delete particleSystems[index];
 				tileOnScreen.particleSystem.release();
 				tileOnScreen.particleSystem = false;
+			}
+		}
+	};
+
+	this.onClearParticles = function (tileX, tileY) {
+		var index = tileX + '_' + tileY;
+		var tileOnScreen = this._tilesOnScreen[index];
+		var particleSystems = this._particleSystems;
+
+		if (tileOnScreen && (tileOnScreen.currentPopulation === this._currentPopulation)) {
+			var particleSystem = tileOnScreen.particleSystem;
+			if (particleSystem) {
+				tileOnScreen.particleSystem.release();
+				tileOnScreen.particleSystem = false;
+				delete particleSystems[index];
 			}
 		}
 	};
