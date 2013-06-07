@@ -190,6 +190,9 @@ exports = Class(Emitter, function (supr) {
 		if (selection) {
 			selection.startPoint = startPoint;
 			selection.endPoint = endPoint;
+		} else if (!startPoint || !endPoint) {
+			data.selection = null;
+			return;
 		} else {
 			selection = {
 				startPoint: startPoint,
