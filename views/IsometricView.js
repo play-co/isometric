@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
+import device;
+
 import ui.View as View;
 import ui.TextView as TextView;
 
@@ -30,39 +32,30 @@ exports = Class(View, function (supr) {
 			{
 				x: 0,
 				y: 0,
-				width: GC.app.baseWidth,
-				height: GC.app.baseHeight
+				width: ('baseWidth' in GC.app) ? GC.app.baseWidth : device.width,
+				height: ('baseHeight' in GC.app) ? GC.app.baseHeight : device.height,
 			}
 		);
-		supr(this, 'init', arguments);
+		supr(this, 'init', [opts]);
 
-		this._gridView = new GridView({
-			superview: this,
-			gridSettings: opts.gridSettings,
-			itemSettings: opts.itemSettings || {},
-			tileSettings: opts.tileSettings,
-			particleSettings: opts.particleSettings || {},
-			visible: false
-		});
-		this._gridView.
+		var childOpts = {
+				superview: this,
+				x: 0,
+				y: 0,
+				width: this.style.width,
+				height: this.style.height,
+				gridSettings: opts.gridSettings,
+				itemSettings: opts.itemSettings || {},
+				tileSettings: opts.tileSettings,
+				particleSettings: opts.particleSettings || {},
+			};
+
+		this._gridView = new GridView(childOpts).
 			on('Populated', bind(this, 'onPopulated')).
 			on('ChangeOffset', bind(this, 'emit', 'ChangeOffset'));
 
-		this._loadingView = new TextView({
-			superview: this,
-			x: 0,
-			y: 0,
-			width: GC.app.baseWidth,
-			height: GC.app.baseHeight,
-			backgroundColor: '#000066',
-			text: 'Building world',
-			color: '#FFFFFF',
-			size: 36
-		});
-		this._gridInputView = new GridInputView({
-			superview: this,
-			gridView: this._gridView
-		});
+		this._loadingView = new TextView(merge(childOpts, {backgroundColor: '#000066', text: 'Building world', color: '#FFFFFF', size: 36}));
+		this._gridInputView = new GridInputView(merge(childOpts, {gridView: this._gridView}));
 	};
 
 	this.getGridView = function () {
@@ -79,6 +72,7 @@ exports = Class(View, function (supr) {
 
 	this.onPopulated = function () {
 		this._gridView.style.visible = true;
+		this._gridInputView.style.backgroundColor = false;
 		this._loadingView.style.visible = false;
 	};
 

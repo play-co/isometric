@@ -22,7 +22,7 @@ import .models.GridInputModel as GridInputModel;
 import .models.GridEditor as GridEditor;
 import .models.item.DynamicModel as DynamicModel;
 
-import .views.WorldView as WorldView;
+import .views.IsometricView as IsometricView;
 
 import .ModelViewConnector;
 
@@ -55,12 +55,12 @@ exports = Class(Emitter, function (supr) {
 		);
 
 		// Create views...
-		this._worldView = new WorldView(opts);
-		this._worldView.
+		this._isometricView = new IsometricView(opts);
+		this._isometricView.
 			on('ChangeOffset', bind(this, 'onChangeOffset'));
 
-		var gridView = this._worldView.getGridView();
-		var gridInputView = this._worldView.getGridInputView();
+		var gridView = this._isometricView.getGridView();
+		var gridInputView = this._isometricView.getGridInputView();
 
 		// Create models...
 		this._gridModel = new GridModel({
@@ -86,6 +86,7 @@ exports = Class(Emitter, function (supr) {
 			on('ClearParticles', bind(gridView, 'onClearParticles')).
 			on('Clear', bind(gridView, 'onClear')).
 			on('Edit', bind(this, 'emit', 'Edit')).
+			on('Scrolled', bind(this, 'emit', 'Scrolled')).
 			on('SelectionChange', bind(this._gridEditor, 'onSelectionChange')).
 			on('Selection', bind(this._gridEditor, 'onSelectionApply')).
 			on('Progress', bind(this, 'onProgress')).
@@ -109,14 +110,7 @@ exports = Class(Emitter, function (supr) {
 			on('End', bind(this, 'emit', 'SelectionEnd'));
 
 		gridView.
-			on('Ready', bind(this, 'emit', 'Ready')).
-			on('SelectItem', bind(this, 'emit', 'SelectItem')).
-			on('UnselectItem', bind(this, 'emit', 'UnselectItem')).
-			on('InputStart', bind(this, 'emit', 'InputStart')).
-			on('InputSelect', bind(this, 'emit', 'InputSelect')).
-			on('InputStart', bind(gridInputView, 'onInputStart')).
-			on('InputMove', bind(gridInputView, 'onInputMove')).
-			on('InputSelect', bind(gridInputView, 'onInputSelect'));
+			on('Ready', bind(this, 'emit', 'Ready'));
 
 		this._modelViewConnector = new ModelViewConnector({
 			gridView: gridView
@@ -129,7 +123,7 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.onProgress = function (progress) {
-		this._worldView.setProgress((100 * progress) | 0);
+		this._isometricView.setProgress((100 * progress) | 0);
 	};
 
 	this.onChangeOffset = function (offsetX, offsetY) {
@@ -167,11 +161,11 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.getGridView = function () {
-		return this._worldView.getGridView();
+		return this._isometricView.getGridView();
 	};
 
 	this.getGridInputView = function () {
-		return this._worldView.getGridInputView();
+		return this._isometricView.getGridInputView();
 	};
 
 	this.getMap = function () {
@@ -179,26 +173,15 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.setTool = function (tool) {
-		var gridInputView = this._worldView.getGridInputView();
-		var gridView = this._worldView.getGridView();
-
-		if (tool) {
-			gridInputView.setDragMode(false);
-			gridInputView.style.visible = true;
-			gridView.getInput().blockEvents = true;
-			this._gridEditor.setTool(tool);
-		} else {
-			gridInputView.setDragMode(true);
-			gridInputView.style.visible = false;
-			gridView.getInput().blockEvents = false;
-		}
+		this._isometricView.getGridInputView().setDragMode(!tool);
+		tool && this._gridEditor.setTool(tool);
 	};
 
 	this.clear = function (dontGenerate) {
 		this._gridModel.clear();
 		!dontGenerate && this._gridModel.generate();
 		this._modelViewConnector.clear();
-		this._worldView.startLoading();
+		this._isometricView.startLoading();
 	};
 
 	this.putItem = function (modelType, tileX, tileY, opts) {
@@ -223,7 +206,7 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.refreshMap = function (tileX, tileY) {
-		this._worldView.getGridView().onRefreshMap(tileX, tileY);
+		this._isometricView.getGridView().onRefreshMap(tileX, tileY);
 	};
 
 	this.toJSON = function () {

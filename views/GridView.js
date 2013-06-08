@@ -16,14 +16,10 @@
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
 import ui.View as View;
-import ui.TextView as TextView;
-import ui.ImageView as ImageView;
-import ui.resource.Image as Image;
 
 import .tiles.TileGroups as TileGroups;
 
 import .ViewPool;
-
 import .SelectedItemView;
 
 import .GridSelection;
@@ -32,64 +28,37 @@ import .GridProperties;
 
 exports = Class([View, GridProperties], function (supr) {
 	this.init = function (opts) {
-		opts = merge(
-			opts,
-			{
-				x: 0,
-				y: 0,
-				width: GC.app.baseWidth,
-				height: GC.app.baseHeight
-			}
-		);
-
-		supr(this, 'init', [opts]);
+		supr(this, 'init', [merge(opts, {blockEvents: true})]);
 
 		this.initProperties(opts);
+
+		this._gridInputView = false;
 
 		this._tileViews = [];
 		this._tilesOnScreen = {};
 		this._currentPopulation = 0;
 
-		this._itemsOnScreen = [];
-		this._itemsOnScreenCount = 0;
-
-		this._minScale = opts.minScale || 0.6;
-		this._maxScale = opts.maxScale || 2;
-
 		this._particleSettings = opts.particleSettings || {};
 		this._particleSystems = {};
 
+		this._background = new View({
+			superview: this,
+			x: 0,
+			y: 0,
+			width: this.style.width * this._maxScale,
+			height: this.style.height * this._maxScale,
+			backgroundColor: 'rgb(0, 120, 255)'
+		});
+
+		this._selectedItem = new SelectedItemView({});
+
+		this.style.visible = true;
 		this.style.scale = 1;
-		this.style.backgroundColor = 'rgb(0, 120, 255)';
 	};
 
 	this._updateTile = function (tileView, tile, model) {
 		var clickRect = this._tileGroups.setImage(tileView, tile);
-		if (model && clickRect) {
-			var itemOnScreen = this._itemsOnScreen[this._itemsOnScreenCount];
-			if (!itemOnScreen) {
-				itemOnScreen = {};
-				this._itemsOnScreen[this._itemsOnScreenCount] = itemOnScreen;
-			}
-
-			itemOnScreen.view = tileView;
-			itemOnScreen.x = tileView.style.x + clickRect.x;
-			itemOnScreen.y = tileView.style.y + clickRect.y;
-			itemOnScreen.width = clickRect.width;
-			itemOnScreen.height = clickRect.height;
-			itemOnScreen.x1 = tileView.style.x + clickRect.x;
-			itemOnScreen.y1 = tileView.style.y + clickRect.y;
-			itemOnScreen.x2 = itemOnScreen.x1 + clickRect.width;
-			itemOnScreen.y2 = itemOnScreen.y1 + clickRect.height;
-			itemOnScreen.model = model;
-
-			if (this._selectedRect && (this._selectedRect.view === tileView)) {
-				this._selectedRect = itemOnScreen;
-				this._selectedItem.setRect(itemOnScreen);
-			}
-
-			this._itemsOnScreenCount++;
-		}
+		model && clickRect && this._gridInputView && this._gridInputView.addRect(model, tileView, clickRect);
 	};
 
 	this._populateTiles = function (data) {
@@ -108,7 +77,7 @@ exports = Class([View, GridProperties], function (supr) {
 		var currentPopulation = ++this._currentPopulation;
 		var tileGroups = this._tileGroups;
 
-		this._itemsOnScreenCount = 0;
+		this._gridInputView && this._gridInputView.resetRects();
 
 		for (var y = 0; y < countY; y++) {
 			var a = ~~(y * 0.5);
@@ -195,8 +164,7 @@ exports = Class([View, GridProperties], function (supr) {
 			gridView: this,
 			tileSettings: this._opts.tileSettings
 		});
-		this._selectedItem = new SelectedItemView({superview: this._layers[this._layers.length - 1]});
-		this._selectedRect = null;
+		this._layers[this._layers.length - 1].addSubview(this._selectedItem);
 
 		console.log('Tiles per view:', this._maxCountY * this._maxCountX);
 
@@ -229,31 +197,33 @@ exports = Class([View, GridProperties], function (supr) {
 		return false;
 	};
 
-	this.onInputStart = function (evt) {
-		var found = false;
-		var scale = GC.app.scale;
-		var mouseX = evt.srcPoint.x / scale - this._offsetX;
-		var mouseY = evt.srcPoint.y / scale - this._offsetY;
-		var itemsOnScreen = this._itemsOnScreen;
-		var i = this._itemsOnScreenCount;
+	this.tick = function (dt) {
+		var layers = this._layers;
+		var i = layers ? layers.length : 0;
 		while (i) {
-			var rect = itemsOnScreen[--i];
-			if ((mouseX > rect.x1) && (mouseY > rect.y1) && (mouseX < rect.x2) && (mouseY < rect.y2)) {
-				found = rect;
-				break;
+			var layer = layers[--i];
+			var particleSystems = layer.particleSystems;
+			if (particleSystems) {
+				var j = particleSystems.getLength();
+				var views = particleSystems.getViews();
+				while (j) {
+					views[--j].update(dt);
+				}
 			}
 		}
+	};
 
-		if (found) {
-			this._selectedRect = found;
-			this._selectedItem.setRect(found);
-			this._selectedItem.style.zIndex = found.view.style.zIndex - 1;
-			this.emit('SelectItem', found.model);
-		} else if (this._selectedItem.style.visible) {
-			this.emit('UnselectItem');
-			this._selectedRect = null;
-			this._selectedItem.style.visible = false;
+	this.isTileVisible = function (tileX, tileY, x, y) {
+		var tileOnScreen = this._tilesOnScreen[tileX + '_' + tileY];
+		if (tileOnScreen && (tileOnScreen.currentPopulation === this._currentPopulation)) {
+			return {
+				x: tileOnScreen.x + y * this._deltaX + x * this._deltaX,
+				y: tileOnScreen.y + this._deltaX - x * this._deltaY + y * this._deltaY,
+				z: tileOnScreen.z
+			};
 		}
+
+		return false;
 	};
 
 	this.onUpdate = function (data) {
@@ -262,7 +232,6 @@ exports = Class([View, GridProperties], function (supr) {
 		} else if (this._grid === null) {
 			this._buildViewProperties(data);
 		}
-
 		if ((this._gridX !== data.gridX) || (this._gridY !== data.gridY)) {
 			this._populateTiles(data);
 		}
@@ -271,8 +240,7 @@ exports = Class([View, GridProperties], function (supr) {
 		var offsetY = -this._tileHeight * this._underDrawY + data.offsetY;
 
 		if ((this._offsetX !== offsetX) || (this._offsetY !== offsetY)) {
-			if (this._selectedRect) {
-				this._selectedRect = null;
+			if (this._gridInputView && this._gridInputView.clearSelectedRect()) {
 				this._selectedItem.style.visible = false;
 			}
 
@@ -308,35 +276,6 @@ exports = Class([View, GridProperties], function (supr) {
 		}
 
 		data.selection ? this._selection.show(data, offsetX, offsetY) : this._selection.clear();
-	};
-
-	this.tick = function (dt) {
-		var layers = this._layers;
-		var i = layers ? layers.length : 0;
-		while (i) {
-			var layer = layers[--i];
-			var particleSystems = layer.particleSystems;
-			if (particleSystems) {
-				var j = particleSystems.getLength();
-				var views = particleSystems.getViews();
-				while (j) {
-					views[--j].update(dt);
-				}
-			}
-		}
-	};
-
-	this.isTileVisible = function (tileX, tileY, x, y) {
-		var tileOnScreen = this._tilesOnScreen[tileX + '_' + tileY];
-		if (tileOnScreen && (tileOnScreen.currentPopulation === this._currentPopulation)) {
-			return {
-				x: tileOnScreen.x + y * this._deltaX + x * this._deltaX,
-				y: tileOnScreen.y + this._deltaX - x * this._deltaY + y * this._deltaY,
-				z: tileOnScreen.z
-			};
-		}
-
-		return false;
 	};
 
 	this.onClear = function (data) {
@@ -437,6 +376,11 @@ exports = Class([View, GridProperties], function (supr) {
 		}
 	};
 
+	this.setGridInputView = function (gridInputView) {
+		this._gridInputView = gridInputView;
+		gridInputView.on('UpdateSelection', bind(this._selectedItem, 'setRect'));
+	};
+
 	this.getViewPool = function (layer) {
 		return this._layers[layer] ? this._layers[layer].viewPool : false;
 	};
@@ -466,10 +410,10 @@ exports = Class([View, GridProperties], function (supr) {
 		var overDrawX = this._underDrawX + this._overDrawX;
 		var overDrawY = this._underDrawY + this._overDrawY;
 
+		this.style.scale = scale;
+
 		this._countX = (this.style.width / (this._tileWidth * scale) + overDrawX) | 0;
 		this._countY = (this.style.height / (this._tileHeight * scale) * 2 + overDrawY) | 0;
-
-		this.style.scale = scale;
 
 		var tileViews = this._tileViews;
 		var layers = this._layers.length;
@@ -488,16 +432,27 @@ exports = Class([View, GridProperties], function (supr) {
 			this._gridX = null;
 		}
 
-		var dir = (this.style.scale > scale) ? -0.5 : 0.5;
-		this.emit('ChangeOffset', (endWidth - startWidth) * dir, (endHeight - startHeight) * dir);
+		this.emit('ChangeOffset', (endWidth - startWidth) * 0.5, (endHeight - startHeight) * 0.5);
 	};
 
 	this.setBackgroundColor = function (backgroundColor) {
-		this.style.backgroundColor = backgroundColor;
+		this._background.style.backgroundColor = backgroundColor;
+	};
+
+	this.getOffsetX = function () {
+		return this._offsetX;
+	};
+
+	this.getOffsetY = function () {
+		return this._offsetY;
+	};
+
+	this.getSelectedItem = function () {
+		return this._selectedItem;
 	};
 
 	this.hideSelectedItem = function () {
 		this._selectedItem.style.visible = false;
-		this._selectedRect = null;
+		this.gridInputView && this.gridInputView.clearSelectedRect();
 	};
 });

@@ -136,51 +136,68 @@ exports = Class(Emitter, function (supr) {
 
 	this.scrollLeft = function (speed) {
 		var data = this._data;
+		var didScroll = false;
 
 		data.offsetX += speed;
 		while (data.offsetX > data.tileWidth) {
 			data.gridX = (data.gridX + data.gridWidth - 1) % data.gridWidth;
 			data.gridY = (data.gridY + data.gridHeight - 1) % data.gridHeight;
 			data.offsetX -= data.tileWidth;
+			didScroll = true;
 		}
+
+		//didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollRight = function (speed) {
 		var data = this._data;
+		var didScroll = false;
 
 		data.offsetX -= speed;
 		while (data.offsetX < 0) {
 			data.gridX = (data.gridX + 1) % data.gridWidth;
 			data.gridY = (data.gridY + 1) % data.gridHeight;
 			data.offsetX += data.tileWidth;
+			didScroll = true;
 		}
+
+		//didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollUp = function (speed) {
 		var data = this._data;
+		var didScroll = false;
 
 		data.offsetY += speed;
 		while (data.offsetY > data.tileHeight) {
 			data.gridX = (data.gridX + 1) % data.gridWidth;
 			data.gridY = (data.gridY + data.gridHeight - 1) % data.gridHeight;
 			data.offsetY -= data.tileHeight;
+			didScroll = true;
 		}
+
+		//didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollDown = function (speed) {
 		var data = this._data;
+		var didScroll = false;
 
 		data.offsetY -= speed;
 		while (data.offsetY < 0) {
 			data.gridX = (data.gridX + data.gridWidth - 1) % data.gridWidth;
 			data.gridY = (data.gridY + 1) % data.gridHeight;
 			data.offsetY += data.tileHeight;
+			didScroll = true;
 		}
+
+		//didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollBy = function (offsetX, offsetY) {
 		(offsetX > 0) ? this.scrollLeft(offsetX) : this.scrollRight(-offsetX);
 		(offsetY > 0) ? this.scrollUp(offsetY) : this.scrollDown(-offsetY);
+		logger.log('scrollBy:' + this._data.offsetX + ',' + this._data.offsetY);
 	};
 
 	this.setSelection = function (startPoint, endPoint) {
@@ -304,6 +321,14 @@ exports = Class(Emitter, function (supr) {
 
 	this.getStaticModels = function () {
 		return this._staticModels;
+	};
+
+	this.getTileX = function () {
+		return this._data.gridX;
+	};
+
+	this.getTileY = function () {
+		return this._data.gridY;
 	};
 
 	this.clearSelection = function () {

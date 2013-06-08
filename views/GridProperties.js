@@ -19,6 +19,9 @@ import .tiles.TileGroups as TileGroups;
 
 exports = Class(function () {
 	this.initProperties = function (opts) {
+		this._minScale = opts.minScale || 0.6;
+		this._maxScale = opts.maxScale || 2;
+
 		this._grid = null;
 		this._gridX = null;
 		this._gridY = null;
@@ -106,5 +109,13 @@ exports = Class(function () {
 
 	this.getTileHeight = function () {
 		return this._tileHeight;
+	};
+
+	this.getCountX = function () {
+		return this._countX;
+	};
+
+	this.getCountY = function () {
+		return this._countY;
 	};
 });
