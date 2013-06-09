@@ -73,10 +73,10 @@ exports = Class(View, function (supr) {
 			this._selectedRect = found;
 			selectedItem.setRect(found);
 			selectedItem.style.zIndex = found.view.style.zIndex - 1;
-			this._gridView.emit('SelectItem', found.model);
+			this.emit('SelectItem', found.model);
 			evt.cancel();
 		} else if (selectedItem.style.visible) {
-			this._gridView.emit('UnselectItem');
+			this.emit('UnselectItem');
 			this._selectedRect = null;
 			selectedItem.style.visible = false;
 		}		

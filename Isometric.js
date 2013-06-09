@@ -107,6 +107,8 @@ exports = Class(Emitter, function (supr) {
 			on('End', bind(this._gridInputModel, 'onEnd')).
 			on('Select', bind(this._gridInputModel, 'onSelect')).
 			on('SelectCancel', bind(this._gridInputModel, 'onSelectCancel')).
+			on('SelectItem', bind(this, 'emit', 'SelectItem')).
+			on('UnselectItem', bind(this, 'emit', 'UnselectItem')).
 			on('End', bind(this, 'emit', 'SelectionEnd'));
 
 		gridView.
