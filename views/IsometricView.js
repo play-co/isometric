@@ -34,7 +34,7 @@ exports = Class(View, function (supr) {
 				x: 0,
 				y: 0,
 				width: ('baseWidth' in GC.app) ? GC.app.baseWidth : device.width,
-				height: ('baseHeight' in GC.app) ? GC.app.baseHeight : device.height,
+				height: ('baseHeight' in GC.app) ? GC.app.baseHeight : device.height
 			}
 		);
 		supr(this, 'init', [opts]);
@@ -49,6 +49,7 @@ exports = Class(View, function (supr) {
 				itemSettings: opts.itemSettings || {},
 				tileSettings: opts.tileSettings,
 				particleSettings: opts.particleSettings || {},
+				visible: false
 			};
 
 		this._gridView = new GridView(childOpts).
@@ -73,7 +74,6 @@ exports = Class(View, function (supr) {
 	};
 
 	this.onPopulated = function () {
-		this._gridView.style.visible = true;
 		this._gridInputView.style.backgroundColor = 'rgba(0, 0, 0, 0)';
 		this._gridInputView.style.opacity = 0;
 		this._loadingView.style.visible = false;
@@ -83,5 +83,15 @@ exports = Class(View, function (supr) {
 		this._loadingView.start();
 		this._gridView.style.visible = false;
 		this._gridView.onRefreshMap();
+	};
+
+	this.show = function () {
+		this._gridInputView.style.visible = true;
+		this._gridView.style.visible = true;
+	};
+
+	this.hide = function () {
+		this._gridInputView.style.visible = false;
+		this._gridView.style.visible = false;
 	};
 });

@@ -32,12 +32,8 @@ exports = Class(Emitter, function (supr) {
 
 		this._steps = this._initGeneratorSteps(this._settings.generatorSteps || []);
 
-		if (this._steps.length) {
-			this.generate();
-		} else {
-			this._map.clear();
-			this._map.zeroLayer(0, 1);
-		}
+		this._map.clear();
+		this._map.zeroLayer(0, 1);
 	};
 
 	this._initGeneratorSteps = function (generatorSteps) {

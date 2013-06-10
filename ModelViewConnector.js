@@ -114,6 +114,19 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.clear = function () {
+		var gridView = this._gridView;
+		var activeList = this._activeList;
+		var i = activeList.length;
+
+		while (i) {
+			var modelInfo = activeList[--i];
+			if (modelInfo.view) {
+				modelInfo.model.removeListener('Update', modelInfo.view.updateCallback);
+				var viewPool = gridView.getViewPool(modelInfo.layer);
+				viewPool.releaseView(modelInfo.view);
+			}
+		}
+
 		this._activeList = [];
 		this._sleepList = [];		
 	};

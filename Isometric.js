@@ -55,8 +55,7 @@ exports = Class(Emitter, function (supr) {
 		);
 
 		// Create views...
-		this._isometricView = new IsometricView(opts);
-		this._isometricView.
+		this._isometricView = new IsometricView(opts).
 			on('ChangeOffset', bind(this, 'onChangeOffset'));
 
 		var gridView = this._isometricView.getGridView();
@@ -213,6 +212,14 @@ exports = Class(Emitter, function (supr) {
 
 	this.refreshMap = function (tileX, tileY) {
 		this._isometricView.getGridView().onRefreshMap(tileX, tileY);
+	};
+
+	this.show = function () {
+		this._isometricView.show();
+	};
+
+	this.hide = function () {
+		this._isometricView.hide();
 	};
 
 	this.toJSON = function () {

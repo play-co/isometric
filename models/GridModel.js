@@ -83,7 +83,6 @@ exports = Class(Emitter, function (supr) {
 			map: data.map
 		});
 		this._mapGenerator.on('Ready', bind(this, 'onMapReady'));
-		this._mapGenerator.generate();
 
 		this._staticModels = new StaticModels({
 			gridModel: this,

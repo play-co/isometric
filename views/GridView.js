@@ -52,7 +52,6 @@ exports = Class([View, GridProperties], function (supr) {
 
 		this._selectedItem = new SelectedItemView({});
 
-		this.style.visible = true;
 		this.style.scale = 1;
 	};
 
@@ -142,7 +141,7 @@ exports = Class([View, GridProperties], function (supr) {
 		this._gridX = gridX;
 		this._gridY = gridY;
 
-		this.emit('Populated');
+		this.style.visible && this.emit('Populated');
 	};
 
 	this._buildView = function (data) {
@@ -281,6 +280,7 @@ exports = Class([View, GridProperties], function (supr) {
 
 		for (var index in particleSystems) {
 			particleSystems[index].clear();
+			delete particleSystems[index];
 		}
 
 		var layers = this._layers;
