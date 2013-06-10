@@ -216,23 +216,27 @@ exports = Class(Emitter, function (supr) {
 	this._updateMoved = function () {
 		var opts = this._opts;
 
-		if (opts.x < this._lastX) {
-			this._movedX = -1;
-		} else if (opts.x > this._lastX) {
-			this._movedX = 1;
-		} else {
-			this._movedX = 0;
+		if (opts.x !== this._lastX) {
+			if (opts.x < this._lastX) {
+				this._movedX = -1;
+			} else if (opts.x > this._lastX) {
+				this._movedX = 1;
+			} else {
+				this._movedX = 0;
+			}
+			this._lastX = opts.x;
 		}
-		this._lastX = opts.x;
 
-		if (opts.y < this._lastY) {
-			this._movedY = -1;
-		} else if (opts.y > this._lastY) {
-			this._movedY = 1;
-		} else {
-			this._movedY = 0;
+		if (opts.y !== this._lastY) {
+			if (opts.y < this._lastY) {
+				this._movedY = -1;
+			} else if (opts.y > this._lastY) {
+				this._movedY = 1;
+			} else {
+				this._movedY = 0;
+			}
+			this._lastY = opts.y;
 		}
-		this._lastY = opts.y;
 	};
 
 	this._move = function (dt) {

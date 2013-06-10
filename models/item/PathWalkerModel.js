@@ -36,7 +36,7 @@ exports = Class(DynamicModel, function (supr) {
 		this._startPath = opts.startPath || [];
 		this._spawner = opts.spawner || this._spawner;
 		this._conditions = opts.conditions || this._conditions;
-		this._maxPathLength = opts.maxPathLength || this._maxPathLength || 5;//20;
+		this._maxPathLength = opts.maxPathLength || this._maxPathLength || 20;
 	};
 
 	this._tileValid = function (tileX, tileY) {

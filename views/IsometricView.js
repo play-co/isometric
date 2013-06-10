@@ -18,12 +18,13 @@
 import device;
 
 import ui.View as View;
-import ui.TextView as TextView;
 
 import menus.views.components.ButtonView as ButtonView;
 
 import .GridView as GridView;
 import .GridInputView as GridInputView;
+
+import .LoadingView;
 
 exports = Class(View, function (supr) {
 	this.init = function (opts) {
@@ -54,7 +55,8 @@ exports = Class(View, function (supr) {
 			on('Populated', bind(this, 'onPopulated')).
 			on('ChangeOffset', bind(this, 'emit', 'ChangeOffset'));
 
-		this._loadingView = new TextView(merge(childOpts, {backgroundColor: '#000066', text: 'Building world', color: '#FFFFFF', size: 36}));
+		var loadingViewCtor = opts.loadingViewCtor || LoadingView;
+		this._loadingView = new loadingViewCtor(childOpts);
 		this._gridInputView = new GridInputView(merge(childOpts, {gridView: this._gridView}));
 	};
 
@@ -67,18 +69,18 @@ exports = Class(View, function (supr) {
 	};
 
 	this.setProgress = function (progress) {
-		this._loadingView.setText('Building world ' + progress + '%');
+		this._loadingView.setProgress(progress);
 	};
 
 	this.onPopulated = function () {
 		this._gridView.style.visible = true;
-		this._gridInputView.style.backgroundColor = false;
+		this._gridInputView.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+		this._gridInputView.style.opacity = 0;
 		this._loadingView.style.visible = false;
 	};
 
 	this.startLoading = function () {
-		this._loadingView.setText('Building world 0%');
-		this._loadingView.style.visible = true;
+		this._loadingView.start();
 		this._gridView.style.visible = false;
 		this._gridView.onRefreshMap();
 	};
