@@ -36,16 +36,13 @@ exports = Class(DynamicModel, function (supr) {
 		this._startPath = opts.startPath || [];
 		this._spawner = opts.spawner || this._spawner;
 		this._conditions = opts.conditions || this._conditions;
-		this._maxPathLength = opts.maxPathLength || this._maxPathLength || 20;
+		this._maxPathLength = opts.maxPathLength || this._maxPathLength || 5;//20;
 	};
 
 	this._tileValid = function (tileX, tileY) {
 		this._rect.x = tileX;
 		this._rect.y = tileY;
-var a = this._map.acceptRect(this._rect, this._conditions);
-//console.log(this._map.getTile(tileX, tileY)[1].group, a);
-//console.log(this._conditions, this._rect, a);
-		return a;
+		return this._map.acceptRect(this._rect, this._conditions);
 	};
 
 	this._findPath = function () {

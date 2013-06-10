@@ -56,9 +56,9 @@ exports = Class([View, GridProperties], function (supr) {
 		this.style.scale = 1;
 	};
 
-	this._updateTile = function (tileView, tile, model) {
+	this._updateTile = function (tileView, tile, model, updateRect) {
 		var clickRect = this._tileGroups.setImage(tileView, tile);
-		model && clickRect && this._gridInputView && this._gridInputView.addRect(model, tileView, clickRect);
+		model && clickRect && this._gridInputView && this._gridInputView.addRect(model, tileView, clickRect, updateRect);
 	};
 
 	this._populateTiles = function (data) {
@@ -133,7 +133,7 @@ exports = Class([View, GridProperties], function (supr) {
 
 						tileView.gridTile = gridTile;
 
-						this._updateTile(tileView, tile, gridTile.model);
+						this._updateTile(tileView, tile, gridTile.model, false);
 					}
 				}
 			}
@@ -167,8 +167,6 @@ exports = Class([View, GridProperties], function (supr) {
 		this._layers[this._layers.length - 1].addSubview(this._selectedItem);
 
 		console.log('Tiles per view:', this._maxCountY * this._maxCountX);
-
-		this.emit('Ready');
 	};
 
 	this.gridToPoint = function (data, grid) {
@@ -315,7 +313,7 @@ exports = Class([View, GridProperties], function (supr) {
 					if (tile.index === -1) {
 						tileView.visible = false;
 					} else {
-						this._updateTile(tileView, tile, gridTile.model);
+						this._updateTile(tileView, tile, gridTile.model, true);
 						tileView.visible = true;
 					}
 				}
@@ -365,7 +363,6 @@ exports = Class([View, GridProperties], function (supr) {
 	this.onClearParticles = function (tileX, tileY) {
 		var index = tileX + '_' + tileY;
 		var tileOnScreen = this._tilesOnScreen[index];
-		var particleSystems = this._particleSystems;
 
 		if (tileOnScreen && (tileOnScreen.currentPopulation === this._currentPopulation)) {
 			var particleSystem = tileOnScreen.particleSystem;

@@ -109,6 +109,14 @@ exports = Class(Emitter, function (supr) {
 		this._onScreen = onScreen;
 	};
 
+	this.getTileX = function () {
+		return this._opts.tileX;
+	};
+
+	this.getTileY = function () {
+		return this._opts.tileY;
+	};
+
 	this.moveTo = function (destTileX, destTileY, x, y) {
 		this._destTileX = destTileX;
 		this._destTileY = destTileY;
@@ -292,6 +300,7 @@ exports = Class(Emitter, function (supr) {
 				this._targetTile = this._path[this._pathIndex];
 			} else {
 				this._path = null;
+				this.onReachTarget && this.onReachTarget();
 			}
 		} else {
 			this._targetTile = null;

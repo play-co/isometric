@@ -215,34 +215,50 @@ exports = Class(View, function (supr) {
 		return result;
 	};
 
-	this.addRect = function (model, tileView, clickRect) {
-		var itemOnScreen = this._rectsOnScreen[this._rectsOnScreenCount];
-		if (!itemOnScreen) {
-			itemOnScreen = {};
-			this._rectsOnScreen[this._rectsOnScreenCount] = itemOnScreen;
+	this.addRect = function (model, tileView, clickRect, updateRect) {
+		var rectsOnScreen = this._rectsOnScreen;
+		var rectOnScreen;
+		var found = false;
+
+		if (updateRect) {
+			var i = this._rectsOnScreenCount;
+			while (i) {
+				rectOnScreen = rectsOnScreen[--i];
+				if (rectOnScreen.view === tileView) {
+					found = true;
+					break;
+				}
+			}
+		}
+
+		if (!found) {
+			rectOnScreen = rectsOnScreen[this._rectsOnScreenCount];
+			if (!rectOnScreen) {
+				rectOnScreen = {};
+				rectsOnScreen[this._rectsOnScreenCount] = rectOnScreen;
+			}			
+			this._rectsOnScreenCount++;
 		}
 
 		var style = tileView.style;
 		var x = style.x + clickRect.x;
 		var y = style.y + clickRect.y;
 
-		itemOnScreen.view = tileView;
-		itemOnScreen.x = x;
-		itemOnScreen.y = y;
-		itemOnScreen.z = style.zIndex;
-		itemOnScreen.width = clickRect.width;
-		itemOnScreen.height = clickRect.height;
-		itemOnScreen.x1 = x;
-		itemOnScreen.y1 = y;
-		itemOnScreen.x2 = x + clickRect.width;
-		itemOnScreen.y2 = y + clickRect.height;
-		itemOnScreen.model = model;
+		rectOnScreen.view = tileView;
+		rectOnScreen.x = x;
+		rectOnScreen.y = y;
+		rectOnScreen.z = style.zIndex;
+		rectOnScreen.width = clickRect.width;
+		rectOnScreen.height = clickRect.height;
+		rectOnScreen.x1 = x;
+		rectOnScreen.y1 = y;
+		rectOnScreen.x2 = x + clickRect.width;
+		rectOnScreen.y2 = y + clickRect.height;
+		rectOnScreen.model = model;
 
 		if (this._selectedRect && (this._selectedRect.view === tileView)) {
-			this._selectedRect = itemOnScreen;
-			this.emit('UpdateSelection', itemOnScreen);
+			this._selectedRect = rectOnScreen;
+			this.emit('UpdateSelection', rectOnScreen);
 		}
-
-		this._rectsOnScreenCount++;
 	};
 });

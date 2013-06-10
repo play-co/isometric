@@ -79,6 +79,7 @@ exports = Class(Emitter, function (supr) {
 			on('SelectionCount', bind(this, 'emit', 'SelectionCount'));
 
 		this._gridModel.
+			on('Ready', bind(this, 'emit', 'Ready')).
 			on('Update', bind(gridView, 'onUpdate')).
 			on('RefreshMap', bind(gridView, 'onRefreshMap')).
 			on('AddModel', bind(this, 'onAddStaticModel')).
@@ -111,9 +112,6 @@ exports = Class(Emitter, function (supr) {
 			on('UnselectItem', bind(this, 'emit', 'UnselectItem')).
 			on('End', bind(this, 'emit', 'SelectionEnd'));
 
-		gridView.
-			on('Ready', bind(this, 'emit', 'Ready'));
-
 		this._modelViewConnector = new ModelViewConnector({
 			gridView: gridView
 		});
@@ -144,6 +142,8 @@ exports = Class(Emitter, function (supr) {
 
 	this.onAddDynamicModel = function (model) {
 		this._modelViewConnector.registerModel(model, 1);
+
+		this.emit('DynamicModel', model);
 	};
 
 	this.onWakeupDynamicModel = function (model) {
@@ -156,6 +156,10 @@ exports = Class(Emitter, function (supr) {
 
 	this.getStaticModels = function () {
 		return this._gridModel.getStaticModels();
+	};
+
+	this.getDynamicModels = function () {
+		return this._modelViewConnector.getList();
 	};
 
 	this.getGridEditor = function () {

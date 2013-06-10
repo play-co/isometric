@@ -90,11 +90,10 @@ exports = Class(Emitter, function (supr) {
 			map: data.map
 		});
 
+		this._emitReady = true;
 		this._lockHorizontal = -1;
 		this._selectMode = selectModes.AREA;
-
 		this._aStar = new AStar({map: data.map});
-
 		this._data = data;
 	};
 
@@ -127,6 +126,13 @@ exports = Class(Emitter, function (supr) {
 			this._aStar.update();
 			this.emit('Update', this._data);
 			this._staticModels.tick(dt);
+
+			if (this._emitReady) {
+				this._emitReady = false;
+				this.emit('Ready');
+			}
+		} else {
+			this._emitReady = true;
 		}
 	};
 
@@ -146,7 +152,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		//didScroll && this.emit('Scrolled');
+		didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollRight = function (speed) {
@@ -161,7 +167,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		//didScroll && this.emit('Scrolled');
+		didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollUp = function (speed) {
@@ -176,7 +182,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		//didScroll && this.emit('Scrolled');
+		didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollDown = function (speed) {
@@ -191,7 +197,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		//didScroll && this.emit('Scrolled');
+		didScroll && this.emit('Scrolled');
 	};
 
 	this.scrollBy = function (offsetX, offsetY) {

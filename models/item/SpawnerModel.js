@@ -41,8 +41,6 @@ exports = Class(StaticModel, function (supr) {
 		this._conditions = opts.conditions;
 		this._spawnInterval = opts.spawnInterval || 1000;
 
-		this._scheduledPath = null;
-
 		this._canSpawn = true;
 
 		supr(this, 'init', arguments);
@@ -192,30 +190,9 @@ exports = Class(StaticModel, function (supr) {
 			this.emit('SpawnedModel', model);
 		}
 
-		if (model) {
-			if (this._scheduledPath) {
-				model.setPath(this._scheduledPath);
-				this._scheduledPath = null;
-			}
-			this._modelsAwake.push(model);
-		}
+		model && this._modelsAwake.push(model);
 
 		return model;
-	};
-
-	this.schedulePath = function (path) {
-		if (!this._canSpawn) {
-			return false;
-		}
-
-		var i = path.length - 1;
-		while (i) {
-			i--;
-			path.push({x: path[i].x, y: path[i].y});
-		}
-		this._scheduledPath = path;
-
-		return true;
 	};
 
 	this.tick = function (dt) {

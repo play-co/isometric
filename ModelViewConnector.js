@@ -117,4 +117,8 @@ exports = Class(Emitter, function (supr) {
 		this._activeList = [];
 		this._sleepList = [];		
 	};
+
+	this.getList = function () {
+		return this._activeList;
+	};
 });
