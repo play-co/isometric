@@ -117,7 +117,11 @@ exports = Class(Emitter, function (supr) {
 		var i = data.length;
 		while (i) {
 			item = data[--i];
-			this._list.push(map.putItem(item.modelType, item.tileX, item.tileY, item));
+			var model = map.putItem(item.modelType, item.tileX, item.tileY, item);
+			if (model) {
+				this._gridModel.emit('AddModel', model);
+				this._list.push(model);
+			}
 		}
 	};
 });
