@@ -131,6 +131,8 @@ exports = Class(View, function (supr) {
 		point.x = evt.srcPoint.x;
 		point.y = evt.srcPoint.y;
 
+		this._selectedRect = null;
+
 		if (index === this._dragPointFirst) {
 			this._dragPoints[index].x = point.x;
 			this._dragPoints[index].y = point.y;
@@ -202,6 +204,9 @@ exports = Class(View, function (supr) {
 	};
 
 	this.setDragMode = function (dragMode) {
+		if (!dragMode) {
+			this._selectedRect = null;
+		}
 		this._dragMode = dragMode;
 	};
 

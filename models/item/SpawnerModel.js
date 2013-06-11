@@ -64,70 +64,72 @@ exports = Class(StaticModel, function (supr) {
 		this._pathCount && this._findPaths();
 	};
 
-	this._addValidPath = function (sourceGridX, sourceGridY, gridX, gridY, tag) {
-		var index = gridX + '_' + gridY;
-		if (!this._validPath[index]) {
-			var map = this._map;
-			var mapWidth = map.getWidth();
-			var mapHeight = map.getHeight();
-
-			this._validPath[index] = [
-				{
-					x: (sourceGridX + mapWidth) % mapWidth,
-					y: (sourceGridY + mapHeight) % mapHeight
-				},
-				{
-					x: (gridX + mapWidth) % mapWidth,
-					y: (gridY + mapHeight) % mapHeight
-				},
-			];
-			this._validPath[index].tag = tag;
-			this._validPathKeys = Object.keys(this._validPath);
-			this._pathCount--;
+	this._addValidPath = function (sourceTileX, sourceTileY, tileX, tileY, tag) {
+		var index = tileX + '_' + tileY;
+		if (this._validPath[index]) {
+			return;
 		}
+
+		var map = this._map;
+		var mapWidth = map.getWidth();
+		var mapHeight = map.getHeight();
+
+		this._validPath[index] = [
+			{
+				tileX: (sourceTileX + mapWidth) % mapWidth,
+				tileY: (sourceTileY + mapHeight) % mapHeight
+			},
+			{
+				tileX: (tileX + mapWidth) % mapWidth,
+				tileY: (tileY + mapHeight) % mapHeight
+			}
+		];
+		this._validPath[index].tag = tag;
+		this._validPathKeys = Object.keys(this._validPath);
+		this._pathCount--;
 	};
 
-	this._tileValid = function (gridX, gridY) {
-		this._rect.x = gridX;
-		this._rect.y = gridY;
-
+	this._tileValid = function (tileX, tileY) {
+		this._rect.x = tileX;
+		this._rect.y = tileY;
 		return this._map.acceptRect(this._rect, this._conditions);
 	};
 
 	this._findPaths = function () {
 		var width = this._width;
 		var height = this._height;
-		var x = this._tileX;
-		var y = this._tileY;
+		var tileX = this._tileX;
+		var tileY = this._tileY;
 
 		for (var i = 0; i < width; i++) {
-			var gridX = x + i;
-			var gridY = y - 1;
+			var testTileX = tileX + i;
+			var testTileY = tileY - 1;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX, gridY + 1, gridX, gridY, 1);
+			this._tileValid(testTileX, testTileY) && this._addValidPath(testTileX, testTileY + 1, testTileX, testTileY, 1);
 
-			gridY = y + height;
+			testTileY = tileY + height;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX, gridY - 1, gridX, gridY, 2);
+			this._tileValid(testTileX, testTileY) && this._addValidPath(testTileX, testTileY - 1, testTileX, testTileY, 2);
 		}
 
 		for (var i = 0; i < height; i++) {
-			var gridX = x - 1;
-			var gridY = y + i;
+			var testTileX = tileX - 1;
+			var testTileY = tileY + i;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX + 1, gridY, gridX, gridY, 3);
+			this._tileValid(testTileX, testTileY) && this._addValidPath(testTileX + 1, testTileY, testTileX, testTileY, 3);
 
-			gridX = x + width;
+			testTileX = tileX + width;
 
-			this._tileValid(gridX, gridY) && this._addValidPath(gridX - 1, gridY, gridX, gridY, 4);
+			this._tileValid(testTileX, testTileY) && this._addValidPath(testTileX - 1, testTileY, testTileX, testTileY, 4);
 		}
+
 	};
 
 	this._clonePath = function (path) {
 		var clone = [];
 
 		for (var i = 0; i < path.length; i++) {
-			clone.push({x: path[i].x, y: path[i].y});
+			clone.push({tileX: path[i].tileX, tileY: path[i].tileY});
 		}
 
 		return clone;
@@ -160,8 +162,8 @@ exports = Class(StaticModel, function (supr) {
 
 		return {
 			gridModel: this._gridModel,
-			tileX: path[0].x,
-			tileY: path[0].y,
+			tileX: path[0].tileX,
+			tileY: path[0].tileY,
 			x: 0.5,
 			y: 0.5,
 			startPath: this._clonePath(path),

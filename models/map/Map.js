@@ -22,9 +22,9 @@ exports = Class(function () {
 		var layers = opts.layers.length;
 		var grid = [];
 
-		for (var y = 0; y < height; y++) {
+		for (var tileY = 0; tileY < height; tileY++) {
 			var line = [];
-			for (var x = 0; x < width; x++) {
+			for (var tileX = 0; tileX < width; tileX++) {
 				var tile = [];
 				var i = layers;
 				while (i--) {
@@ -79,9 +79,9 @@ exports = Class(function () {
 		var grid = this._grid;
 		var layers = this._layers;
 
-		for (var y = 0; y < this._height; y++) {
-			var line = grid[y];
-			for (var x = 0; x < this._width; x++) {
+		for (var tileY = 0; tileY < this._height; tileY++) {
+			var line = grid[tileY];
+			for (var tileX = 0; tileX < this._width; tileX++) {
 				var tile = [];
 				var i = layers;
 
@@ -93,7 +93,7 @@ exports = Class(function () {
 						randomIndex: -1
 					});
 				}
-				line[x] = tile;
+				line[tileX] = tile;
 			}
 		}
 	};
@@ -101,10 +101,10 @@ exports = Class(function () {
 	this.clearLayer = function (layer) {
 		var grid = this._grid;
 
-		for (var y = 0; y < this._height; y++) {
-			var line = grid[y];
-			for (var x = 0; x < this._width; x++) {
-				var tile = line[x][layer];
+		for (var tileY = 0; tileY < this._height; tileY++) {
+			var line = grid[tileY];
+			for (var tileX = 0; tileX < this._width; tileX++) {
+				var tile = line[tileX][layer];
 				tile.index = -1;
 				tile.randomIndex = -1;
 				tile.group = 0;
@@ -115,10 +115,10 @@ exports = Class(function () {
 	this.zeroLayer = function (layer, group) {
 		var grid = this._grid;
 
-		for (var y = 0; y < this._height; y++) {
-			var line = grid[y];
-			for (var x = 0; x < this._width; x++) {
-				this.setTile(line[x][layer], group, 0);
+		for (var tileY = 0; tileY < this._height; tileY++) {
+			var line = grid[tileY];
+			for (var tileX = 0; tileX < this._width; tileX++) {
+				this.setTile(line[tileX][layer], group, 0);
 			}
 		}
 	};
@@ -166,16 +166,16 @@ exports = Class(function () {
 		tile.group = group;
 	};
 
-	this.getTile = function (x, y) {
+	this.getTile = function (tileX, tileY) {
 		var width = this._width;
 		var height = this._height;
 		var mw = width * 10;
 		var mh = height * 10;
 
-		x = (x + mw) % width;
-		y = (y + mh) % height;
+		tileX = (tileX + mw) % width;
+		tileY = (tileY + mh) % height;
 
-		return this._grid[y][x];
+		return this._grid[tileY][tileX];
 	};
 
 	this.orTile = function (tile, group, index) {
@@ -220,16 +220,16 @@ exports = Class(function () {
 		}
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + mw) % width;
+			var tileX = (x + i + mw) % width;
 			var indexX = (w > 2) ? (((i + w - 3) / (w - 2)) | 0) : (i * 2);
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + mh) % height;
+				var tileY = (y + j + mh) % height;
 				var indexY = (h > 2) ? (((j + h - 3) / (h - 2)) | 0) : (j * 2);
-				var tile = grid[gridY][gridX];
+				var tile = grid[tileY][tileX];
 
 				if (tile.model) {
-					var modelIndex = 10001 + gridY * width + gridX;
+					var modelIndex = 10001 + tileY * width + tileX;
 					models[modelIndex] = true;
 				} else if (tile[modelLayer].group > 10000) {
 					models[tile[modelLayer].group] = true;
@@ -239,9 +239,9 @@ exports = Class(function () {
 
 		for (var modelIndex in models) {
 			var index = parseInt(modelIndex, 10) - 10001;
-			var gridX = index % width;
-			var gridY = (index / width) | 0;
-			var model = grid[gridY][gridX].model;
+			var tileX = index % width;
+			var tileY = (index / width) | 0;
+			var model = grid[tileY][tileX].model;
 
 			model && model.onUpdateMap && model.onUpdateMap();
 		}
@@ -261,25 +261,21 @@ exports = Class(function () {
 		var index = tool.index;
 
 		if (tool.model) {
-			opts = merge(
-				opts,
-				merge(
-					{
-						modelType: modelType,
-						gridModel: this._itemOwner,
-						layer: layer,
-						group: group,
-						index: index,
-						tileX: tileX,
-						tileY: tileY,
-						width: tool.width,
-						height: tool.height,
-						surrounding: tool.surrounding
-					},
-					tool.modelOpts || {}
-				)
+			var opts = merge(
+				{
+					modelType: modelType,
+					gridModel: this._itemOwner,
+					layer: layer,
+					group: group,
+					index: index,
+					tileX: tileX,
+					tileY: tileY,
+					width: tool.width,
+					height: tool.height,
+					surrounding: tool.surrounding
+				},
+				tool.modelOpts || {}
 			);
-
 			model = new tool.model(opts).on('Refresh', bind(this._itemOwner, 'emit', 'RefreshMap'));
 
 			group = model.getGroup();
@@ -325,13 +321,13 @@ exports = Class(function () {
 		var mh = height * 10;
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + mw) % width;
+			var tileX = (x + i + mw) % width;
 			var indexX = (w > 2) ? (((i + w - 3) / (w - 2)) | 0) : (i * 2);
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + mh) % height;
+				var tileY = (y + j + mh) % height;
 				var indexY = (h > 2) ? (((j + h - 3) / (h - 2)) | 0) : (j * 2);
-				var tile = grid[gridY][gridX];
+				var tile = grid[tileY][tileX];
 
 				this.orTile(tile[layer], group, tileSet[indexY][indexX]);
 			}
@@ -386,11 +382,11 @@ exports = Class(function () {
 		this._updateModels(x - 1, y - 1, 3, l + 2);
 	};
 
-	this.drawSurrounding = function (layer, x, y, surrounding) {
+	this.drawSurrounding = function (layer, tileX, tileY, surrounding) {
 		var i = surrounding.length;
 		while (i) {
 			var s = surrounding[--i];
-			var t = this.getTile(x + s.x, y + s.y);
+			var t = this.getTile(tileX + s.tileX, tileY + s.tileY);
 			var j = s.groups.length;
 			while (j) {
 				var group = s.groups[--j];
@@ -402,24 +398,20 @@ exports = Class(function () {
 		}
 	};
 
-	this._isCap = function (x, y, w, h) {
-		return (x === 0) || (x === w - 1) || (y === 0) || (y === h - 1);
-	};
-
 	this.isEmpty = function (layer, x, y, w, h, validator) {
 		var width = this._width;
 		var height = this._height;
 		var grid = this._grid;
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 
 				if ((tile[layer].index !== -1) &&
-					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h, this._isCap(i, j, w, h))))) {
+					(!validator || (validator && !validator(this, tileX, tileY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -434,14 +426,14 @@ exports = Class(function () {
 		var grid = this._grid;
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 
 				if ((tile[layer].index > 0) &&
-					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h, this._isCap(i, j, w, h))))) {
+					(!validator || (validator && !validator(this, tileX, tileY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -459,14 +451,14 @@ exports = Class(function () {
 		groups.map(function (a) { g[a] = true; }, {});
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 
 				if (!(tile[layer].group in g) &&
-					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h, this._isCap(i, j, w, h))))) {
+					(!validator || (validator && !validator(this, tileX, tileY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -481,11 +473,11 @@ exports = Class(function () {
 		var grid = this._grid;
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 				var group = tile[layer].group;
 				var index = tile[layer].index;
 				var found = false;
@@ -498,7 +490,7 @@ exports = Class(function () {
 						break;
 					}
 				}
-				if (!found && (!validator || (validator && !validator(this, gridX, gridY, x, y, w, h)))) {
+				if (!found && (!validator || (validator && !validator(this, tileX, tileY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -516,14 +508,14 @@ exports = Class(function () {
 		groups.map(function (a) { g[a] = true; }, {});
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 
 				if ((tile[layer].index !== -1) && !(tile[layer].group in g) && 
-					(!validator || (validator && !validator(this, gridX, gridY, x, y, w, h)))) {
+					(!validator || (validator && !validator(this, tileX, tileY, x, y, w, h)))) {
 					return false;
 				}
 			}
@@ -545,15 +537,15 @@ exports = Class(function () {
 		groups.map(function (a) { g[a] = true; }, {});
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 
 				if (tile[layer].group in g) {
 					return true;
-				} else if (validator && validator(this, gridX, gridY, x, y, w, h)) {
+				} else if (validator && validator(this, tileX, tileY, x, y, w, h)) {
 					return true;
 				}
 			}
@@ -578,6 +570,7 @@ exports = Class(function () {
 					break;
 
 				case 'group':
+					//console.log(condition.validator);
 					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator);
 					break;
 			}
@@ -624,9 +617,9 @@ exports = Class(function () {
 		return result;
 	};
 
-	this.floodFill = function (layer, fromGroup, toGroup, x, y) {
-		var check = [{x: -1, y: 0}, {x: 1, y: 0}, {x: 0, y: -1}, {x: 0, y: 1}];
-		var tile = this.getTile(x, y);
+	this.floodFill = function (layer, fromGroup, toGroup, tileX, tileY) {
+		var check = [{tileX: -1, tileY: 0}, {tileX: 1, tileY: 0}, {tileX: 0, tileY: -1}, {tileX: 0, tileY: 1}];
+		var tile = this.getTile(tileX, tileY);
 
 		tile[layer].group = toGroup;
 
@@ -638,8 +631,8 @@ exports = Class(function () {
 			var i = check.length;
 			while (i) {
 				i--;
-				var a = x + check[i].x;
-				var b = y + check[i].y;
+				var a = tileX + check[i].tileX;
+				var b = tileY + check[i].tileY;
 				tile = this.getTile(a, b);
 				if (tile[layer].group === fromGroup) {
 					foundX = a;
@@ -653,14 +646,14 @@ exports = Class(function () {
 			} else if (foundCount === 1) {
 				tile = this.getTile(foundX, foundY);
 				tile[layer].group = toGroup;
-				x = foundX;
-				y = foundY;
+				tileX = foundX;
+				tileY = foundY;
 			} else {
 				var i = check.length;
 				while (i) {
 					i--;
-					var a = x + check[i].x;
-					var b = y + check[i].y;
+					var a = tileX + check[i].tileX;
+					var b = tileY + check[i].tileY;
 					tile = this.getTile(a, b);
 					if (tile[layer].group === fromGroup) {
 						tile[layer].group = toGroup;
@@ -682,11 +675,11 @@ exports = Class(function () {
 		var h = rect.h;
 
 		for (var i = 0; i < w; i++) {
-			var gridX = (x + i + width) % width;
+			var tileX = (x + i + width) % width;
 
 			for (var j = 0; j < h; j++) {
-				var gridY = (y + j + height) % height;
-				var tile = grid[gridY][gridX];
+				var tileY = (y + j + height) % height;
+				var tile = grid[tileY][tileX];
 
 				result.total++;
 				if (tile[layer].group !== group) {

@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
-function checkSurrounding (map, layer, x, y, surrounding, fromGroup) {
-	var tile = map.getTile(x, y)[layer];
+function checkSurrounding (map, layer, tileX, tileY, surrounding, fromGroup) {
+	var tile = map.getTile(tileX, tileY)[layer];
 	var i = surrounding.length;
 
 	while (i) {
 		var s = surrounding[--i];
-		var neighbour = map.getTile(x + s.x, y + s.y)[layer];
+		var neighbour = map.getTile(tileX + s.tileX, tileY + s.tileY)[layer];
 		if (!map.isRuleResult(neighbour.group, neighbour.index)) {
 			if ((neighbour.group === fromGroup) && ((neighbour.index & 16) === 16)) {
 				tile.index |= 1 << s.b1;
@@ -32,8 +32,8 @@ function checkSurrounding (map, layer, x, y, surrounding, fromGroup) {
 }
 
 exports = function (map, tool, rect, fromGroup) {
-	var x = rect.x;
-	var y = rect.y;
+	var tileX = rect.x;
+	var tileY = rect.y;
 	var width = rect.w;
 	var height = rect.h;
 	var neighbour;
@@ -44,27 +44,27 @@ exports = function (map, tool, rect, fromGroup) {
 
 	if (width > height) {
 		checkSurrounding(
-			map, layer, x, y,
+			map, layer, tileX, tileY,
 			[
-				{x: -1, y: 0, b1: 5, b2: 3},
-				{x: 0, y: -1, b1: 7, b2: 1},
-				{x: 0, y: 1, b1: 1, b2: 7}
+				{tileX: -1, tileY: 0, b1: 5, b2: 3},
+				{tileX: 0, tileY: -1, b1: 7, b2: 1},
+				{tileX: 0, tileY: 1, b1: 1, b2: 7}
 			],
 			fromGroup
 		);
 		checkSurrounding(
-			map, layer, x + width - 1, y,
+			map, layer, tileX + width - 1, tileY,
 			[
-				{x: 1, y: 0, b1: 3, b2: 5},
-				{x: 0, y: -1, b1: 7, b2: 1},
-				{x: 0, y: 1, b1: 1, b2: 7}
+				{tileX: 1, tileY: 0, b1: 3, b2: 5},
+				{tileX: 0, tileY: -1, b1: 7, b2: 1},
+				{tileX: 0, tileY: 1, b1: 1, b2: 7}
 			],
 			fromGroup
 		);
 
 		for (var i = 0; i < width; i++) {
-			tile = map.getTile(x + i, y)[layer];
-			neighbour = map.getTile(x + i, y - 1)[layer];
+			tile = map.getTile(tileX + i, tileY)[layer];
+			neighbour = map.getTile(tileX + i, tileY - 1)[layer];
 			if (!map.isRuleResult(neighbour.group, neighbour.index)) {
 				if ((neighbour.group === fromGroup) && ((neighbour.index & 16) === 16)) {
 					if ((neighbour.index & 56) !== 56) {
@@ -74,7 +74,7 @@ exports = function (map, tool, rect, fromGroup) {
 				}
 			}
 
-			neighbour = map.getTile(x + i, y + 1)[layer];
+			neighbour = map.getTile(tileX + i, tileY + 1)[layer];
 			if (!map.isRuleResult(neighbour.group, neighbour.index)) {
 				if ((neighbour.group === fromGroup) && ((neighbour.index & 16) === 16)) {
 					if ((neighbour.index & 56) !== 56) {
@@ -86,27 +86,27 @@ exports = function (map, tool, rect, fromGroup) {
 		}
 	} else {
 		checkSurrounding(
-			map, layer, x, y,
+			map, layer, tileX, tileY,
 			[
-				{x: -1, y: 0, b1: 5, b2: 3},
-				{x: 1, y: 0, b1: 3, b2: 5},
-				{x: 0, y: -1, b1: 7, b2: 1}
+				{tileX: -1, tileY: 0, b1: 5, b2: 3},
+				{tileX: 1, tileY: 0, b1: 3, b2: 5},
+				{tileX: 0, tileY: -1, b1: 7, b2: 1}
 			],
 			fromGroup
 		);
 		checkSurrounding(
-			map, layer, x, y + height - 1,
+			map, layer, tileX, tileY + height - 1,
 			[
-				{x: -1, y: 0, b1: 5, b2: 3},
-				{x: 1, y: 0, b1: 3, b2: 5},
-				{x: 0, y: 1, b1: 1, b2: 7}
+				{tileX: -1, tileY: 0, b1: 5, b2: 3},
+				{tileX: 1, tileY: 0, b1: 3, b2: 5},
+				{tileX: 0, tileY: 1, b1: 1, b2: 7}
 			],
 			fromGroup
 		);
 
 		for (var i = 0; i < height; i++) {
-			tile = map.getTile(x, y + i)[layer];
-			neighbour = map.getTile(x - 1, y + i)[layer];
+			tile = map.getTile(tileX, tileY + i)[layer];
+			neighbour = map.getTile(tileX - 1, tileY + i)[layer];
 			if (!map.isRuleResult(neighbour.group, neighbour.index)) {
 				if ((neighbour.group === fromGroup) && ((neighbour.index & 16) === 16)) {
 					if ((neighbour.index & 146) !== 146) {
@@ -116,7 +116,7 @@ exports = function (map, tool, rect, fromGroup) {
 				}
 			}
 
-			neighbour = map.getTile(x + 1, y + i)[layer];
+			neighbour = map.getTile(tileX + 1, tileY + i)[layer];
 			if (!map.isRuleResult(neighbour.group, neighbour.index)) {
 				if ((neighbour.group === fromGroup) && ((neighbour.index & 16) === 16)) {
 					if ((neighbour.index & 146) !== 146) {

@@ -30,8 +30,8 @@ exports = Class(function () {
                 this._grid.push({
                     parent: null,
                     value: y * this._width + x,
-                    x: x,
-                    y: y,
+                    tileX: x,
+                    tileY: y,
                     t: 0
                 });
             }
@@ -39,7 +39,7 @@ exports = Class(function () {
 
         this._neighbourList = [];
         for (var x = 0; x < 8; x++) {
-            this._neighbourList.push({x: 0, y: 0});
+            this._neighbourList.push({tileX: 0, tileY: 0});
         }
 
         this._t = 1;
@@ -50,9 +50,9 @@ exports = Class(function () {
         this._rect = {x: 0, y: 0, w: 1, h: 1};
     };
 
-    this._valid = function (x, y) {
-        this._rect.x = x;
-        this._rect.y = y;
+    this._valid = function (tileX, tileY) {
+        this._rect.x = tileX;
+        this._rect.y = tileY;
         return this._map.acceptRect(this._rect, this._conditions);
     };
 
@@ -104,15 +104,15 @@ exports = Class(function () {
         var node = this._tile(open.splice(min, 1)[0]);
         if (node.value === end.value) {
             var currentNode = node;
-            while (!((currentNode.x === this._startX) && (currentNode.y === this._startY))) {
-                result.push({x: currentNode.x, y: currentNode.y});
+            while (!((currentNode.tileX === this._startX) && (currentNode.tileY === this._startY))) {
+                result.push({tileX: currentNode.tileX, tileY: currentNode.tileY});
                 currentNode = currentNode.parent;
             }
         } else {
-            var i = this._neighbours(node.x, node.y);
+            var i = this._neighbours(node.tileX, node.tileY);
             while (i) {
                 var neighbour = neighbourList[--i];
-                var currentNode = this._tile(neighbour.y * width + neighbour.x);
+                var currentNode = this._tile(neighbour.tileY * width + neighbour.tileX);
                 if (!path[currentNode.value]) {
                     path[currentNode.value] = true;
                     currentNode.parent = node;
@@ -181,83 +181,89 @@ exports = Class(function () {
         this._currentSearch = null;
     };
 
-    this._neighbours = function (x, y) {
+    this._neighbours = function (tileX, tileY) {
         var neighbourList = this._neighbourList;
         var neighbourCount = 0;
         var neighbour;
         var width = this._width;
         var height = this._height;
-        var x1Valid, x2Valid, y1Valid, y2Valid;
-        var y1, y2, x1, x2;
+        var tileX1Valid;
+        var tileY1Valid;
+        var tileX2Valid;
+        var tileY2Valid;
+        var tileX1;
+        var tileY1;
+        var tileX2;
+        var tileY2;
 
         if (this._wrap) {
-            x1 = (x + width - 1) % width;
-            x2 = (x + width + 1) % width;
-            y1 = (y + height - 1) % height;
-            y2 = (y + height + 1) % height;
-            x1Valid = this._valid(x1, y),
-            x2Valid = this._valid(x2, y);
-            y1Valid = this._valid(x, y1);
-            y2Valid = this._valid(x, y2);
+            tileX1 = (tileX + width - 1) % width;
+            tileX2 = (tileX + width + 1) % width;
+            tileY1 = (tileY + height - 1) % height;
+            tileY2 = (tileY + height + 1) % height;
+            tileX1Valid = this._valid(tileX1, tileY),
+            tileX2Valid = this._valid(tileX2, tileY);
+            tileY1Valid = this._valid(tileX, tileY1);
+            tileY2Valid = this._valid(tileX, tileY2);
         } else {
-            x1 = x - 1;
-            x2 = x + 1;
-            y1 = y - 1;
-            y2 = y + 1;
-            x1Valid = (x1 >= 0) && this._valid(x1, y),
-            x2Valid = (x2 < width) && this._valid(x2, y);
-            y1Valid = (y1 >= 0) && this._valid(x, y1);
-            y2Valid = (y2 < height) && this._valid(x, y2);
+            tileX1 = tileX - 1;
+            tileX2 = tileX + 1;
+            tileY1 = tileY - 1;
+            tileY2 = tileY + 1;
+            tileX1Valid = (tileX1 >= 0) && this._valid(tileX1, tileY),
+            tileX2Valid = (tileX2 < width) && this._valid(tileX2, tileY);
+            tileY1Valid = (tileY1 >= 0) && this._valid(tileX, tileY1);
+            tileY2Valid = (tileY2 < height) && this._valid(tileX, tileY2);
         }
 
-        if (x1Valid) {
+        if (tileX1Valid) {
             neighbour = neighbourList[neighbourCount];
-            neighbour.x = x1;
-            neighbour.y = y;
+            neighbour.tileX = tileX1;
+            neighbour.tileY = tileY;
             neighbourCount++;
         }
-        if (x2Valid) {
+        if (tileX2Valid) {
             neighbour = neighbourList[neighbourCount];
-            neighbour.x = x2;
-            neighbour.y = y;
+            neighbour.tileX = tileX2;
+            neighbour.tileY = tileY;
             neighbourCount++;
         }
 
-        if (y1Valid) {
+        if (tileY1Valid) {
             neighbour = neighbourList[neighbourCount];
-            neighbour.x = x;
-            neighbour.y = y1;
+            neighbour.tileX = tileX;
+            neighbour.tileY = tileY1;
             neighbourCount++;
 
-            if (x2Valid && this._valid(x2, y1)) {
+            if (tileX2Valid && this._valid(tileX2, tileY1)) {
                 neighbour = neighbourList[neighbourCount];
-                neighbour.x = x2;
-                neighbour.y = y1;
+                neighbour.tileX = tileX2;
+                neighbour.tileY = tileY1;
                 neighbourCount++;
             }
-            if (x1Valid && this._valid(x1, y1)) {
+            if (tileX1Valid && this._valid(tileX1, tileY1)) {
                 neighbour = neighbourList[neighbourCount];
-                neighbour.x = x1;
-                neighbour.y = y1;
+                neighbour.tileX = tileX1;
+                neighbour.tileY = tileY1;
                 neighbourCount++;
             }
         }
-        if (y2Valid) {
+        if (tileY2Valid) {
             neighbour = neighbourList[neighbourCount];
-            neighbour.x = x;
-            neighbour.y = y2;
+            neighbour.tileX = tileX;
+            neighbour.tileY = tileY2;
             neighbourCount++;
 
-            if (x2Valid && this._valid(x2, y2)) {
+            if (tileX2Valid && this._valid(tileX2, tileY2)) {
                 neighbour = neighbourList[neighbourCount];
-                neighbour.x = x2;
-                neighbour.y = y2;
+                neighbour.tileX = tileX2;
+                neighbour.tileY = tileY2;
                 neighbourCount++;
             }
-            if (x1Valid && this._valid(x1, y2)) {
+            if (tileX1Valid && this._valid(tileX1, tileY2)) {
                 neighbour = neighbourList[neighbourCount];
-                neighbour.x = x1;
-                neighbour.y = y2;
+                neighbour.tileX = tileX1;
+                neighbour.tileY = tileY2;
                 neighbourCount++;
             }
         }
@@ -266,6 +272,6 @@ exports = Class(function () {
     };
 
     this._manhattan = function (point, end) {
-        return Math.abs(point.x - end.x) + Math.abs(point.y - end.y);
+        return Math.abs(point.tileX - end.tileX) + Math.abs(point.tileY - end.tileY);
     };
 });

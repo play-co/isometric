@@ -39,7 +39,6 @@ exports = Class(Emitter, function (supr) {
 		this._pathIndex = 0;
 		this._pathDT = 200;
 
-		this._target = {x: 0, y: 0};
 		this._targetTile = null;
 		this._speed = 1;
 
@@ -143,7 +142,7 @@ exports = Class(Emitter, function (supr) {
 	this._moveToTile = function (speed, field1, field2, maxTileN) {
 		var reached = false;
 		var tileN = this._opts[field1];
-		var targetTileN = this._targetTile[field2];
+		var targetTileN = this._targetTile[field1];
 		var n = this._opts[field2];
 
 		if ((targetTileN === 0) && (tileN === maxTileN)) {
@@ -265,8 +264,8 @@ exports = Class(Emitter, function (supr) {
 		this._reachedY = false;
 
 		var opts = this._opts;
-		var targetTileX = this._targetTile.x;
-		var targetTileY = this._targetTile.y;
+		var targetTileX = this._targetTile.tileX;
+		var targetTileY = this._targetTile.tileY;
 		var tileX = opts.tileX;
 		var tileY = opts.tileY;
 		var x = opts.x;

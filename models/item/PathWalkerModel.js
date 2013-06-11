@@ -52,21 +52,21 @@ exports = Class(DynamicModel, function (supr) {
 		var mapWidth = map.getWidth();
 		var mapHeight = map.getHeight();
 
-		var options = [{x: -1, y: 0}, {x: 1, y: 0}, {x: 0, y: -1}, {x: 0, y: 1}];
+		var options = [{tileX: -1, tileY: 0}, {tileX: 1, tileY: 0}, {tileX: 0, tileY: -1}, {tileX: 0, tileY: 1}];
 		var direction = null;
 		var directionTest = 0;
 		var denyDirection = null;
 
 		var path = this._startPath;
-		var startX = path[path.length - 1].x;
-		var startY = path[path.length - 1].y;
-		var x = startX;
-		var y = startY;
+		var startX = path[path.length - 1].tileX;
+		var startY = path[path.length - 1].tileY;
+		var tileX = startX;
+		var tileY = startY;
 
 		var addPoint = function () {
-				x = (x + mapWidth + direction.x) % mapWidth;
-				y = (y + mapHeight + direction.y) % mapHeight;
-				path.push({x: x, y: y});
+				tileX = (tileX + mapWidth + direction.tileX) % mapWidth;
+				tileY = (tileY + mapHeight + direction.tileY) % mapHeight;
+				path.push({tileX: tileX, tileY: tileY});
 			};
 
 		while (path.length < this._maxPathLength) {
@@ -77,8 +77,8 @@ exports = Class(DynamicModel, function (supr) {
 				if (option.directionTest !== directionTest) {
 					directionsTested++;
 					option.directionTest = directionTest;
-					if (this._tileValid(x + option.x, y + option.y)) {
-						if (denyDirection && (denyDirection.x === option.x) && (denyDirection.y === option.y)) {
+					if (this._tileValid(tileX + option.tileX, tileY + option.tileY)) {
+						if (denyDirection && (denyDirection.tileX === option.tileX) && (denyDirection.tileY === option.tileY)) {
 						} else {
 							direction = option;
 						}
@@ -90,16 +90,16 @@ exports = Class(DynamicModel, function (supr) {
 				break;
 			}
 
-			if (this._tileValid(x + direction.x, y + direction.y)) {
-				var tile = map.getTile(x + direction.x, y + direction.y)[1];
+			if (this._tileValid(tileX + direction.tileX, tileY + direction.tileY)) {
+				var tile = map.getTile(tileX + direction.tileX, tileY + direction.tileY)[1];
 				if (!((tile.index === 56) || (tile.index === 146))) {
 					addPoint();
-					denyDirection = {x: direction.x ? -direction.x : 0, y: direction.y ? -direction.y : 0};
+					denyDirection = {tileX: direction.tileX ? -direction.tileX : 0, tileY: direction.tileY ? -direction.tileY : 0};
 					direction = null;
 				}
 				if (direction) {
 					addPoint();
-					if ((startX === x) && (startY === y)) {
+					if ((startX === tileX) && (startY === tileY)) {
 						break;
 					}
 				}
@@ -108,11 +108,11 @@ exports = Class(DynamicModel, function (supr) {
 			}
 		}
 
-		if ((startX !== x) || (startY !== y)) {
+		if ((startX !== tileX) || (startY !== tileY)) {
 			var i = path.length - 1;
 			while (i) {
 				i--;
-				path.push({x: path[i].x, y: path[i].y});
+				path.push({tileX: path[i].tileX, tileY: path[i].tileY});
 			}
 		}
 		if (path.length > 2) {
@@ -144,7 +144,7 @@ exports = Class(DynamicModel, function (supr) {
 		}
 
 		var tile = this._path[0];
-		opts.visible = !((opts.tileX === tile.x) && (opts.tileY === tile.y));
+		opts.visible = !((opts.tileX === tile.tileX) && (opts.tileY === tile.tileY));
 
 		return result;
 	};
