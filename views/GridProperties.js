@@ -55,6 +55,9 @@ exports = Class(function () {
 			var tileSetting = merge(
 					opts.tileSettings[i],
 					{
+						width: 1,
+						height: 1,
+						index: 0,
 						x: 0,
 						y: 0,
 						z: [0, 0]
