@@ -46,14 +46,14 @@ are always rendered on top of the roads.
 
 ### Binairy operations
 
-When items are drawn on the map an `or` operation is used. The `index` of represends the contents of the tile.
-With an `or` operation it's easy to add tiles:
+When items are drawn on the map an `or` operation is used. The `index` represends the contents of the tile.
+With an `or` operation it's easy to add tiles, here's are two examples of adding 3x3 bit tiles:
 
 <table>
 	<tr>
 		<td>00011100000</td>
-		<td><img src="doc/demoRoad56.png" width="45" height="36"/></td>
 		<td></td>
+		<td><img src="doc/demoRoad56.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>00001001000</td>
@@ -64,6 +64,24 @@ With an `or` operation it's easy to add tiles:
 		<td>00011101000</td>
 		<td>=</td>
 		<td><img src="doc/demoRoad184.png" width="45" height="36"/></td>
+	</tr>
+</table>
+
+<table>
+	<tr>
+		<td>00001100000</td>
+		<td></td>
+		<td><img src="doc/demoRoad48.png" width="45" height="36"/></td>
+	</tr>
+	<tr>
+		<td>01001001000</td>
+		<td>or</td>
+		<td><img src="doc/demoRoad146.png" width="45" height="36"/></td>
+	</tr>
+	<tr>
+		<td>01001101000</td>
+		<td>=</td>
+		<td><img src="doc/demoRoad178.png" width="45" height="36"/></td>
 	</tr>
 </table>
 
