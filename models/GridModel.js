@@ -67,6 +67,20 @@ exports = Class(Emitter, function (supr) {
 				}
 			);
 
+		if (opts.editorSettings) {
+			for (var i in opts.editorSettings) {
+				var editorSetting = opts.editorSettings[i];
+				opts.editorSettings[i] = merge(
+					editorSetting,
+					{
+						index: 0,
+						width: 1,
+						height: 1
+					}
+				);
+			}
+		}
+
 		data.map = new Map({
 			mapSettings: opts.mapSettings,
 			editorSettings: opts.editorSettings || {},

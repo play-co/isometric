@@ -185,7 +185,14 @@ exports = Class(StaticModel, function (supr) {
 			if (!modelInfo) {
 				return;
 			}
-		 	model = new modelInfo.ctor(merge(this._pathOpts(), modelInfo.opts));
+
+			// todo: needs deep copy instead of shallow copy...
+			var opts = this._pathOpts();
+			for (var i in modelInfo.opts) {
+				opts[i] = modelInfo.opts[i];
+			}
+
+			model = new modelInfo.ctor(opts);
 			model.on('Sleep', bind(this, 'onModelSleep'));
 			this.emit('SpawnedModel', model);
 		}
