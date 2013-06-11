@@ -190,6 +190,7 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.putItem = function (modelType, tileX, tileY, opts) {
+		//model.constructor.toString()
 		var model = this._gridModel.getMap().putItem(modelType, tileX, tileY, opts);
 		model && this.onAddStaticModel(model);
 	};
@@ -216,10 +217,20 @@ exports = Class(Emitter, function (supr) {
 
 	this.show = function () {
 		this._isometricView.show();
+
+		return this;
 	};
 
 	this.hide = function () {
 		this._isometricView.hide();
+
+		return this;
+	};
+
+	this.generate = function () {
+		this._gridModel.generate();
+
+		return this;
 	};
 
 	this.toJSON = function () {
