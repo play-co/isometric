@@ -49,6 +49,38 @@ are always rendered on top of the roads.
 When items are drawn on the map an `or` operation is used. The `index` of represends the contents of the tile.
 With an `or` operation it's easy to add tiles:
 
+<table>
+	<tr>
+		<td>
+			00011100000
+		</td>
+		<td>
+			<img src="doc/demoRoad56.png" width="45" height="36"/><br>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>
+			00001001000
+		</td>
+		<td>
+			<img src="doc/demoRoad144.png" width="45" height="36"/><br>
+		</td>
+		<td>or</td>
+	</tr>
+	<tr>
+		<td>
+			00011101000
+		</td>
+		<td>
+			<img src="doc/demoRoad184.png" width="45" height="36"/><br>
+		</td>
+		<td>
+			=
+		</td>
+	</tr>
+</table>
+
 ## 3x3 Bit index
 
 The following table shows road tiles organized byte a 3x3 bit `index` value:
