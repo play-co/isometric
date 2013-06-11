@@ -16,6 +16,9 @@ Eech key in the `editorSettings` object represent a tool for modifying the grid.
  + `type {string}` ---The type of tool, possible values are: 'item', 'line' or 'area'.
  + `layer {number}` ---The layer affected by this tool, has to be within the range of the layers defined in the [`gridSettings`](grid.md).
  + `group {numner}` ---The group to use for drawing on the map.
+ + `index {number} = 0` ---The index within the group.
+ + `model {class}` ---Optional, a model constructor for this tile.
+ + `modelOpts {object}` ---Optional, the options to add the the constructor of the model.
  + `tileSet {array|object}` ---The bits to apply when drawing, see below for more details.
  + `minWidth {number)` ---The minimal width of the selected area which is accepted.
  + `minHeight {number)` ---The minimal height of the selected area which is accepted.
@@ -47,7 +50,6 @@ For a visual representation and more details about these values see: [`tileSetti
 
 An example setting for drawing roads on the grid, the line update merged adjacent lines and line caps.
 ~~~
-
 var editorSettings = {
 		road: {
 			type: 'line',
@@ -78,6 +80,18 @@ var editorSettings = {
 			minHeight: 2
 		}
 	};
+~~~
+
+An example for adding an item with a constructor to the gird;
+~~~
+var editorSettings = {
+	box: {
+		type: 'item',
+		model: BoxModel,
+		layer: 1,
+		group: 2
+	}
+};
 ~~~
 
 Back to [isometric documentation](readme.md).
