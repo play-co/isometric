@@ -85,6 +85,26 @@ With an `or` operation it's easy to add tiles, here's are two examples of adding
 	</tr>
 </table>
 
+Here's an example adding two 2x2 bit tiles:
+
+<table>
+	<tr>
+		<td>0001</td>
+		<td></td>
+		<td><img src="doc/demoGround1.png" width="45" height="36"/></td>
+	</tr>
+	<tr>
+		<td>0101</td>
+		<td>or</td>
+		<td><img src="doc/demoGround5.png" width="45" height="36"/></td>
+	</tr>
+	<tr>
+		<td>0111</td>
+		<td>=</td>
+		<td><img src="doc/demoGround7.png" width="45" height="36"/></td>
+	</tr>
+</table>
+
 ## 3x3 Bit index
 
 The following table shows road tiles organized byte a 3x3 bit `index` value:
@@ -230,72 +250,72 @@ The following table shows road tiles organized byte a 2x2 bit `index` value:
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround2.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>2</td>
 		<td>0010</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround3.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>3</td>
 		<td>0011</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround4.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>4</td>
 		<td>0100</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround5.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>5</td>
 		<td>0101</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround6.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>6</td>
 		<td>0110</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround7.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>7</td>
 		<td>0111</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround8.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>8</td>
 		<td>1000</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround9.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>9</td>
 		<td>1001</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround10.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>10</td>
 		<td>1010</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround11.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>11</td>
 		<td>1011</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround12.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>12</td>
 		<td>1100</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround13.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>13</td>
 		<td>1101</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround14.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>14</td>
 		<td>1110</td>
 	</tr>
 	<tr>
 		<td><img src="doc/demoGround15.png" width="45" height="36"/></td>
-		<td>1</td>
+		<td>15</td>
 		<td>1111</td>
 	</tr>
 </table>
