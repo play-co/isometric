@@ -89,9 +89,9 @@ Here's an example adding two 2x2 bit tiles:
 
 <table>
 	<tr>
-		<td>0001</td>
+		<td>0010</td>
 		<td></td>
-		<td><img src="doc/demoGround1.png" width="45" height="36"/></td>
+		<td><img src="doc/demoGround2.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>0101</td>
