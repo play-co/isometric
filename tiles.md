@@ -1,4 +1,4 @@
-Back to (isometric documentation)[readme.md].
+Back to [isometric documentation](readme.md).
 
 # Tile settings
 
@@ -363,4 +363,4 @@ var tileSettings = [
 ]
 ~~~
 
-Back to (isometric documentation)[readme.md].
+Back to [isometric documentation](readme.md).

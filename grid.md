@@ -1,4 +1,4 @@
-Back to (isometric documentation)[readme.md].
+Back to [isometric documentation](readme.md).
 
 # Grid settings
 
@@ -66,4 +66,4 @@ var gridSettings = {
 }
 ~~~
 
-Back to (isometric documentation)[readme.md].
+Back to [isometric documentation](readme.md).

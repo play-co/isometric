@@ -1,4 +1,4 @@
-Back to (isometric documentation)[readme.md].
+Back to [isometric documentation](readme.md).
 
 # Map settings
 
@@ -136,4 +136,4 @@ var mapSettings = {
 }
 ~~~
 
-Back to (isometric documentation)[readme.md].
+Back to [isometric documentation](readme.md).
