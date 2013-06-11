@@ -53,7 +53,7 @@ exports = Class(View, function (supr) {
 
 	this.onInputStartDragMode = function (evt) {
 		var found = false;
-		var scale = GC.app.scale;
+		var scale = GC.app.scale * this._gridView.getScale();
 		var mouseX = evt.srcPoint.x / scale - this._gridView.getOffsetX();
 		var mouseY = evt.srcPoint.y / scale - this._gridView.getOffsetY();
 		var rectsOnScreen = this._rectsOnScreen;
@@ -216,6 +216,10 @@ exports = Class(View, function (supr) {
 	};
 
 	this.addRect = function (model, tileView, clickRect, updateRect) {
+		if (model.canSelect && !model.canSelect()) {
+			return;
+		}
+
 		var rectsOnScreen = this._rectsOnScreen;
 		var rectOnScreen;
 		var found = false;
