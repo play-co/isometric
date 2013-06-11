@@ -1,3 +1,5 @@
+Back to (isometric documentation)[readme.md].
+
 # Map settings
 
 The map settings can be used to generate a landscape, randomize tiles and set
@@ -133,3 +135,5 @@ var mapSettings = {
 	]
 }
 ~~~
+
+Back to (isometric documentation)[readme.md].

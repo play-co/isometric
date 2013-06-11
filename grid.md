@@ -1,3 +1,5 @@
+Back to (isometric documentation)[readme.md].
+
 # Grid settings
 
 The grid settings contain the most fundamental properties of the grid like the size of the grid,
@@ -63,3 +65,5 @@ var gridSettings = {
 	]
 }
 ~~~
+
+Back to (isometric documentation)[readme.md].
