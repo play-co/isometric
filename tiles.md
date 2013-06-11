@@ -11,7 +11,7 @@ different `index` values:
 + Areas which use 2x2 bits.
 + Items which can use an arbritrairy index value.
 
-Data structure
+## Data structure
 
 The tile settings data structure is an array, each entry is a group and one entry can be used
 the define the selection tiles used as a cursor.
@@ -21,17 +21,27 @@ the define the selection tiles used as a cursor.
  + `cursorYes {string}` ---Path to the cursor displayed if drawing is accepted.
  + `cursorNo {string}` ---Path to the cursor displayed if drawing is denied.
 
+~~~
+var tileSettings = [
+	{
+		cursorYes: 'resources/images/layer0/cursorYes.png',
+		cursorNo: 'resources/images/layer0/cursorNo.png'
+	}
+];
+~~~
+
 ### A group object:
 
  + `group {number}` ---The group identifier.
  + `images {array}` ---An array of objects representing the images of the group with the following structure:
   + `index {number}` ---The index of the image
-  + `url {string|array} ---The url or a list of urls.
+  + `url {string|array}` ---The url or a list of urls.
   + `flipX {boolean}` ---Flip the image horizontal.
   + `flipY {boolean}` ---Flip the image vertical.
- + `x {numner}` ---Optional, the relative x-position of the image within the tile.
- + `y {number}` ---Optional, the relative y-position of the image within the tile.
- + `z {array}` ---Optional, first index is relative z-index in the tile, second is maximum layer z-index multiplied with this value.
+  + `blockEvents {boolean}` ---Optional, default is undefined, if false then the item can be selected.
+ + `x {numner} = 0` ---Optional, the relative x-position of the image within the tile.
+ + `y {number} = 0` ---Optional, the relative y-position of the image within the tile.
+ + `z {array} = [0, 0]` ---Optional, first index is relative z-index in the tile, second is maximum layer z-index multiplied with this value.
  + `width {number}` ---The width of the image.
  + `height {number}` ---The height of the image.
 
@@ -198,26 +208,26 @@ The following table shows road tiles organized byte a 3x3 bit `index` value:
 </table>
 
 ~~~
-exports = [
+var tileSettings = [
 	{
 		group: 1,
 		images: [
-			{index: 16, url: 'resources/images/demoRoad16.png', blockEvents: true},
-			{index: 18, url: 'resources/images/demoRoad18.png', blockEvents: true},
-			{index: 24, url: 'resources/images/demoRoad24.png', blockEvents: true},
-			{index: 26, url: 'resources/images/demoRoad26.png', blockEvents: true},
-			{index: 48, url: 'resources/images/demoRoad48.png', blockEvents: true},
-			{index: 50, url: 'resources/images/demoRoad50.png', blockEvents: true},
-			{index: 56, url: 'resources/images/demoRoad56.png', blockEvents: true},
-			{index: 58, url: 'resources/images/demoRoad58.png', blockEvents: true},
-			{index: 144, url: 'resources/images/demoRoad144.png', blockEvents: true},
-			{index: 146, url: 'resources/images/demoRoad146.png', blockEvents: true},
-			{index: 152, url: 'resources/images/demoRoad152.png', blockEvents: true},
-			{index: 154, url: 'resources/images/demoRoad154.png', blockEvents: true},
-			{index: 176, url: 'resources/images/demoRoad176.png', blockEvents: true},
-			{index: 178, url: 'resources/images/demoRoad178.png', blockEvents: true},
-			{index: 184, url: 'resources/images/demoRoad184.png', blockEvents: true},
-			{index: 186, url: 'resources/images/demoRoad186.png', blockEvents: true}
+			{index: 16, url: 'resources/images/demoRoad16.png'},
+			{index: 18, url: 'resources/images/demoRoad18.png'},
+			{index: 24, url: 'resources/images/demoRoad24.png'},
+			{index: 26, url: 'resources/images/demoRoad26.png'},
+			{index: 48, url: 'resources/images/demoRoad48.png'},
+			{index: 50, url: 'resources/images/demoRoad50.png'},
+			{index: 56, url: 'resources/images/demoRoad56.png'},
+			{index: 58, url: 'resources/images/demoRoad58.png'},
+			{index: 144, url: 'resources/images/demoRoad144.png'},
+			{index: 146, url: 'resources/images/demoRoad146.png'},
+			{index: 152, url: 'resources/images/demoRoad152.png'},
+			{index: 154, url: 'resources/images/demoRoad154.png'},
+			{index: 176, url: 'resources/images/demoRoad176.png'},
+			{index: 178, url: 'resources/images/demoRoad178.png'},
+			{index: 184, url: 'resources/images/demoRoad184.png'},
+			{index: 186, url: 'resources/images/demoRoad186.png'}
 		],
 		x: 0,
 		y: 0,
@@ -321,26 +331,26 @@ The following table shows road tiles organized byte a 2x2 bit `index` value:
 </table>
 
 ~~~
-exports = [
+var tileSettings = [
 	{
 		group: 1,
 		images: [
-			{index: 0, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 1, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 2, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 3, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 4, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 5, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 6, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 7, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 8, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 9, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 10, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 11, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 12, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 13, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 14, url: 'resources/images/demoGround0.png', blockEvents: true},
-			{index: 15, url: 'resources/images/demoGround0.png', blockEvents: true}
+			{index: 0, url: 'resources/images/demoGround0.png'},
+			{index: 1, url: 'resources/images/demoGround0.png'},
+			{index: 2, url: 'resources/images/demoGround0.png'},
+			{index: 3, url: 'resources/images/demoGround0.png'},
+			{index: 4, url: 'resources/images/demoGround0.png'},
+			{index: 5, url: 'resources/images/demoGround0.png'},
+			{index: 6, url: 'resources/images/demoGround0.png'},
+			{index: 7, url: 'resources/images/demoGround0.png'},
+			{index: 8, url: 'resources/images/demoGround0.png'},
+			{index: 9, url: 'resources/images/demoGround0.png'},
+			{index: 10, url: 'resources/images/demoGround0.png'},
+			{index: 11, url: 'resources/images/demoGround0.png'},
+			{index: 12, url: 'resources/images/demoGround0.png'},
+			{index: 13, url: 'resources/images/demoGround0.png'},
+			{index: 14, url: 'resources/images/demoGround0.png'},
+			{index: 15, url: 'resources/images/demoGround0.png'}
 		],
 		x: 0,
 		y: 0,
