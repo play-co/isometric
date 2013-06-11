@@ -51,33 +51,19 @@ With an `or` operation it's easy to add tiles:
 
 <table>
 	<tr>
-		<td>
-			00011100000
-		</td>
-		<td>
-			<img src="doc/demoRoad56.png" width="45" height="36"/><br>
-		</td>
+		<td>00011100000</td>
+		<td><img src="doc/demoRoad56.png" width="45" height="36"/></td>
 		<td></td>
 	</tr>
 	<tr>
-		<td>
-			00001001000
-		</td>
-		<td>
-			<img src="doc/demoRoad144.png" width="45" height="36"/><br>
-		</td>
+		<td>00001001000</td>
 		<td>or</td>
+		<td><img src="doc/demoRoad144.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
-		<td>
-			00011101000
-		</td>
-		<td>
-			<img src="doc/demoRoad184.png" width="45" height="36"/><br>
-		</td>
-		<td>
-			=
-		</td>
+		<td>00011101000</td>
+		<td>=</td>
+		<td><img src="doc/demoRoad184.png" width="45" height="36"/></td>
 	</tr>
 </table>
 
