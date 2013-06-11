@@ -267,6 +267,7 @@ exports = Class([View, GridProperties], function (supr) {
 					style.y = tileOnScreen.y;
 					style.zIndex = tileOnScreen.z + 50;
 				} else {
+					console.log('release!', index);
 					particleSystem.release();
 				}
 			}
@@ -324,39 +325,42 @@ exports = Class([View, GridProperties], function (supr) {
 	this.onAddParticles = function (type, tileX, tileY, x, y, clearSystem, result) {
 		var index = tileX + '_' + tileY;
 		var tileOnScreen = this._tilesOnScreen[index];
+
+		if (!tileOnScreen) {
+			return;
+		}
+
 		var particleSystems = this._particleSystems;
 
-		if (tileOnScreen) {
-			if (tileOnScreen.currentPopulation === this._currentPopulation) {
-				if (result) {
-					result.success = true;
-				}
-				var particleSystem = tileOnScreen.particleSystem;
-				if (!particleSystem) {
-					particleSystem = this._layers[1].particleSystems.obtainView()
-
-					particleSystem.onRelease = function () {
-						delete particleSystems[index];
-						tileOnScreen.particleSystem = false;
-					};
-
-					tileOnScreen.particleSystem = particleSystem;
-					particleSystems[index] = particleSystem;
-
-					var style = particleSystem.style;
-
-					style.x = tileOnScreen.x;
-					style.y = tileOnScreen.y;
-					style.zIndex = tileOnScreen.z + 50;
-				}
-				clearSystem && particleSystem.clear();					
-
-				particleSystem.addParticle(type, x, y);
-			} else if (tileOnScreen.particleSystem) {
-				delete particleSystems[index];
-				tileOnScreen.particleSystem.release();
-				tileOnScreen.particleSystem = false;
+		if (tileOnScreen.currentPopulation === this._currentPopulation) {
+			if (result) {
+				result.success = true;
 			}
+			var particleSystem = tileOnScreen.particleSystem;
+			if (!particleSystem) {
+				particleSystem = this._layers[1].particleSystems.obtainView()
+
+				particleSystem.onRelease = function () {
+					delete particleSystems[index];
+					tileOnScreen.particleSystem = false;
+				};
+
+				tileOnScreen.particleSystem = particleSystem;
+				particleSystems[index] = particleSystem;
+
+				var style = particleSystem.style;
+
+				style.x = tileOnScreen.x;
+				style.y = tileOnScreen.y;
+				style.zIndex = tileOnScreen.z + 50;
+			}
+			clearSystem && particleSystem.clear();
+
+			particleSystem.addParticle(type, x, y);
+		} else if (tileOnScreen.particleSystem) {
+			delete particleSystems[index];
+			tileOnScreen.particleSystem.release();
+			tileOnScreen.particleSystem = false;
 		}
 	};
 
