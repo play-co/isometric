@@ -1,6 +1,6 @@
 # Isometric engine
 
-The isometric engine allows you to use 'fake 3d'. It renders diamont shaped tiles.
+The isometric engine allows you to use 'fake 3d'. It renders diamond shaped tiles.
 
 ## Configuration
 
