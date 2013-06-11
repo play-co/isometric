@@ -6,7 +6,8 @@ for the `Isometric` class.
 
 The `group` and `index` refere to tile images which are defined in the `tileSettings`.
 
-Data structure
+## Data structure
+
  + `rules {array}` ---Optional, rules for replacing tiles.
   + `ag {number}` ---Value of the group on the map.
   + `ai {number}` ---Value of the index on the map.
