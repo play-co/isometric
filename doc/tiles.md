@@ -65,17 +65,17 @@ With an `or` operation it's easy to add tiles, here's are two examples of adding
 	<tr>
 		<td>00011100000</td>
 		<td></td>
-		<td><img src="doc/demoRoad56.png" width="45" height="36"/></td>
+		<td><img src="demoRoad56.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>00001001000</td>
 		<td>or</td>
-		<td><img src="doc/demoRoad144.png" width="45" height="36"/></td>
+		<td><img src="demoRoad144.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>00011101000</td>
 		<td>=</td>
-		<td><img src="doc/demoRoad184.png" width="45" height="36"/></td>
+		<td><img src="demoRoad184.png" width="45" height="36"/></td>
 	</tr>
 </table>
 
@@ -83,17 +83,17 @@ With an `or` operation it's easy to add tiles, here's are two examples of adding
 	<tr>
 		<td>00001100000</td>
 		<td></td>
-		<td><img src="doc/demoRoad48.png" width="45" height="36"/></td>
+		<td><img src="demoRoad48.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>01001001000</td>
 		<td>or</td>
-		<td><img src="doc/demoRoad146.png" width="45" height="36"/></td>
+		<td><img src="demoRoad146.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>01001101000</td>
 		<td>=</td>
-		<td><img src="doc/demoRoad178.png" width="45" height="36"/></td>
+		<td><img src="demoRoad178.png" width="45" height="36"/></td>
 	</tr>
 </table>
 
@@ -103,17 +103,17 @@ Here's an example adding two 2x2 bit tiles:
 	<tr>
 		<td>0010</td>
 		<td></td>
-		<td><img src="doc/demoGround2.png" width="45" height="36"/></td>
+		<td><img src="demoGround2.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>0101</td>
 		<td>or</td>
-		<td><img src="doc/demoGround5.png" width="45" height="36"/></td>
+		<td><img src="demoGround5.png" width="45" height="36"/></td>
 	</tr>
 	<tr>
 		<td>0111</td>
 		<td>=</td>
-		<td><img src="doc/demoGround7.png" width="45" height="36"/></td>
+		<td><img src="demoGround7.png" width="45" height="36"/></td>
 	</tr>
 </table>
 
@@ -128,82 +128,82 @@ The following table shows road tiles organized byte a 3x3 bit `index` value:
 		<th>Binairy</th>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad16.png" width="45" height="36"/></td>
+		<td><img src="demoRoad16.png" width="45" height="36"/></td>
 		<td>16</td>
 		<td>00001000000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad18.png" width="45" height="36"/></td>
+		<td><img src="demoRoad18.png" width="45" height="36"/></td>
 		<td>18</td>
 		<td>01001000000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad24.png" width="45" height="36"/></td>
+		<td><img src="demoRoad24.png" width="45" height="36"/></td>
 		<td>24</td>
 		<td>00011000000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad26.png" width="45" height="36"/></td>
+		<td><img src="demoRoad26.png" width="45" height="36"/></td>
 		<td>26</td>
 		<td>01011000000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad48.png" width="45" height="36"/></td>
+		<td><img src="demoRoad48.png" width="45" height="36"/></td>
 		<td>48</td>
 		<td>00001100000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad50.png" width="45" height="36"/></td>
+		<td><img src="demoRoad50.png" width="45" height="36"/></td>
 		<td>50</td>
 		<td>01001100000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad56.png" width="45" height="36"/></td>
+		<td><img src="demoRoad56.png" width="45" height="36"/></td>
 		<td>56</td>
 		<td>00011100000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad58.png" width="45" height="36"/></td>
+		<td><img src="demoRoad58.png" width="45" height="36"/></td>
 		<td>58</td>
 		<td>01011100000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad144.png" width="45" height="36"/></td>
+		<td><img src="demoRoad144.png" width="45" height="36"/></td>
 		<td>144</td>
 		<td>00001001000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad146.png" width="45" height="36"/></td>
+		<td><img src="demoRoad146.png" width="45" height="36"/></td>
 		<td>146</td>
 		<td>01001001000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad152.png" width="45" height="36"/></td>
+		<td><img src="demoRoad152.png" width="45" height="36"/></td>
 		<td>152</td>
 		<td>00011001000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad154.png" width="45" height="36"/></td>
+		<td><img src="demoRoad154.png" width="45" height="36"/></td>
 		<td>154</td>
 		<td>01011001000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad176.png" width="45" height="36"/></td>
+		<td><img src="demoRoad176.png" width="45" height="36"/></td>
 		<td>176</td>
 		<td>00001101000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad178.png" width="45" height="36"/></td>
+		<td><img src="demoRoad178.png" width="45" height="36"/></td>
 		<td>178</td>
 		<td>01001101000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad184.png" width="45" height="36"/></td>
+		<td><img src="demoRoad184.png" width="45" height="36"/></td>
 		<td>184</td>
 		<td>00011101000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoRoad186.png" width="45" height="36"/></td>
+		<td><img src="demoRoad186.png" width="45" height="36"/></td>
 		<td>186</td>
 		<td>01011101000</td>
 	</tr>
@@ -251,82 +251,82 @@ The following table shows road tiles organized byte a 2x2 bit `index` value:
 		<th>Binairy</th>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround0.png" width="45" height="36"/></td>
+		<td><img src="demoGround0.png" width="45" height="36"/></td>
 		<td>0</td>
 		<td>0000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround1.png" width="45" height="36"/></td>
+		<td><img src="demoGround1.png" width="45" height="36"/></td>
 		<td>1</td>
 		<td>0001</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround2.png" width="45" height="36"/></td>
+		<td><img src="demoGround2.png" width="45" height="36"/></td>
 		<td>2</td>
 		<td>0010</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround3.png" width="45" height="36"/></td>
+		<td><img src="demoGround3.png" width="45" height="36"/></td>
 		<td>3</td>
 		<td>0011</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround4.png" width="45" height="36"/></td>
+		<td><img src="demoGround4.png" width="45" height="36"/></td>
 		<td>4</td>
 		<td>0100</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround5.png" width="45" height="36"/></td>
+		<td><img src="demoGround5.png" width="45" height="36"/></td>
 		<td>5</td>
 		<td>0101</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround6.png" width="45" height="36"/></td>
+		<td><img src="demoGround6.png" width="45" height="36"/></td>
 		<td>6</td>
 		<td>0110</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround7.png" width="45" height="36"/></td>
+		<td><img src="demoGround7.png" width="45" height="36"/></td>
 		<td>7</td>
 		<td>0111</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround8.png" width="45" height="36"/></td>
+		<td><img src="demoGround8.png" width="45" height="36"/></td>
 		<td>8</td>
 		<td>1000</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround9.png" width="45" height="36"/></td>
+		<td><img src="demoGround9.png" width="45" height="36"/></td>
 		<td>9</td>
 		<td>1001</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround10.png" width="45" height="36"/></td>
+		<td><img src="demoGround10.png" width="45" height="36"/></td>
 		<td>10</td>
 		<td>1010</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround11.png" width="45" height="36"/></td>
+		<td><img src="demoGround11.png" width="45" height="36"/></td>
 		<td>11</td>
 		<td>1011</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround12.png" width="45" height="36"/></td>
+		<td><img src="demoGround12.png" width="45" height="36"/></td>
 		<td>12</td>
 		<td>1100</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround13.png" width="45" height="36"/></td>
+		<td><img src="demoGround13.png" width="45" height="36"/></td>
 		<td>13</td>
 		<td>1101</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround14.png" width="45" height="36"/></td>
+		<td><img src="demoGround14.png" width="45" height="36"/></td>
 		<td>14</td>
 		<td>1110</td>
 	</tr>
 	<tr>
-		<td><img src="doc/demoGround15.png" width="45" height="36"/></td>
+		<td><img src="demoGround15.png" width="45" height="36"/></td>
 		<td>15</td>
 		<td>1111</td>
 	</tr>
