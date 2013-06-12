@@ -1,4 +1,4 @@
-Back to [isometric documentation](readme.md).
+Back to [isometric documentation](../readme.md).
 
 # Item settings
 
@@ -56,4 +56,4 @@ __setPath(path)__
 
 Set a path to walk, the path is a list of object with x and y values.
 
-Back to [isometric documentation](readme.md).
+Back to [isometric documentation](../readme.md).

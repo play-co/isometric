@@ -13,12 +13,12 @@ The isometric class wraps the models and views of the isometric engine. It expos
 emit events informing the user about state changed.
 
 More details about settings can be found here:
- + [Grid settings, defining the size of the grid, the size of the tiles and the layers](grid.md)
- + [Map settings, tile rules, map generating and tile randomization](map.md)
- + [Tile settings, configuring the images](tiles.md)
- + [Editor settings, properties defining tools for modifying the grid, links models to tiles](editor.md)
- + [Item settings, view properties for dynamic items on the grid](items.md)
- + [Particle settings, settings for particle systems on the grid](particles.md)
+ + [Grid settings, defining the size of the grid, the size of the tiles and the layers](doc/grid.md)
+ + [Map settings, tile rules, map generating and tile randomization](doc/map.md)
+ + [Tile settings, configuring the images](doc/tiles.md)
+ + [Editor settings, properties defining tools for modifying the grid, links models to tiles](doc/editor.md)
+ + [Item settings, view properties for dynamic items on the grid](doc/items.md)
+ + [Particle settings, settings for particle systems on the grid](doc/particles.md)
 
 Parameters
  + `superview {View}` ---The view which contains the isometric view.

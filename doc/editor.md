@@ -1,4 +1,4 @@
-Back to [isometric documentation](readme.md).
+Back to [isometric documentation](../readme.md).
 
 # Editor settings
 
@@ -94,4 +94,4 @@ var editorSettings = {
 };
 ~~~
 
-Back to [isometric documentation](readme.md).
+Back to [isometric documentation](../readme.md).
