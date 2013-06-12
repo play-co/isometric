@@ -37,7 +37,7 @@ Parameters
 ~~~
 import isometric.Isometric as Isometric;
 
-this._isometric = new Isometric({
+var isometric = new Isometric({
 	superview: this,
 	gridSettings: gridSettings,
 	tileSettings: tileSettings,
@@ -84,7 +84,7 @@ Set the background color of the grid view, is only visible through tiles which c
 Parameters
  + `backgroundColor {string}` ---Set the background color.
 
-__this.setTool(tool)__
+__setTool(tool)__
 
 Set the tool, if the tool parameter is false then the grid is put into drag mode if it's a string
 then the value should match one of the keys in the `editorSettings`.

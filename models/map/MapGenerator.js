@@ -101,7 +101,7 @@ exports = Class(Emitter, function (supr) {
 
 		switch (this._type) {
 			case 'rectangles':
-				this._startRectangles(step.width || 3, step.height || 3);
+				this._startRectangles(step.width || 3, step.height || 3, step.firstRectangle);
 				break;
 
 			case 'fill':
@@ -201,17 +201,26 @@ exports = Class(Emitter, function (supr) {
 		return false;
 	};
 
-	this._startRectangles = function (rectWidth, rectHeight) {
+	this._startRectangles = function (rectWidth, rectHeight, firstRectangle) {
 		this._rectWidth = rectWidth;
 		this._rectHeight = rectHeight;
 		this._lastDir = -1;
 
-		this._rect = this._createRect(
-			2 + (Math.random() * this._width) | 0,
-			2 + (Math.random() * this._height) | 0,
-			this._rectWidth + (Math.random() * this._rectWidth) | 0,
-			this._rectHeight + (Math.random() * this._rectHeight) | 0
-		);
+		if (firstRectangle) {
+			this._rect = this._createRect(
+				firstRectangle.x,
+				firstRectangle.y,
+				firstRectangle.w,
+				firstRectangle.h
+			);
+		} else {
+			this._rect = this._createRect(
+				2 + (Math.random() * this._width) | 0,
+				2 + (Math.random() * this._height) | 0,
+				this._rectWidth + (Math.random() * this._rectWidth) | 0,
+				this._rectHeight + (Math.random() * this._rectHeight) | 0
+			);
+		}
 	};
 
 	this._startFill = function () {

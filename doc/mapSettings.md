@@ -22,6 +22,11 @@ The `group` and `index` refere to tile images which are defined in the `tileSett
   + `layer {number}` ---Which layer to draw to, the default layer is 0.
   + `repeat {number}` ---If type is `rectangles` then this defines how many rectangles.
   + `count {number}` ---If type is `rectangles` then this defines how long a chain of rectangles will be.
+  + `firstRectangle {object}` ---Optional, if the the type is `rectangles` then this is the first rectangle with the properties:
+   + `x {number}` ---The x-position of the rectangle.
+   + `y {number}` ---The y-position of the rectangle.
+   + `w {number}` ---The width of the rectangle.
+   + `h {number}` ---The height of the rectangle.
   + `group {number}` ---The group to render.
   + `index {number}` ---The index of the tile to render, is only used when the type is 'fill'.
   + `chance {number}` ---A value between 0 and 1, the chance the tile is set, only used when the type is 'fill'.
