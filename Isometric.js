@@ -222,7 +222,7 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.hideSelectedItem = function () {
-		this._gridView.hideSelectedItem();
+		this._isometricView.getGridView().hideSelectedItem();
 	};
 
 	this.generate = function () {
