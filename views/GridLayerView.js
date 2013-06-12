@@ -74,7 +74,7 @@ exports = Class(View, function (supr) {
 				tileViews[y] = [];
 			}
 
-			var offsetX = (y & 1) * opts.tileWidth * 0.5;
+			var ox = (y & 1) * opts.tileWidth * 0.5;
 			var line = [];
 
 			for (x = 0; x < maxCountX; x++) {
@@ -83,7 +83,7 @@ exports = Class(View, function (supr) {
 				}
 				var view = new ImageView({
 						superview: this,
-						x: offsetX + x * opts.tileWidth,
+						x: ox + x * opts.tileWidth,
 						y: y * opts.tileHeight * 0.5,
 						zIndex: (y * maxCountX + x) * 100,
 						width: opts.tileWidth,
@@ -96,7 +96,7 @@ exports = Class(View, function (supr) {
 				view.startX = view.style.x;
 				view.startY = view.style.y;
 				view.startZ = (y * maxCountX + x) * 100;
-				view.left = offsetX + x * opts.tileWidth;
+				view.left = ox + x * opts.tileWidth;
 				view.bottom = y * opts.tileHeight * 0.5 + opts.tileHeight;
 			}
 		}

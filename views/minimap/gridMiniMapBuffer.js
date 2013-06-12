@@ -36,22 +36,22 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 		var viewportWidth = 1024;
 		var viewportHeight = 512;
 
-		this._tileWidth = Math.ceil(viewportWidth / this._gridWidth);
-		this._tileHeight = Math.ceil(viewportHeight / (this._gridHeight * 0.5));
+		this._tileWidth = Math.ceil(viewportWidth / this._width);
+		this._tileHeight = Math.ceil(viewportHeight / (this._height * 0.5));
 
 		viewportWidth -= this._tileWidth * 2;
 		viewportHeight -= this._tileHeight * 2;
-		this._tileWidth = Math.floor(viewportWidth / this._gridWidth);
-		this._tileHeight = Math.floor(viewportHeight / (this._gridHeight * 0.5));
+		this._tileWidth = Math.floor(viewportWidth / this._width);
+		this._tileHeight = Math.floor(viewportHeight / (this._height * 0.5));
 
-		viewportWidth = Math.ceil(this._tileWidth * (this._gridWidth + 1));
-		viewportHeight = Math.ceil(this._tileHeight * (this._gridHeight + 1) * 0.5);
+		viewportWidth = Math.ceil(this._tileWidth * (this._width + 1));
+		viewportHeight = Math.ceil(this._tileHeight * (this._height + 1) * 0.5);
 
 		this._viewport = {
 			x: this._tileWidth * 0.5,
 			y: this._tileHeight * 0.5,
-			w: (this._gridWidth - 1) * this._tileWidth,
-			h: (this._gridHeight - 1) * this._tileHeight * 0.5
+			w: (this._width - 1) * this._tileWidth,
+			h: (this._height - 1) * this._tileHeight * 0.5
 		};
 	};
 
@@ -60,7 +60,7 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 		this._initViewport();
 
 		if (this._total === 0xFFFFFF) {
-			this._total = this._gridHeight * this._gridWidth;
+			this._total = this._height * this._width;
 		}
 
 	    var Canvas = device.get('Canvas');
@@ -74,19 +74,19 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 
 	this._renderTiles = function (layer, x, y) {
 		var ctx = this._ctx;
-		var gridHeight = this._gridHeight;
-		var gridWidth = this._gridWidth;
+		var width = this._width;
+		var height = this._height;
 		var tileWidth = this._tileWidth;
 		var tileHeight = this._tileHeight;
 		var tileGroups = this._tileGroups;
 
-		var offsetX = (y & 1) * tileWidth * 0.5;
+		var ox = (y & 1) * tileWidth * 0.5;
 
 		var a = ~~(y * 0.5);
-		var b = gridWidth - a;
-		var c = y + gridHeight - a;
-		var d = (x + b) % gridWidth;
-		var e = (x + c) % gridHeight;
+		var b = width - a;
+		var c = y + height - a;
+		var d = (x + b) % width;
+		var e = (x + c) % height;
 
 		var tile = this._grid[e][d][layer];
 
@@ -95,7 +95,7 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 		if (image) {
 			ctx.save();
 
-			var imageX = offsetX + x * tileWidth;
+			var imageX = ox + x * tileWidth;
 			var imageY = y * tileHeight * 0.5;
 
 			if (image.flipX || image.flipY) {
@@ -123,8 +123,8 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 
 		for (i = -1; i < 2; i++) {
 			for (j = -1; j < 2; j++) {
-				var a = x + i * this._gridWidth;
-				var b = y + j * this._gridHeight;
+				var a = x + i * this._width;
+				var b = y + j * this._height;
 				var c = (a * w) + (b * w);
 				var d = (b * h) - (a * h);
 
@@ -139,12 +139,12 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 
 	this._renderTile = function (layer, x, y) {
 		var ctx = this._ctx;
-		var gridHeight = this._gridHeight;
-		var gridWidth = this._gridWidth;
+		var width = this._width;
+		var height = this._height;
 		var tileWidth = this._tileWidth;
 		var tileHeight = this._tileHeight;
 		var tileGroups = this._tileGroups;
-		var point = this._gridToPoint((x + gridWidth) % gridWidth, (y + gridHeight) % gridHeight);
+		var point = this._gridToPoint((x + width) % width, (y + height) % height);
 
 		if (!point) {
 			return;
@@ -192,11 +192,11 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 		this._needsBuild && this._buildMap(data);
 
 		if (this._index < this._total) {
-			var gridWidth = this._gridWidth;
+			var width = this._width;
 
 			for (var i = 0; (i < 50) && (this._index < this._total); i++) {
-				var x = this._index % gridWidth;
-				var y = (this._index / gridWidth) | 0;
+				var x = this._index % width;
+				var y = (this._index / width) | 0;
 
 				this._renderTiles(this._layer, x, y);
 				this._index++;

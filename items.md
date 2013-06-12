@@ -20,8 +20,8 @@ displaying an item.
  + `width {number}` ---The width of the view.
  + `height {number}` ---The height of the view.
  + `color {string}` ---Optional, The background color of the view.
- + `offsetX {number}` ---The relative x position of the view in relation the the item position.
- + `offsetY {number}` ---The relative y position of the view in relation the the item position.
+ + `x {number}` ---The relative x position of the view in relation the the item position.
+ + `y {number}` ---The relative y position of the view in relation the the item position.
  + `images {array}` ---A list of images which can be displayed, if images are set then the color is ignored.
 
 ## DynamicModel Class

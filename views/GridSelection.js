@@ -56,20 +56,20 @@ exports = Class(ViewPool, function (supr) {
 	this.show = function (data, offsetX, offsetY) {
 		var startPoint = data.selection.startPoint;
 		var endPoint = data.selection.endPoint;
-		var minX = Math.min(startPoint.x, endPoint.x);
-		var maxX = Math.max(startPoint.x, endPoint.x);
-		var minY = Math.min(startPoint.y, endPoint.y);
-		var maxY = Math.max(startPoint.y, endPoint.y);
+		var minX = Math.min(startPoint.tileX, endPoint.tileX);
+		var maxX = Math.max(startPoint.tileX, endPoint.tileX);
+		var minY = Math.min(startPoint.tileY, endPoint.tileY);
+		var maxY = Math.max(startPoint.tileY, endPoint.tileY);
 
-		if (maxX - minX > data.gridWidth * 0.5) {
+		if (maxX - minX > data.width * 0.5) {
 			var m = maxX;
 			maxX = minX;
-			minX = m - data.gridWidth;
+			minX = m - data.width;
 		}
-		if (maxY - minY > data.gridHeight * 0.5) {
+		if (maxY - minY > data.height * 0.5) {
 			var m = maxY;
 			maxY = minY;
-			minY = m - data.gridHeight;
+			minY = m - data.height;
 		}
 
 		var views = this._views;

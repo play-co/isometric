@@ -54,8 +54,8 @@ exports = Class(View, function (supr) {
 	this.onInputStartDragMode = function (evt) {
 		var found = false;
 		var scale = GC.app.scale * this._gridView.getScale();
-		var mouseX = evt.srcPoint.x / scale - this._gridView.getOffsetX();
-		var mouseY = evt.srcPoint.y / scale - this._gridView.getOffsetY();
+		var mouseX = evt.srcPoint.x / scale - this._gridView.getX();
+		var mouseY = evt.srcPoint.y / scale - this._gridView.getY();
 		var rectsOnScreen = this._rectsOnScreen;
 		var i = this._rectsOnScreenCount;
 
@@ -182,8 +182,8 @@ exports = Class(View, function (supr) {
 
 		if (selectedRect) {
 			var scale = GC.app.scale;
-			var mouseX = evt.srcPoint.x / scale - this._gridView.getOffsetX();
-			var mouseY = evt.srcPoint.y / scale - this._gridView.getOffsetY();
+			var mouseX = evt.srcPoint.x / scale - this._gridView.getX();
+			var mouseY = evt.srcPoint.y / scale - this._gridView.getY();
 			if ((mouseX > selectedRect.x1) && (mouseY > selectedRect.y1) && (mouseX < selectedRect.x2) && (mouseY < selectedRect.y2)) {
 				evt.cancel();
 				return true;

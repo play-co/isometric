@@ -25,8 +25,8 @@ a property for the layer.
 
  + `tileWidth {number}` ---The width of a tile.
  + `tileHeight {number}` ---The height of tile.
- + `gridWidth {number} = 64` ---Optional, the width of the grid.
- + `gridHeight {numner} = 64` ---Optional, the height of the grid.
+ + `width {number} = 64` ---Optional, the width of the grid.
+ + `height {numner} = 64` ---Optional, the height of the grid.
  + `underDrawX {number} = 2` ---Optional, extra tiles drawn to fully cover the view.
  + `underDrawY {number} = 2` ---Optional, extra tiles drawn to fully cover the view.
  + `overDrawX {number} = 2` ---Optional, extra tiles drawn to fully cover the view.
@@ -42,8 +42,8 @@ var gridSettings = {
 	tileWidth: 150,
 	tileHeight: ~~(150 * 0.8),
 
-	gridWidth: 64,
-	gridHeight: 64,
+	width: 64,
+	height: 64,
 
 	underDrawX: 2,
 	underDrawY: 2,

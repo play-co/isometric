@@ -23,10 +23,10 @@ exports = Class(function () {
 		this._maxScale = opts.maxScale || 2;
 
 		this._grid = null;
-		this._gridX = null;
-		this._gridY = null;
-		this._gridWidth = null;
-		this._gridHeight = null;
+		this._tileX = null;
+		this._tileY = null;
+		this._width = null;
+		this._height = null;
 
 		this._gridSettings = merge(
 			opts.gridSettings,
@@ -75,8 +75,8 @@ exports = Class(function () {
 		this._overDrawY = data.overDrawY || 3;
 
 		this._grid = data.grid;
-		this._gridWidth = data.gridWidth;
-		this._gridHeight = data.gridHeight;		
+		this._width = data.width;
+		this._height = data.height;		
 
 		if (this.style) {
 			var overDrawX = data.underDrawX + data.overDrawX;

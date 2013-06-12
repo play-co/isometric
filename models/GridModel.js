@@ -35,19 +35,26 @@ exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
 
+		if (!opts.gridSettings.width) {
+			opts.gridSettings.width = 64;
+		}
+		if (!opts.gridSettings.height) {
+			opts.gridSettings.height = 64;
+		}
+
 		var data = merge(
 				opts.gridSettings,
 				{
-					offsetX: 0,
-					offsetY: 0,
+					x: 0,
+					y: 0,
 
 					tileWidth: 150,
 					tileHeight: ~~(150 * 0.8),
+					tileX: 0,
+					tileY: 0,
 
-					gridX: 0,
-					gridY: 0,
-					gridWidth: 64,
-					gridHeight: 64,
+					width: opts.gridSettings.width,
+					height: opts.gridSettings.height,
 
 					selection: null,
 
@@ -84,8 +91,8 @@ exports = Class(Emitter, function (supr) {
 		data.map = new Map({
 			mapSettings: opts.mapSettings,
 			editorSettings: opts.editorSettings || {},
-			width: data.gridWidth,
-			height: data.gridHeight,
+			width: data.width,
+			height: data.height,
 			layers: data.layers,
 			itemOwner: this
 		});
@@ -122,11 +129,11 @@ exports = Class(Emitter, function (supr) {
 			x = arguments[0];
 			y = arguments[1];
 		}
-		x += data.tileWidth * data.underDrawX - data.offsetX;
-		y += data.tileHeight * data.underDrawY - data.offsetY;
+		x += data.tileWidth * data.underDrawX - data.x;
+		y += data.tileHeight * data.underDrawY - data.y;
 		return {
-			x: (data.gridX + data.gridWidth - Math.round((y / data.tileHeight) - (x / data.tileWidth))) % data.gridWidth,
-			y: (data.gridY + data.gridHeight - 1 + Math.round((y / data.tileHeight) + (x / data.tileWidth))) % data.gridHeight
+			tileX: (data.tileX + data.width - Math.round((y / data.tileHeight) - (x / data.tileWidth))) % data.width,
+			tileY: (data.tileY + data.height - 1 + Math.round((y / data.tileHeight) + (x / data.tileWidth))) % data.height
 		}
 	};
 
@@ -157,11 +164,11 @@ exports = Class(Emitter, function (supr) {
 		var data = this._data;
 		var didScroll = false;
 
-		data.offsetX += speed;
-		while (data.offsetX > data.tileWidth) {
-			data.gridX = (data.gridX + data.gridWidth - 1) % data.gridWidth;
-			data.gridY = (data.gridY + data.gridHeight - 1) % data.gridHeight;
-			data.offsetX -= data.tileWidth;
+		data.x += speed;
+		while (data.x > data.tileWidth) {
+			data.tileX = (data.tileX + data.width - 1) % data.width;
+			data.tileY = (data.tileY + data.height - 1) % data.height;
+			data.x -= data.tileWidth;
 			didScroll = true;
 		}
 
@@ -172,11 +179,11 @@ exports = Class(Emitter, function (supr) {
 		var data = this._data;
 		var didScroll = false;
 
-		data.offsetX -= speed;
-		while (data.offsetX < 0) {
-			data.gridX = (data.gridX + 1) % data.gridWidth;
-			data.gridY = (data.gridY + 1) % data.gridHeight;
-			data.offsetX += data.tileWidth;
+		data.x -= speed;
+		while (data.x < 0) {
+			data.tileX = (data.tileX + 1) % data.width;
+			data.tileY = (data.tileY + 1) % data.height;
+			data.x += data.tileWidth;
 			didScroll = true;
 		}
 
@@ -187,11 +194,11 @@ exports = Class(Emitter, function (supr) {
 		var data = this._data;
 		var didScroll = false;
 
-		data.offsetY += speed;
-		while (data.offsetY > data.tileHeight) {
-			data.gridX = (data.gridX + 1) % data.gridWidth;
-			data.gridY = (data.gridY + data.gridHeight - 1) % data.gridHeight;
-			data.offsetY -= data.tileHeight;
+		data.y += speed;
+		while (data.y > data.tileHeight) {
+			data.tileX = (data.tileX + 1) % data.width;
+			data.tileY = (data.tileY + data.height - 1) % data.height;
+			data.y -= data.tileHeight;
 			didScroll = true;
 		}
 
@@ -202,21 +209,21 @@ exports = Class(Emitter, function (supr) {
 		var data = this._data;
 		var didScroll = false;
 
-		data.offsetY -= speed;
-		while (data.offsetY < 0) {
-			data.gridX = (data.gridX + data.gridWidth - 1) % data.gridWidth;
-			data.gridY = (data.gridY + 1) % data.gridHeight;
-			data.offsetY += data.tileHeight;
+		data.y -= speed;
+		while (data.y < 0) {
+			data.tileX = (data.tileX + data.width - 1) % data.width;
+			data.tileY = (data.tileY + 1) % data.height;
+			data.y += data.tileHeight;
 			didScroll = true;
 		}
 
 		didScroll && this.emit('Scrolled');
 	};
 
-	this.scrollBy = function (offsetX, offsetY) {
-		(offsetX > 0) ? this.scrollLeft(offsetX) : this.scrollRight(-offsetX);
-		(offsetY > 0) ? this.scrollUp(offsetY) : this.scrollDown(-offsetY);
-		logger.log('scrollBy:' + this._data.offsetX + ',' + this._data.offsetY);
+	this.scrollBy = function (x, y) {
+		(x > 0) ? this.scrollLeft(x) : this.scrollRight(-x);
+		(y > 0) ? this.scrollUp(y) : this.scrollDown(-y);
+		logger.log('scrollBy:' + this._data.x + ',' + this._data.y);
 	};
 
 	this.setSelection = function (startPoint, endPoint) {
@@ -233,7 +240,7 @@ exports = Class(Emitter, function (supr) {
 			selection = {
 				startPoint: startPoint,
 				endPoint: endPoint,
-				firstPoint: {x: startPoint.x, y: startPoint.y}
+				firstPoint: {tileX: startPoint.tileX, tileY: startPoint.tileY}
 			};
 			data.selection = selection;
 		}
@@ -241,27 +248,27 @@ exports = Class(Emitter, function (supr) {
 		if (this._selectMode === selectModes.FIXED) {
 			selection.startPoint = selection.endPoint;
 			selection.endPoint = {
-				x: selection.startPoint.x + this._fixedWidth - 1,
-				y: selection.startPoint.y + this._fixedHeight - 1
+				tileX: selection.startPoint.tileX + this._fixedWidth - 1,
+				tileY: selection.startPoint.tileY + this._fixedHeight - 1
 			};
 		} else if (this._selectMode === selectModes.LINE) {
 			var firstPoint = selection.firstPoint;
 
-			if ((firstPoint.x === endPoint.x) && (firstPoint.y === endPoint.y)) {
+			if ((firstPoint.tileX === endPoint.tileX) && (firstPoint.tileY === endPoint.tileY)) {
 				this._lockHorizontal = -1;
 			} else if (this._lockHorizontal === -1) {
-				if (selection.startPoint.x !== selection.endPoint.x) {
+				if (selection.startPoint.tileX !== selection.endPoint.tileX) {
 					this._lockHorizontal = 1;
-				} else if (selection.startPoint.y !== selection.endPoint.y) {
+				} else if (selection.startPoint.tileY !== selection.endPoint.tileY) {
 					this._lockHorizontal = 2;
 				}
 			} else {
 				if (this._lockHorizontal === 1) {
-					if ((firstPoint.x === endPoint.x) && (firstPoint.y !== endPoint.y)) {
+					if ((firstPoint.tileX === endPoint.tileX) && (firstPoint.tileY !== endPoint.tileY)) {
 						this._lockHorizontal = 2;
 					}
 				} else if (this._lockHorizontal === 2) {
-					if ((firstPoint.y === endPoint.y) && (firstPoint.x !== endPoint.x)) {
+					if ((firstPoint.tileY === endPoint.tileY) && (firstPoint.tileX !== endPoint.tileX)) {
 						this._lockHorizontal = 1;
 					}
 				}
@@ -269,12 +276,12 @@ exports = Class(Emitter, function (supr) {
 
 			switch (this._lockHorizontal) {
 				case 1:
-					selection.startPoint.y = selection.firstPoint.y;
-					selection.endPoint.y = selection.firstPoint.y;
+					selection.startPoint.tileY = selection.firstPoint.tileY;
+					selection.endPoint.tileY = selection.firstPoint.tileY;
 					break;
 				case 2:
-					selection.startPoint.x = selection.firstPoint.x;
-					selection.endPoint.x = selection.firstPoint.x;
+					selection.startPoint.tileX = selection.firstPoint.tileX;
+					selection.endPoint.tileX = selection.firstPoint.tileX;
 					break;
 			}
 		}
@@ -284,20 +291,20 @@ exports = Class(Emitter, function (supr) {
 
 	this.getRect = function (point1, point2) {
 		var data = this._data;
-		var x1 = Math.min(point1.x, point2.x);
-		var x2 = Math.max(point1.x, point2.x);
-		var y1 = Math.min(point1.y, point2.y);
-		var y2 = Math.max(point1.y, point2.y);
+		var x1 = Math.min(point1.tileX, point2.tileX);
+		var x2 = Math.max(point1.tileX, point2.tileX);
+		var y1 = Math.min(point1.tileY, point2.tileY);
+		var y2 = Math.max(point1.tileY, point2.tileY);
 		var rect = {x: x1, y: y1};
 
-		if (x2 - x1 > data.gridWidth * 0.5) {
-			var n = x1 + data.gridWidth;
+		if (x2 - x1 > data.width * 0.5) {
+			var n = x1 + data.width;
 			x1 = x2;
 			x2 = n;
 			rect.x = x1;
 		}
-		if (y2 - y1 > data.gridHeight * 0.5) {
-			var n = y1 + data.gridHeight;
+		if (y2 - y1 > data.height * 0.5) {
+			var n = y1 + data.height;
 			y1 = y2;
 			y2 = n;
 			rect.y = y1;
@@ -331,11 +338,11 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.getWidth = function () {
-		return this._data.gridWidth;
+		return this._data.width;
 	};
 
 	this.getHeight = function () {
-		return this._data.gridHeight;
+		return this._data.height;
 	};
 
 	this.getStaticModels = function () {
@@ -343,11 +350,11 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.getTileX = function () {
-		return this._data.gridX;
+		return this._data.tileX;
 	};
 
 	this.getTileY = function () {
-		return this._data.gridY;
+		return this._data.tileY;
 	};
 
 	this.clearSelection = function () {
@@ -375,11 +382,11 @@ exports = Class(Emitter, function (supr) {
 
 		var data = this._data;
 
-		data.offsetX = 0;
-		data.offsetY = 0;
+		data.x = 0;
+		data.y = 0;
 
-		data.gridX = 0;
-		data.gridY = 0;
+		data.tileX = 0;
+		data.tileY = 0;
 
 		data.selection = null;
 
@@ -395,10 +402,10 @@ exports = Class(Emitter, function (supr) {
 
 		return {
 			grid: {
-				gridX: data.gridX,
-				gridY: data.gridY,
-				offsetX: data.offsetX,
-				offsetY: data.offsetY
+				tileX: data.tileX,
+				tileY: data.tileY,
+				x: data.x,
+				y: data.y
 			},
 			map: this._data.map.toJSON(),
 			staticModels: this._staticModels.toJSON()
@@ -412,10 +419,10 @@ exports = Class(Emitter, function (supr) {
 		this._data.map.fromJSON(data.map);
 
 		this._data.grid = this._data.map.getGrid();
-		this._data.gridX = data.grid.gridX;
-		this._data.gridY = data.grid.gridY;
-		this._data.offsetX = data.grid.offsetX;
-		this._data.offsetY = data.grid.offsetY;
+		this._data.tileX = data.grid.tileX;
+		this._data.tileY = data.grid.tileY;
+		this._data.x = data.grid.x;
+		this._data.y = data.grid.y;
 
 		this._staticModels.fromJSON(data.staticModels);
 	};

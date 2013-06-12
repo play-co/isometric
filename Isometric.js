@@ -49,8 +49,8 @@ exports = Class(Emitter, function (supr) {
 		opts.gridSettings = merge(
 			opts.gridSettings,
 			{
-				gridWidth: 64,
-				gridHeight: 64				
+				width: 64,
+				height: 64				
 			}
 		);
 
@@ -125,8 +125,8 @@ exports = Class(Emitter, function (supr) {
 		this._isometricView.setProgress((100 * progress) | 0);
 	};
 
-	this.onChangeOffset = function (offsetX, offsetY) {
-		this._gridModel.scrollBy(offsetX, offsetY);
+	this.onChangeOffset = function (x, y) {
+		this._gridModel.scrollBy(x, y);
 	};
 
 	this.onAddStaticModel = function (model) {
