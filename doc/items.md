@@ -54,6 +54,56 @@ Parameters
 
 __setPath(path)__
 
-Set a path to walk, the path is a list of object with x and y values.
+Set a path to walk, the path is a list of objects with `tileX` and `tileY` values.
+
+Parameters
+ + `path {array}` ---A list of objects containing a `tileX` and `tileY` property.
+
+__getTileX()__
+
+Get the x-position.
+
+Returns
+ {number} ---The x-position.
+
+__getTileY()__
+
+Get the y-position.
+
+Returns
+ {number} ---The y-position.
+
+__moveTo(destTileX, destTileY, x, y)__
+
+Searches a path. The searching is done asynchronous so for long distances it might take a while.
+
+Parameters
+ + `destTileX` ---Which x-position to move to.
+ + `destTileY` ---Which y-position to move to.
+ + `x` ---Which x-position to move to within the tile.
+ + `y` ---Which y-position to move to within the tile.
+
+___onNewTile()__
+
+This function can be implemented in subclasses and is called whenever the item moves from
+one tile to another -as opposed to moving within a tile-.
+
+__tick(dt)__
+
+This function is called once every frame.
+
+Parameters
+ + `dt {number}` ---The number of milliseconds elapsed since the last invocation.
+
+__needsSleep()__
+
+When this function is called the link between the model is broken and the tick function will no
+longer be called on the model.
+
+The model remains in a list and can be woken up with the `wakeupModel` in the `ModelViewConnector` class.
+
+__needsRemove()__
+
+When this function is called the link between the model is broken and the model will be completely removed.
 
 Back to [isometric documentation](../readme.md).

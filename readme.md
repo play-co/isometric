@@ -7,6 +7,11 @@ The isometric engine allows you to use 'fake 3d'. It renders diamond shaped tile
 The isometric engine has has a lot of features which can be configured through a number of setting options
 passed to the constructor of the `Isometric` class.
 
+### Tile conditions
+
+A lot of items test the validity of a move or a draw action, all these checkes are done by the `Map` class.
+Details about the condition validator can be found [here](conditions.md).
+
 ### Isometric Class
 
 The isometric class wraps the models and views of the isometric engine. It exposes a number of methods and 
@@ -19,11 +24,6 @@ More details about settings can be found here:
  + [Editor settings, properties defining tools for modifying the grid, links models to tiles](doc/editor.md)
  + [Item settings, view properties for dynamic items on the grid](doc/items.md)
  + [Particle settings, settings for particle systems on the grid](doc/particles.md)
-
-#### Tile rules
-
-A lot of items test the validity of a move or a draw action, all these checkes are done by the `Map` class.
-Details about the condition validator can be found [here](conditions.md).
 
 Parameters
  + `superview {View}` ---The view which contains the isometric view.
