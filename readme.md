@@ -18,12 +18,12 @@ The isometric class wraps the models and views of the isometric engine. It expos
 emit events informing the user about state changed.
 
 More details about settings can be found here:
- + [Grid settings, defining the size of the grid, the size of the tiles and the layers](doc/grid.md)
- + [Map settings, tile rules, map generating and tile randomization](doc/map.md)
- + [Tile settings, configuring the images](doc/tiles.md)
- + [Editor settings, properties defining tools for modifying the grid, links models to tiles](doc/editor.md)
- + [Item settings, view properties for dynamic items on the grid](doc/items.md)
- + [Particle settings, settings for particle systems on the grid](doc/particles.md)
+ + [Grid settings, defining the size of the grid, the size of the tiles and the layers](doc/gridSettings.md)
+ + [Map settings, tile rules, map generating and tile randomization](doc/mapSettings.md)
+ + [Tile settings, configuring the images](doc/tileSettings.md)
+ + [Editor settings, properties defining tools for modifying the grid, links models to tiles](doc/editorSettings.md)
+ + [Item settings, view properties for dynamic items on the grid](doc/itemSettings.md)
+ + [Particle settings, settings for particle systems on the grid](doc/particleSettings.md)
 
 Parameters
  + `superview {View}` ---The view which contains the isometric view.
@@ -47,7 +47,130 @@ this._isometric = new Isometric({
 	show();
 ~~~
 
-Events
+#### Methods
+
+__getGridModel()__
+
+Get the `GridModel` instance.
+
+Returns
+ {GridModel} ---`GridModel` instance.
+
+__getStaticModels()__
+
+Get the `StaticModels` instance wich contains a list of all models on the grid with a fixed position.
+
+Returns
+ {StaticModels} ---`StaticModels` instance.
+
+__getDynamicModels()__
+
+Get the `ModelViewConnection` instance which contains a list of dynamic models.
+
+Returns
+ {ModelViewConnector} ---`ModelViewConnector` instance.
+
+__getMap()__
+
+Get the `Map` instance.
+
+Returns
+ {Map} ---`Map` instance.
+
+__setBackgroundColor(backgroundColor)__
+
+Set the background color of the grid view, is only visible through tiles which contain transparent parts.
+
+Parameters
+ + `backgroundColor {string}` ---Set the background color.
+
+__this.setTool(tool)__
+
+Set the tool, if the tool parameter is false then the grid is put into drag mode if it's a string
+then the value should match one of the keys in the `editorSettings`.
+
+Parameters
+ + `tool {string|boolean}` ---Set the tool.
+
+__clear(dontGenerate)__
+
+Clear the map.
+
+Parameters
+ + `dontGenerate {boolean} = false` ---Don't generate a new map.
+
+__putItem(modelType, tileX, tileY, opts)__
+
+Put a new static item on the map.
+
+Parameters
+ + `modelType {string}` ---This value should match one of the keys in the `editorSettings`.
+ + `tileX {number}` ---The x-position.
+ + `tileY {number}` ---The y-position.
+ + `opts {object}` ---Constructor opts for the new item.
+
+__putDynamicItem(ctor, opts)__
+
+Put a new dynamic item on the map.
+
+Parameters
+ + `ctor {DynamicModel}` ---A constructor which subclasses `DynamicModel`.
+ + `opts {object}` ---Constructor options, should contain the following properties:
+  + `tileX {number} = 0` ---The x-position.
+  + `tileY {number} = 0` ---The y-position.
+  + `x {number} = 0.5` ---The x-position within the tile.
+  + `y {number} = 0.5` ---The y-position within the tile.
+
+__refreshMap(tileX, tileY)__
+
+Refresh the screen.
+
+Parameters
+ + `tileX {number}` ---Optional, the x-position, if not provided then the entire view will be refreshed.
+ + `tileY {number}` ---The y-position.
+
+__show()__
+
+Show the isometic view.
+
+__hide()__
+
+Hide the isometric view.
+
+__hideSelectedItem()__
+
+Hide the selected item.
+
+__generate()__
+
+Start generating a new map, clears the map first.
+The map is generated based on settings in `mapSettings`.
+
+__toJSON()__
+
+Get a JSON object representing the current state of the map.
+This does not include dynamic items.
+The data has the following structure:
+
+ + `grid {object}` ---The current position of the viewport:
+  + `tileX {number}` ---The x-position.
+  + `tileY {number}` ---The y-position.
+  + `x {number}` ---The x-position within the tile.
+  + `y {number}` ---The y-position within the tile.
+ + `map {object}` ---The map data.
+ + `staticModels {array}` ---A list of all static models on the map.
+
+Returns
+ {object} ---JSON representing the current state.
+
+__fromJSON(data)__
+
+Load a map, see __toJSON()__ for the structure.
+
+Parameters
+ + `data {object}` ---The previously serialized map.
+
+#### Events
 
 __'Ready', callback()__
 
@@ -95,7 +218,7 @@ __'SelectItem', callback(model)__
 Called when an item is selected.
 
 Parameters
- + `model {StaticModel}` ---A subclass instance of `StaticModel`.
+ + `model {StaticModel}` ---An instance of a `StaticModel` subclass.
 
 __'UnselectItem', callback()__
 

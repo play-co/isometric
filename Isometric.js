@@ -161,14 +161,6 @@ exports = Class(Emitter, function (supr) {
 		return this._modelViewConnector.getList();
 	};
 
-	this.getGridEditor = function () {
-		return this._gridEditor;
-	};
-
-	this.getGridView = function () {
-		return this._isometricView.getGridView();
-	};
-
 	this.getGridInputView = function () {
 		return this._isometricView.getGridInputView();
 	};
@@ -182,6 +174,10 @@ exports = Class(Emitter, function (supr) {
 		tool && this._gridEditor.setTool(tool);
 	};
 
+	this.setBackgroundColor = function (backgroundColor) {
+		this._isometricView.getGridView().setBackgroundColor(backgroundColor);
+	};
+
 	this.clear = function (dontGenerate) {
 		this._gridModel.clear();
 		!dontGenerate && this._gridModel.generate();
@@ -190,7 +186,6 @@ exports = Class(Emitter, function (supr) {
 	};
 
 	this.putItem = function (modelType, tileX, tileY, opts) {
-		//model.constructor.toString()
 		var model = this._gridModel.getMap().putItem(modelType, tileX, tileY, opts);
 		model && this.onAddStaticModel(model);
 	};
@@ -201,7 +196,6 @@ exports = Class(Emitter, function (supr) {
 					opts,
 					{
 						gridModel: this._gridModel,
-						modelType: ctor.toString()
 					}
 				)
 			);
@@ -225,6 +219,10 @@ exports = Class(Emitter, function (supr) {
 		this._isometricView.hide();
 
 		return this;
+	};
+
+	this.hideSelectedItem = function () {
+		this._gridView.hideSelectedItem();
 	};
 
 	this.generate = function () {
