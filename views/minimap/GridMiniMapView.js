@@ -43,6 +43,8 @@ exports = Class(View, function (supr) {
 			);
 			y += 512;
 		}
+
+		var view = this._gridMiniMapBuffer.getView(this.style.width, this.style.height);
 	};
 
 	this.setGridMiniMapBuffer = function (gridMiniMapBuffer) {

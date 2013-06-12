@@ -23,6 +23,7 @@ exports = Class(function () {
 
 		var prefix = opts.prefix;
 		var images = opts.images || [];
+		var miniMapLayer = opts.miniMapLayer;
 
 		for (var i = 0; i < images.length; i++) {
 			var image = images[i];
@@ -45,10 +46,9 @@ exports = Class(function () {
 				this._images[index].selectable = !!image.selectable;
 				this._images[index].flipX = !!image.flipX;
 				this._images[index].flipY = !!image.flipY;
+				this._images[index].miniMapLayer = miniMapLayer;
 			}
 		}
-
-		this._defaultImage = opts.defaultImage ? new Image({url: opts.defaultImage}) : false;
 	};
 
 	this.setImage = function (tileView, tile) {
@@ -92,7 +92,7 @@ exports = Class(function () {
 	this.getImage = function (tile) {
 		var image = this._images[tile.index];
 		if (image) {
-			return isArray(image) ? image[0] : image;
+			return isArray(image) ? image[tile.randomIndex] : image;
 		}
 
 		return false;

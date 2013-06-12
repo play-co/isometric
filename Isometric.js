@@ -153,6 +153,10 @@ exports = Class(Emitter, function (supr) {
 		return this._gridModel;
 	};
 
+	this.getGridView = function () {
+		return this._isometricView.getGridView();
+	};
+
 	this.getStaticModels = function () {
 		return this._gridModel.getStaticModels();
 	};

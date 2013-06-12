@@ -357,6 +357,14 @@ exports = Class(Emitter, function (supr) {
 		return this._data.tileY;
 	};
 
+	this.getX = function () {
+		return this._data.x;
+	};
+
+	this.getY = function () {
+		return this._data.y;
+	};
+
 	this.clearSelection = function () {
 		this._lockHorizontal = -1;
 		this._data.selection = null;
