@@ -20,6 +20,11 @@ More details about settings can be found here:
  + [Item settings, view properties for dynamic items on the grid](doc/items.md)
  + [Particle settings, settings for particle systems on the grid](doc/particles.md)
 
+#### Tile rules
+
+A lot of items test the validity of a move or a draw action, all these checkes are done by the `Map` class.
+Details about the condition validator can be found [here](conditions.md).
+
 Parameters
  + `superview {View}` ---The view which contains the isometric view.
  + `gridSettings {object}` ---General grid settings like width, height and number of layers.

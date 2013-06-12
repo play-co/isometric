@@ -570,7 +570,6 @@ exports = Class(function () {
 					break;
 
 				case 'group':
-					//console.log(condition.validator);
 					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator);
 					break;
 			}
