@@ -83,7 +83,7 @@ Parameters
  + `x` ---Which x-position to move to within the tile.
  + `y` ---Which y-position to move to within the tile.
 
-___onNewTile()__
+__onNewTile()__
 
 This function can be implemented in subclasses and is called whenever the item moves from
 one tile to another -as opposed to moving within a tile-.

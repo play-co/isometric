@@ -46,3 +46,57 @@ this._isometric = new Isometric({
 	generate().
 	show();
 ~~~
+
+Events
+
+__'Ready', callback()__
+
+__'SelectionCount', callback(selected)__
+
+The `SelectionCount` event is emitted while the user is selecting an eara and the size of the area changes.
+If the area is accepted (the editor condition evaluates to true) then the parameter contains info about the
+selection.
+
+The data structure of the `selected` value if the area is accepted is an object with the following properties:
+ + `total {number}` ---The total number of tile affected.
+ + `changed {number}` ---The number of tiles which will be changed if the selection is applied.
+ + `accept {boolean} = true` ---By setting this value to false the cursor will change to the `deny` state and the action will not be applied to the grid.
+
+Parameters
+ + `selected {boolean|object}` ---False or selection info.
+
+__'Edit', callback(selected)__
+
+This event is emitted when an area on the grid was selected and changed.
+
+The data structure of the `selected` value has the following properties:
+ + `total {number}` ---The total number of tile affected.
+ + `changed {number}` ---The number of tiles which will be changed if the selection is applied.
+ + `rect {object}` ---An object representing the selected rectangle with the following properties:
+  + `x {number}` ---The x-position.
+  + `y {number}` ---The y-position.
+  + `w {number}` ---The width.
+  + `h {number}` ---The height.
+
+__'Scrolled', callback()__
+
+Called when `tileX` or `tileY` changes.
+
+__'InputStart', callback(evt)__
+
+Called when the grid view is clicked or touched.
+
+__'InputSelect', callback(evt)__
+
+Called when the click or touch is released.
+
+__'SelectItem', callback(model)__
+
+Called when an item is selected.
+
+Parameters
+ + `model {StaticModel}` ---A subclass instance of `StaticModel`.
+
+__'UnselectItem', callback()__
+
+Called when an item was selected and that selection is hidden by clicking somewhere on the grid which is not an item.
