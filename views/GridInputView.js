@@ -20,11 +20,6 @@ import lib.Enum as Enum;
 import ui.View as View;
 import ui.TextView as TextView;
 
-var inputModes = Enum(
-		'BUTTON',
-		'DRAG'
-	);
-
 exports = Class(View, function (supr) {
 	this.init = function (opts) {
 		opts.blockEvents = false;
@@ -49,6 +44,11 @@ exports = Class(View, function (supr) {
 		this._selectedRect = null;
 
 		this._lastScale = null;
+
+		this._startCB = null;
+		this._dragCB = null;
+		this._endCB = null;
+		this._selectCB = null;
 	};
 
 	this.onInputStartDragMode = function (evt) {
@@ -79,20 +79,17 @@ exports = Class(View, function (supr) {
 			this.emit('UnselectItem');
 			this._selectedRect = null;
 			selectedItem.style.visible = false;
-		}		
+		}
 	};
 
-	this.onInputStart = function (evt) {
+	this.onDragStart = function (evt) {
 		var point = {x: evt.srcPoint.x, y: evt.srcPoint.y};
 		var index = 'p' + evt.id;
-
-		this.emit('SelectCancel');
 
 		this._dragPoints[index] = point;
 
 		if (this.getDragPointCount() === 1) {
 			this._dragPointFirst = index;
-
 			if (this._dragMode) {
 				this.onInputStartDragMode(evt);
 			} else {
@@ -104,16 +101,34 @@ exports = Class(View, function (supr) {
 				}		
 
 				var scale = GC.app.scale * this._gridView.getScale();
-				this.emit('Start', 5, {x: point.x / scale, y: point.y / scale});
+				this._startCB && this._startCB({x: point.x / scale, y: point.y / scale});
 			}
 		} else {
+			var selectedItem = this._gridView.getSelectedItem();
+			if (selectedItem.style.visible) {
+				this.emit('UnselectItem');
+				this._selectedRect = null;
+				selectedItem.style.visible = false;
+			}
 			this._dragPointSecond = index;
 		}
 
 		this._dragInitialDistance = null;
 	};
 
-	this.onInputMove = function (evt) {
+	this.onInputStart = function (evt) {
+		this.startDrag();
+		this.onDragStart(evt);
+		this.onDrag(evt, evt);
+	};
+
+	this.onDragStop = function (evt) {
+		var index = 'p' + evt.id;
+		this._dragPoints[index] = null;
+		this._endCB && this._endCB();
+	};
+
+	this.onDrag = function (evt, mouseEvt) {
 		if (this.inSelection(evt)) {
 			this._dragPoints[this._dragPointFirst] = null;
 			return;
@@ -128,8 +143,8 @@ exports = Class(View, function (supr) {
 		var index = 'p' + evt.id;
 		var point = this._dragPoints[index];
 
-		point.x = evt.srcPoint.x;
-		point.y = evt.srcPoint.y;
+		point.x = mouseEvt.srcPoint.x;
+		point.y = mouseEvt.srcPoint.y;
 
 		this._selectedRect = null;
 
@@ -158,23 +173,23 @@ exports = Class(View, function (supr) {
 			}
 		} else if (this._dragMode) {
 			if (this._dragPointFirst === index) {
-				this.emit('Drag', (x - point.x) / scale, (y - point.y) / scale);
+				this._dragCB && this._dragCB((x - point.x) / scale, (y - point.y) / scale);
 			}
 		} else {
-			this.emit('Select', 5, {x: point.x / scale, y: point.y / scale});
+			this._selectCB && this._selectCB({x: point.x / scale, y: point.y / scale});
 		}
 	};
 
 	this.onInputSelect = function (evt) {
 		var index = 'p' + evt.id;
 		this._dragPoints[index] = null;
-		this.emit('End');
+		this._endCB && this._endCB();
 	};
 
 	this.onInputOut = function (evt) {
 		var index = 'p' + evt.id;
 		this._dragPoints[index] = null;
-		this.emit('End');
+		this._endCB && this._endCB();
 	};
 
 	this.inSelection = function (evt) {
@@ -269,5 +284,21 @@ exports = Class(View, function (supr) {
 			this._selectedRect = rectOnScreen;
 			this.emit('UpdateSelection', rectOnScreen);
 		}
+	};
+
+	this.setStartCB = function (startCB) {
+		this._startCB = startCB;
+	};
+
+	this.setDragCB = function (dragCB) {
+		this._dragCB = dragCB;
+	};
+
+	this.setEndCB = function (endCB) {
+		this._endCB = endCB;
+	};
+
+	this.setSelectCB = function (selectCB) {
+		this._selectCB = selectCB;
 	};
 });

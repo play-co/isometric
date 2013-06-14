@@ -43,18 +43,16 @@ exports = Class(ImageView, function (supr) {
 
 		this._itemSetting = {offsetX: 0, offsetY: 0};
 		this._itemSettings = opts.itemSettings || {};
-		this._images = null;
 		this._lastImageIndex = 0;
 		this._zIndex = 0;
 	};
 
 	this.create = function (opts, tileOnScreen) {
 		this.style.visible = false;
-		this._item = opts.item;
 	};
 
 	this.onUpdate = function (opts) {
-		var itemSetting = this._itemSettings[this._item];
+		var itemSetting = this._itemSettings[opts.item];
 
 		this._zIndex = opts.zIndex || 0;
 
@@ -65,16 +63,19 @@ exports = Class(ImageView, function (supr) {
 			this.style.height = itemSetting.height;
 
 			if (itemSetting.images) {
-				if (!this._images) {
-					this._images = [];
+				var loadedImages = itemSetting.loadedImages;
+				if (!loadedImages) {
+					loadedImages = [];
 					for (var i = 0; i < itemSetting.images.length; i++) {
-						this._images.push(new Image({url: itemSetting.images[i]}));
+						loadedImages.push(new Image({url: itemSetting.images[i]}));
 					}
-					this.setImage(this._images[0]);
+					this.setImage(loadedImages[0]);
+					itemSetting.loadedImages = loadedImages;
 				}
+
 				if (opts.imageIndex !== this._lastImageIndex) {
 					this._lastImageIndex = opts.imageIndex || 0;
-					this.setImage(this._images[this._lastImageIndex]);
+					this.setImage(loadedImages[this._lastImageIndex]);
 				}
 				this.style.flipX = opts.flipX;
 				this.style.flipY = opts.flipY;

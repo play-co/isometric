@@ -195,7 +195,6 @@ var GridMiniMapBuffer = Class([Emitter, GridProperties], function (supr) {
 			var imageHeight = sizes.height * this._scaleY;
 			var imageX = x + sizes.x + tileWidth - imageWidth;
 			var imageY = y + sizes.y + tileHeight - imageHeight;
-			console.log(imageWidth, imageHeight);
 
 			image.render(ctx, imageX, imageY, imageWidth, imageHeight);
 			ctx.restore();

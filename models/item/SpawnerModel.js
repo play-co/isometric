@@ -195,7 +195,7 @@ exports = Class(StaticModel, function (supr) {
 			}
 
 			model = new modelInfo.ctor(opts);
-			model.on('Sleep', bind(this, 'onModelSleep'));
+			model.setSleepCB(bind(this, 'onModelSleep'));
 			this.emit('SpawnedModel', model);
 		}
 

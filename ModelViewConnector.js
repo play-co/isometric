@@ -74,7 +74,7 @@ exports = Class(Emitter, function (supr) {
 								if (!view.updateCallback) {
 									view.updateCallback = bind(view, 'onUpdate');
 								}
-								model.on('Update', view.updateCallback);
+								model.setUpdateCB(view.updateCallback);
 								view.create(opts, tileOnScreen);
 								modelInfo.view = view;
 							}
@@ -87,7 +87,7 @@ exports = Class(Emitter, function (supr) {
 			}
 
 			if (removeView) {
-				model.removeListener('Update', removeView.updateCallback);
+				model.setUpdateCB(null);
 				var viewPool = gridView.getViewPool(modelInfo.layer);
 				viewPool.releaseView(removeView);
 				modelInfo.view = null;
@@ -121,7 +121,7 @@ exports = Class(Emitter, function (supr) {
 		while (i) {
 			var modelInfo = activeList[--i];
 			if (modelInfo.view) {
-				modelInfo.model.removeListener('Update', modelInfo.view.updateCallback);
+				modelInfo.model.setUpdateCB(null);
 				var viewPool = gridView.getViewPool(modelInfo.layer);
 				viewPool.releaseView(modelInfo.view);
 			}

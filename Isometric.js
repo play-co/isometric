@@ -102,14 +102,13 @@ exports = Class(Emitter, function (supr) {
 		gridInputView.
 			on('InputStart', bind(this, 'emit', 'InputStart')).
 			on('InputSelect', bind(this, 'emit', 'InputSelect')).
-			on('Start', bind(this._gridInputModel, 'onStart')).
-			on('Drag', bind(this._gridInputModel, 'onDrag')).
-			on('End', bind(this._gridInputModel, 'onEnd')).
-			on('Select', bind(this._gridInputModel, 'onSelect')).
-			on('SelectCancel', bind(this._gridInputModel, 'onSelectCancel')).
 			on('SelectItem', bind(this, 'emit', 'SelectItem')).
 			on('UnselectItem', bind(this, 'emit', 'UnselectItem'));
-			//on('End', bind(this, 'emit', 'SelectionEnd'));
+
+		gridInputView.setStartCB(bind(this._gridInputModel, 'onStart'));
+		gridInputView.setDragCB(bind(this._gridInputModel, 'onDrag'));
+		gridInputView.setEndCB(bind(this._gridInputModel, 'onEnd'));
+		gridInputView.setSelectCB(bind(this._gridInputModel, 'onSelect'));
 
 		this._modelViewConnector = new ModelViewConnector({
 			gridView: gridView

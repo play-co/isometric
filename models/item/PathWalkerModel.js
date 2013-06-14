@@ -129,6 +129,8 @@ exports = Class(DynamicModel, function (supr) {
 
 		var opts = this._opts;
 
+		opts.zIndex = ((opts.y * 50) | 0) + ((opts.x * 25) | 0);
+
 		if (this._needsPath) {
 			this._findPath();
 			this._needsPath = false;
@@ -137,8 +139,8 @@ exports = Class(DynamicModel, function (supr) {
 		if (!this._path) {
 			opts.visible = false;
 			opts.dt = dt;
-			this.emit('Update', opts);
-			this.emit('Sleep', this);
+			this._updateCB && this._updateCB(opts);
+			this._sleepCB && this._sleepCB(this);
 
 			return DynamicModel.tickResult.SLEEP;
 		}

@@ -26,22 +26,22 @@ exports = Class(Emitter, function (supr) {
 		this._startPoint = null;
 	};
 
-	this.onStart = function (index, point) {
+	this.onStart = function (point) {
 		this._startPoint = this._gridModel.pointToGrid(point);
 		this._gridModel.setSelection(this._startPoint, this._startPoint);
 	};
 
-	this.onSelect = function (index, point) {
+	this.onSelect = function (point) {
 		var startPoint = this._startPoint;
 
 		this._gridModel.setSelection(startPoint, this._gridModel.pointToGrid(point));
 	};
 
-	this.onSelectCancel = function () {
-		this._gridModel.clearSelection();
-	};
+	//this.onSelectCancel = function () {
+	//	this._gridModel.clearSelection();
+	//};
 
-	this.onEnd = function (index) {
+	this.onEnd = function () {
 		var selection = this._gridModel.getSelection();
 		selection && selection.accept && this.emit('Selection', selection);
 

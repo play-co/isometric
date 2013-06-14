@@ -54,11 +54,20 @@ exports = Class(Emitter, function (supr) {
 		this._lastY = 0;
 		this._movedX = 0;
 		this._movedY = 0;
+		this._deltaX = 0.5;
+		this._deltaY = 0.5;
+
+		this._roadLeft = 0.2;
+		this._roadRight = 0.8;
 
 		this._needsSleep = false;
 		this._needsRemove = false;
 
 		this._conditions = opts.conditions;
+
+		this._updateCB = null;
+		this._sleepCB = null;
+		this._removeCB = null;
 
 		this.updateOpts(opts);
 	};
@@ -79,6 +88,18 @@ exports = Class(Emitter, function (supr) {
 
 		this._destX = opts.x;
 		this._destY = opts.y;
+	};
+
+	this.setUpdateCB = function (updateCB) {
+		this._updateCB = updateCB;
+	};
+
+	this.setSleepCB = function (sleepCB) {
+		this._sleepCB = sleepCB;
+	};
+
+	this.setRemoveCB = function (removeCB) {
+		this._removeCB = removeCB;
 	};
 
 	this.getModelType = function () {
@@ -139,7 +160,7 @@ exports = Class(Emitter, function (supr) {
 	 * Move from one tile to another.
 	 * field1 = 'tileX' or 'tileY', field2 = 'x' or 'y'
 	**/
-	this._moveToTile = function (speed, field1, field2, maxTileN) {
+	this._moveToTile = function (speed, field1, field2, maxTileN, delta) {
 		var reached = false;
 		var tileN = this._opts[field1];
 		var targetTileN = this._targetTile[field1];
@@ -170,14 +191,14 @@ exports = Class(Emitter, function (supr) {
 				reached = true;
 			}
 		} else if (targetTileN === tileN) {
-			if (n < 0.5) {
+			if (n < delta) {
 				n += speed;
-				if (n >= 0.5) {
+				if (n >= delta) {
 					reached = true;
 				}
-			} else if (n > 0.5) {
+			} else if (n > delta) {
 				n -= speed;
-				if (n <= 0.5) {
+				if (n <= delta) {
 					reached = true;
 				}
 			} else {
@@ -238,6 +259,45 @@ exports = Class(Emitter, function (supr) {
 		}
 	};
 
+	this._updateDelta = function () {
+		var opts = this._opts;
+
+		var targetTileY = this._targetTile.tileY;
+		var tileY = opts.tileY;
+		var targetTileX = this._targetTile.tileX;
+		var tileX = opts.tileX;
+
+		if ((targetTileX === 0) && (tileX === this._maxTileX)) {
+			targetTileX = this._maxTileX + 1;
+		}
+		if ((targetTileX === this._maxTileX) && (tileX === 0)) {
+			tileX = this._maxTileX + 1;
+		}
+
+		if ((targetTileY === 0) && (tileY === this._maxTileY)) {
+			targetTileY = this._maxTileY + 1;
+		}
+		if ((targetTileY === this._maxTileY) && (tileY === 0)) {
+			tileY = this._maxTileY + 1;
+		}
+
+		if (targetTileY === tileY) { // Straight in x direction
+			if (targetTileX > tileX) {
+				this._deltaY = this._roadLeft;
+			} else if (targetTileX < tileX) {
+				this._deltaY = this._roadRight;
+			}
+			this._deltaX = 0.5;
+		} else if (targetTileX === tileX) { // Straight in y direction
+			if (targetTileY > tileY) {
+				this._deltaX = this._roadRight;
+			} else if (targetTileY < tileY) {
+				this._deltaX = this._roadLeft;
+			}
+			this._deltaY = 0.5;
+		}
+	}
+
 	this._move = function (dt) {
 		var speed = this._speed * dt / 1000;
 
@@ -253,9 +313,10 @@ exports = Class(Emitter, function (supr) {
 
 		// Don't remove these variable assignments!!!
 		// Both functions have to be called for proper movement!!!
-		this._reachedX = this._reachedX || this._moveToTile(speed, 'tileX', 'x', this._maxTileX);
-		this._reachedY = this._reachedY || this._moveToTile(speed, 'tileY', 'y', this._maxTileY);
+		this._reachedX = this._reachedX || this._moveToTile(speed, 'tileX', 'x', this._maxTileX, this._deltaX);
+		this._reachedY = this._reachedY || this._moveToTile(speed, 'tileY', 'y', this._maxTileY, this._deltaY);
 		this._updateMoved();
+		this._updateDelta();
 		if (!this._reachedX || !this._reachedY) {
 			return;
 		}
@@ -329,17 +390,17 @@ exports = Class(Emitter, function (supr) {
 		if (update) {
 			this._move(dt);
 			this._opts.dt = dt;
-			this.publish('Update', this._opts);
+			this._updateCB && this._updateCB(this._opts);
 		}
 
 		if (this._needsSleep) {
 			this._needsSleep = false;
-			this.emit('Sleep', this);
+			this._sleepCB && this._sleepCB(this);
 			return tickResult.SLEEP;
 		}
 		if (this._needsRemove) {
 			this._needsRemove = false;
-			this.emit('Remove', this);
+			this._removeCB && this._removeCB(this);
 			return tickResult.REMOVE;
 		}
 
