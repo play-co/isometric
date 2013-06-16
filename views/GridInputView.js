@@ -51,6 +51,15 @@ exports = Class(View, function (supr) {
 		this._selectCB = null;
 	};
 
+	this._hideSelection = function () {
+		var selectedItem = this._gridView.getSelectedItem();
+		if (selectedItem.style.visible) {
+			this._gridView.emit('UnselectItem');
+			this._selectedRect = null;
+			selectedItem.style.visible = false;
+		}
+	};
+
 	this.onInputStartDragMode = function (evt) {
 		var found = false;
 		var scale = GC.app.scale * this._gridView.getScale();
@@ -93,12 +102,7 @@ exports = Class(View, function (supr) {
 			if (this._dragMode) {
 				this.onInputStartDragMode(evt);
 			} else {
-				var selectedItem = this._gridView.getSelectedItem();
-				if (selectedItem.style.visible) {
-					this._gridView.emit('UnselectItem');
-					this._selectedRect = null;
-					selectedItem.style.visible = false;
-				}		
+				this._hideSelection();
 
 				var scale = GC.app.scale * this._gridView.getScale();
 				this._startCB && this._startCB({x: point.x / scale, y: point.y / scale});
@@ -126,6 +130,7 @@ exports = Class(View, function (supr) {
 		var index = 'p' + evt.id;
 		this._dragPoints[index] = null;
 		this._endCB && this._endCB();
+		this.emit('EndDrag', evt);
 	};
 
 	this.onDrag = function (evt, mouseEvt) {
@@ -146,7 +151,7 @@ exports = Class(View, function (supr) {
 		point.x = mouseEvt.srcPoint.x;
 		point.y = mouseEvt.srcPoint.y;
 
-		this._selectedRect = null;
+		this._hideSelection();
 
 		if (index === this._dragPointFirst) {
 			this._dragPoints[index].x = point.x;

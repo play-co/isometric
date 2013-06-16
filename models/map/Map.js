@@ -248,19 +248,19 @@ exports = Class(function () {
 	};
 
 	this.putItem = function (modelType, tileX, tileY, opts) {
-		var tool = this._editorSettings[modelType];
+		var editorSetting = this._editorSettings[modelType];
 
-		if (!tool) {
+		if (!editorSetting) {
 			return null;
 		}
 
 		var model = null;
 		var modelIndex = 10000;
-		var layer = tool.layer;
-		var group = tool.group;
-		var index = tool.index;
+		var layer = editorSetting.layer;
+		var group = editorSetting.group;
+		var index = editorSetting.index;
 
-		if (tool.model) {
+		if (editorSetting.model) {
 			var opts = merge(
 				{
 					modelType: modelType,
@@ -270,28 +270,29 @@ exports = Class(function () {
 					index: index,
 					tileX: tileX,
 					tileY: tileY,
-					width: tool.width,
-					height: tool.height,
-					surrounding: tool.surrounding
+					width: editorSetting.width,
+					height: editorSetting.height,
+					surrounding: editorSetting.surrounding,
+					refreshMapCB: this._itemOwner.getRefreshMapCB()
 				},
-				tool.modelOpts || {}
+				editorSetting.modelOpts || {}
 			);
-			model = new tool.model(opts).on('Refresh', bind(this._itemOwner, 'emit', 'RefreshMap'));
+			model = new editorSetting.model(opts);
 
 			group = model.getGroup();
 			index = model.getIndex();
 			modelIndex = 10001 + tileY * this._width + tileX;
-		} else if (tool.surrounding) {
-			this.drawSurrounding(layer, tileX, tileY, tool.surrounding);
+		} else if (editorSetting.surrounding) {
+			this.drawSurrounding(layer, tileX, tileY, editorSetting.surrounding);
 		}
 
-		for (var j = 0; j < tool.height; j++) {
-			for (var i = 0; i < tool.width; i++) {
-				this.drawTile(tool.layer, tileX + i, tileY + j, modelIndex, 0, false);
+		for (var j = 0; j < editorSetting.height; j++) {
+			for (var i = 0; i < editorSetting.width; i++) {
+				this.drawTile(editorSetting.layer, tileX + i, tileY + j, modelIndex, 0, false);
 			}
 		}
 
-		this.drawTile(tool.layer, tileX, tileY + tool.height - 1, group, index, model);
+		this.drawTile(editorSetting.layer, tileX, tileY + editorSetting.height - 1, group, index, model);
 
 		return model;
 	};

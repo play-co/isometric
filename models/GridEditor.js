@@ -27,6 +27,9 @@ exports = Class(Emitter, function (supr) {
 		this._modelType = '';
 		this._tool = null;
 		this._settings = opts.settings;
+
+		this._refreshMapCB = null;
+		this._addModelCB = null;
 	};
 
 	this.onSelectionApply = function (selection) {
@@ -60,7 +63,7 @@ exports = Class(Emitter, function (supr) {
 						tool.group,
 						tool.tileSet
 					);
-					this.emit('RefreshMap');
+					this._refreshMapCB && this._refreshMapCB();
 				}
 				break;
 
@@ -88,7 +91,7 @@ exports = Class(Emitter, function (supr) {
 				}
 
 				tool.updater && tool.updater(map, tool, rect);
-				this.emit('RefreshMap');
+				this._refreshMapCB && this._refreshMapCB();
 				break;
 
 			case 'item':
@@ -98,9 +101,9 @@ exports = Class(Emitter, function (supr) {
 				selected = map.countTiles(tool.layer, tool.group, rect);
 
 				var model = map.putItem(this._modelType, rect.x, rect.y);
-				model && this.emit('AddModel', model);
+				model && this._addModelCB && this._addModelCB(model);
 
-				this.emit('RefreshMap');
+				this._refreshMapCB && this._refreshMapCB(rect.x, rect.y);
 				break;
 		}
 
@@ -173,5 +176,13 @@ exports = Class(Emitter, function (supr) {
 					break;
 			}
 		}
+	};
+
+	this.setRefreshMapCB = function (refreshMapCB) {
+		this._refreshMapCB = refreshMapCB;
+	};
+
+	this.setAddModelCB = function (addModelCB) {
+		this._addModelCB = addModelCB;
 	};
 });

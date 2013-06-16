@@ -37,6 +37,8 @@ exports = Class(Emitter, function (supr) {
 
 		this._surrounding = opts.surrounding;
 
+		this._refreshMapCB = opts.refreshMapCB;
+
 		this.onUpdateMap();
 	};
 

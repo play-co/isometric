@@ -129,8 +129,6 @@ exports = Class(DynamicModel, function (supr) {
 
 		var opts = this._opts;
 
-		opts.zIndex = ((opts.y * 50) | 0) + ((opts.x * 25) | 0);
-
 		if (this._needsPath) {
 			this._findPath();
 			this._needsPath = false;

@@ -57,6 +57,8 @@ exports = Class(Emitter, function (supr) {
 		this._deltaX = 0.5;
 		this._deltaY = 0.5;
 
+		this._zIndex = 0;
+
 		this._roadLeft = 0.2;
 		this._roadRight = 0.8;
 
@@ -388,9 +390,13 @@ exports = Class(Emitter, function (supr) {
 		}
 
 		if (update) {
+			var opts = this._opts;
+
 			this._move(dt);
-			this._opts.dt = dt;
-			this._updateCB && this._updateCB(this._opts);
+			opts.dt = dt;
+			opts.zIndex = this._zIndex + ((opts.y * 4) | 0) + ((opts.x * 2) | 0);
+
+			this._updateCB && this._updateCB(opts);
 		}
 
 		if (this._needsSleep) {

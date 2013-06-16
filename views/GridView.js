@@ -309,33 +309,39 @@ exports = Class([View, GridProperties], function (supr) {
 
 				while (i) {
 					var tileView = tileViews[--i];
+					var style = tileView.style;
 					var tile = gridTile[i];
 
 					if (tile.index === -1) {
-						tileView.visible = false;
+						style.visible = false;
 					} else {
+						var size = this._sizes[tile.group];
+
+						style.width = size.width;
+						style.height = size.height;
+						style.x = tileView.left + size.x;
+						style.y = tileView.bottom - size.height + size.y;
+						style.zIndex = tileView.startZ + size.z[0] * (this._maxCountX * this._maxCountY) * 100 + size.z[1];
+						style.visible = true;
+
 						this._updateTile(tileView, tile, gridTile.model, true);
-						tileView.visible = true;
 					}
 				}
 			}
 		}
 	};
 
-	this.onAddParticles = function (type, tileX, tileY, x, y, clearSystem, result) {
+	this.onAddParticles = function (type, tileX, tileY, x, y, clearSystem) {
 		var index = tileX + '_' + tileY;
 		var tileOnScreen = this._tilesOnScreen[index];
 
 		if (!tileOnScreen) {
-			return;
+			return false;
 		}
 
 		var particleSystems = this._particleSystems;
 
 		if (tileOnScreen.currentPopulation === this._currentPopulation) {
-			if (result) {
-				result.success = true;
-			}
 			var particleSystem = tileOnScreen.particleSystem;
 			if (!particleSystem) {
 				particleSystem = this._layers[1].particleSystems.obtainView()
@@ -357,10 +363,14 @@ exports = Class([View, GridProperties], function (supr) {
 			clearSystem && particleSystem.clear();
 
 			particleSystem.addParticle(type, x, y);
+
+			return true;
 		} else if (tileOnScreen.particleSystem) {
 			delete particleSystems[index];
 			tileOnScreen.particleSystem.release();
 			tileOnScreen.particleSystem = false;
+
+			return false;
 		}
 	};
 

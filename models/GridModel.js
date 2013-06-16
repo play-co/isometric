@@ -115,6 +115,12 @@ exports = Class(Emitter, function (supr) {
 		this._selectMode = selectModes.AREA;
 		this._aStar = new AStar({map: data.map});
 		this._data = data;
+
+		this._clearCB = null;
+		this._updateCB = null;
+		this._refreshMapCB = null;
+		this._addParticlesCB = null;
+		this._clearParticlesCB = null;
 	};
 
 	this.pointToGrid = function (point) {
@@ -144,7 +150,7 @@ exports = Class(Emitter, function (supr) {
 	this.tick = function (dt) {
 		if (this._mapGenerator.generateStep()) {
 			this._aStar.update();
-			this.emit('Update', this._data);
+			this._updateCB && this._updateCB(this._data);
 			this._staticModels.tick(dt);
 
 			if (this._emitReady) {
@@ -365,23 +371,48 @@ exports = Class(Emitter, function (supr) {
 		return this._data.y;
 	};
 
+	this.setClearCB = function (clearCB) {
+		this._clearCB = clearCB;
+	};
+
+	this.setUpdateCB = function (updateCB) {
+		this._updateCB = updateCB;
+	};
+
+	this.getRefreshMapCB = function () {
+		return this._refreshMapCB;
+	};
+
+	this.setRefreshMapCB = function (refreshMapCB) {
+		this._refreshMapCB = refreshMapCB;
+	};
+
+	this.setAddParticlesCB = function (addParticlesCB) {
+		this._addParticlesCB = addParticlesCB;
+	};
+
+	this.setClearParticlesCB = function (clearParticlesCB) {
+		this._clearParticlesCB = clearParticlesCB;
+	};
+
 	this.clearSelection = function () {
 		this._lockHorizontal = -1;
 		this._data.selection = null;
 	};
 
 	this.onMapReady = function () {
-		this.emit('RefreshMap');
+		this._refreshMapCB && this._refreshMapCB();
 	};
 
 	this.addParticles = function (type, tileX, tileY, x, y, clearSystem) {
-		var result = {success: false};
-		this.emit('AddParticles', type, tileX, tileY, x, y, clearSystem, result);
-		return result.success;
+		if (this._addParticlesCB) {
+			return this._addParticlesCB(type, tileX, tileY, x, y, clearSystem);
+		}
+		return false;
 	};
 
 	this.clearParticles = function (tileX, tileY) {
-		this.emit('ClearParticles', tileX, tileY);
+		this._clearParticlesCB && this._clearParticlesCB(tileX, tileY);
 	};
 
 	this.clear = function () {
@@ -398,7 +429,7 @@ exports = Class(Emitter, function (supr) {
 
 		data.selection = null;
 
-		this.emit('Clear');
+		this._clearCB && this._clearCB();
 	};
 
 	this.generate = function () {

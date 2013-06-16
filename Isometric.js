@@ -73,24 +73,26 @@ exports = Class(Emitter, function (supr) {
 			settings: opts.editorSettings || {}
 		});
 		this._gridEditor.
-			on('RefreshMap', bind(gridView, 'onRefreshMap')).
-			on('AddModel', bind(this, 'onAddStaticModel')).
 			on('SelectionCount', bind(this, 'emit', 'SelectionCount'));
+
+		this._gridEditor.setRefreshMapCB(bind(gridView, 'onRefreshMap'));
+		this._gridEditor.setAddModelCB(bind(this, 'onAddStaticModel'));
 
 		this._gridModel.
 			on('Ready', bind(this, 'emit', 'Ready')).
-			on('Update', bind(gridView, 'onUpdate')).
-			on('RefreshMap', bind(gridView, 'onRefreshMap')).
 			on('AddModel', bind(this, 'onAddStaticModel')).
-			on('AddParticles', bind(gridView, 'onAddParticles')).
-			on('ClearParticles', bind(gridView, 'onClearParticles')).
-			on('Clear', bind(gridView, 'onClear')).
 			on('Edit', bind(this, 'emit', 'Edit')).
 			on('Scrolled', bind(this, 'emit', 'Scrolled')).
 			on('SelectionChange', bind(this._gridEditor, 'onSelectionChange')).
 			on('Selection', bind(this._gridEditor, 'onSelectionApply')).
 			on('Progress', bind(this, 'onProgress')).
 			on('Point', bind(this, 'onPoint'));
+
+		this._gridModel.setClearCB(bind(gridView, 'onClear'));
+		this._gridModel.setUpdateCB(bind(gridView, 'onUpdate'));
+		this._gridModel.setAddParticlesCB(bind(gridView, 'onAddParticles'));
+		this._gridModel.setClearParticlesCB(bind(gridView, 'onClearParticles'));
+		this._gridModel.setRefreshMapCB(bind(gridView, 'onRefreshMap'));
 
 		this._gridInputModel = new GridInputModel({
 			gridModel: this._gridModel
@@ -101,7 +103,8 @@ exports = Class(Emitter, function (supr) {
 		// Connect views...
 		gridInputView.
 			on('InputStart', bind(this, 'emit', 'InputStart')).
-			on('InputSelect', bind(this, 'emit', 'InputSelect')).
+			on('InputSelect', bind(this, 'emit', 'InputEnd')).
+			on('EndDrag', bind(this, 'emit', 'InputEnd')).
 			on('SelectItem', bind(this, 'emit', 'SelectItem')).
 			on('UnselectItem', bind(this, 'emit', 'UnselectItem'));
 

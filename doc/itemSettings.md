@@ -106,4 +106,34 @@ __needsRemove()__
 
 When this function is called the link between the model is broken and the model will be completely removed.
 
+#### Private variables
+
+If you subclass the `DynamicModel` class then there are several private variables which you can change to
+modify the behaviour of this class, there are also a number of variables which to can read to asses the state
+of the model.
+
+__this._zIndex__
+
+ + `_zIndex {number} = 0` ---This value is added to the calculated z-index.
+
+__this._roadLeft__
+
+ + `_roadLeft {number} = 0.2` ---This is the offset at which the items moves.
+
+__this._roadRight__
+
+ + `_roadRight {number} = 0.8` ---This is the offset at which ite item moves on the other side of the road.
+
+__this._movedX__
+
+ + `_movedX {number}` ---When moving left this value is -1, when moving right this value = 1 else this value = 0.
+
+__this._movedY__
+
+ + `_movedY {number}` ---When moving uo this value is -1, when moving down this value = 1 else this value = 0.
+
+__this._onScreen__
+
+ + `_onScreen {boolean}` ---This value is true when the item is visible.
+
 Back to [isometric documentation](../readme.md).

@@ -59,6 +59,10 @@ exports = Class(View, function (supr) {
 		var loadingViewCtor = opts.loadingViewCtor || LoadingView;
 		this._loadingView = new loadingViewCtor(childOpts);
 		this._gridInputView = new GridInputView(merge(childOpts, {gridView: this._gridView}));
+
+		this._gridView.style.zIndex = 0;
+		this._loadingView.style.zIndex = 1;
+		this._gridInputView.style.zIndex = 2;
 	};
 
 	this.getGridView = function () {
@@ -74,8 +78,6 @@ exports = Class(View, function (supr) {
 	};
 
 	this.onPopulated = function () {
-		this._gridInputView.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-		this._gridInputView.style.opacity = 0;
 		this._loadingView.style.visible = false;
 	};
 
