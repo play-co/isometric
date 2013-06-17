@@ -7,6 +7,20 @@ The isometric engine allows you to use 'fake 3d'. It renders diamond shaped tile
 The isometric engine has has a lot of features which can be configured through a number of setting options
 passed to the constructor of the `Isometric` class.
 
+## Examples
+
+ + [Map: a grid with random areas on it](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/map)
+ + [Selecting: selecting points, lines or areas](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/selecting)
+ + [Drawing: drawing lines on the grid](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/drawing)
+ + [Drawing rules: rules for drawing lines on the grid](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/rules)
+ + [Items: putting items on the grid](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/items)
+ + [Item selecting: Selecting an item](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/itemselecting)
+ + [Path finding: Finding a path with aStar](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/pathfinding)
+ + [Save, load: Saving and loading a map](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/saveload)
+ + [Walking: Items walking random paths](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/walking)
+ + [Particles: Particle systems](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/particle)
+ + [Item images: Setting images on dynamic items](https://github.com/gameclosure/examples/tree/feature-isometric/src/isometric/itemimages)
+
 ### Tile conditions
 
 A lot of items test the validity of a move or a draw action, all these checkes are done by the `Map` class.

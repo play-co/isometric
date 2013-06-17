@@ -55,7 +55,7 @@ Check if a layer is empty or 0. This checks all `index` values in a given area.
  + `layer {number}` ---The layer which is checked.
  + `validator {function (map, tileX, tileY, x, y, w, h)}` ---Optional, a validator function to call for each tile.
 
-### Group
+## Group
 
 Check if all tiles a in a give list of groups.
 
@@ -66,7 +66,7 @@ Check if all tiles a in a give list of groups.
  + `groups {array}` ---A list of numbers, the groups to check for.
  + `validator {function (map, tileX, tileY, x, y, w, h)}` ---Optional, a validator function to call for each tile.
 
-### Not empty and not group
+## Not empty and not group
 
 Check if all tiles are not empty and not in a given group list.
 
@@ -77,7 +77,7 @@ Check if all tiles are not empty and not in a given group list.
  + `groups {array}` ---A list of numbers, the groups to check for.
  + `validator {function (map, tileX, tileY, x, y, w, h)}` ---Optional, a validator function to call for each tile.
 
-### Not empty
+## Not empty
 
 Check if one of tiles is filled.
 
