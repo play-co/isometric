@@ -30,15 +30,15 @@ import .ModelViewConnector;
  * Wrapper class for both isometric models and views.
  *
  * Events:
+ *  - Ready
+ *      Published when map is ready.
+ *
  *  - SelectionCount
  *      Published when an area is selected for drawing.
  *      Parameter: null|{total,changed}
  *
  *  - Edit
  *      Published when map is editted.
- *
- *  - Ready
- *      Published when map is ready.
  *
  *  - Scrolled
  *      Published when map tileX or tileY is changed.

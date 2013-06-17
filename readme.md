@@ -174,6 +174,8 @@ Parameters
 
 __'Ready', callback()__
 
+Called when the map is generated.
+
 __'SelectionCount', callback(selected)__
 
 The `SelectionCount` event is emitted while the user is selecting an eara and the size of the area changes.
@@ -209,9 +211,9 @@ __'InputStart', callback(evt)__
 
 Called when the grid view is clicked or touched.
 
-__'InputSelect', callback(evt)__
+__'InputEnd', callback(evt)__
 
-Called when the click or touch is released.
+Published when mouse up, touch up or drag end.
 
 __'SelectItem', callback(model)__
 
@@ -223,3 +225,33 @@ Parameters
 __'UnselectItem', callback()__
 
 Called when an item was selected and that selection is hidden by clicking somewhere on the grid which is not an item.
+
+__'AddStaticModel', callback(model)__
+
+Called when a static model was added to the map.
+
+Parameters
+ + `model {StaticModel}` ---An instance of `StaticModel` which was added.
+
+__'AddDynamicModel', callback(model)__
+
+Called when a dynamic model was added to the map.
+
+Parameters
+ + `model {DynamicModel}` ---An instance of `DynamicModel` which was added.
+
+__'WakeupDynamicModel', callback(model)__
+
+Called when a model is activated, the tick function will be called again and when
+the model is visible a view is connected again.
+
+Parameters
+ + `model {DynamicModel}` ---An instance of `DynamicModel` which was activated again.
+
+__'SleepDynamicModel', callback(model)__
+
+Called when a model is deactivated, the model instance still exists but there's no
+view linked and the tick function is no longer called.
+
+Parameters
+ + `model {DynamicModel}` ---An instance of `DynamicModel` which is deactivated.
