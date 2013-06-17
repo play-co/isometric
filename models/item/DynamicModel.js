@@ -394,7 +394,7 @@ exports = Class(Emitter, function (supr) {
 
 			this._move(dt);
 			opts.dt = dt;
-			opts.zIndex = this._zIndex + ((opts.y * 4) | 0) + ((opts.x * 2) | 0);
+			opts.zIndex = this._zIndex + ((opts.y * 4) | 0) + ((2 - opts.x * 2) | 0);
 
 			this._updateCB && this._updateCB(opts);
 		}
