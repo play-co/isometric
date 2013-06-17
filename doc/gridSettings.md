@@ -1,18 +1,17 @@
 Back to [isometric documentation](../readme.md).
-
 # Grid settings
 
 The grid settings contain the most fundamental properties of the grid like the size of the grid,
-side of the tiles and the layers.
+size of the tiles and the layers.
 
 ## Overdraw, underdraw
 
 If you would start drawing at (0, 0) the view would not be fully covered because each tile has
 a diamond shaped area which is filled. So starting at (0, 0) would leave triangles on the top
-of the screen which are not covered.
+and the left of the screen which are not covered.
 If there are items on the grid which exceed the horizontal or vertical size of a single tile then
 those items have to appear before the tile on which they reside is actually visible.
-To configure the grid to handle this situations properly the overdraw and underdraw values can
+To configure the grid to handle these situations properly the overdraw and underdraw values can
 be configured.
 
 ## Layers, dynamic views, particles systems

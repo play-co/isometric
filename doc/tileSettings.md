@@ -1,5 +1,4 @@
 Back to [isometric documentation](../readme.md).
-
 # Tile settings
 
 All images within the isometric grid are defined in the `tileSettings` which is an option

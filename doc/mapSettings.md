@@ -5,7 +5,7 @@ The map settings can be used to generate a landscape, randomize tiles and set
 rules for adding tiles. The `mapSettings` property is an optional constructor option 
 for the `Isometric` class.
 
-The `group` and `index` refere to tile images which are defined in the `tileSettings`.
+The `group` and `index` refer to tile images which are defined in the `tileSettings`.
 
 ## Data structure
 
@@ -16,10 +16,10 @@ The `group` and `index` refere to tile images which are defined in the `tileSett
   + `bi {numner}` ---The index to be drawn on the map.
   + `rg {number}` ---The resulting group.
   + `ri {number}` ---The resulting index.
- + `generatorSteps {array}` ---Optional, Has to be `true` to use item as view.
+ + `generatorSteps {array}` ---Optional.
   + `stepsPerFrame {number}` ---How many steps per frame to apply when creating the map.
   + `type {string}` ---The type of step: 'rectangles' or 'fill'.
-  + `layer {number}` ---Which layer to draw to, the default layer is 0.
+  + `layer {number} = 0` ---Which layer to draw to.
   + `repeat {number}` ---If type is `rectangles` then this defines how many rectangles.
   + `count {number}` ---If type is `rectangles` then this defines how long a chain of rectangles will be.
   + `firstRectangle {object}` ---Optional, if the the type is `rectangles` then this is the first rectangle with the properties:
@@ -95,7 +95,7 @@ var mapSettings = {
 				accept: [
 					{
 						layer: 0,
-						group: tileGroups.GROUND,
+						group: 2,
 						tiles: [0]
 					}
 				]

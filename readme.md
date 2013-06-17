@@ -10,7 +10,7 @@ passed to the constructor of the `Isometric` class.
 ### Tile conditions
 
 A lot of items test the validity of a move or a draw action, all these checkes are done by the `Map` class.
-Details about the condition validator can be found [here](conditions.md).
+Details about the condition validator can be found [here](doc/conditions.md).
 
 ### Isometric Class
 

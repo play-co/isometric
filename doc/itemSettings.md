@@ -1,5 +1,4 @@
 Back to [isometric documentation](../readme.md).
-
 # Item settings
 
 The isometric engine provides a generic view for displaying dynamic (moving) items on the grid.

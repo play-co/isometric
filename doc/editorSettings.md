@@ -1,5 +1,4 @@
 Back to [isometric documentation](../readme.md).
-
 # Editor settings
 
 The editor settings object defines a number of tools for modifying the grid.
@@ -18,7 +17,7 @@ Eech key in the `editorSettings` object represent a tool for modifying the grid.
  + `group {numner}` ---The group to use for drawing on the map.
  + `index {number} = 0` ---The index within the group.
  + `model {class}` ---Optional, a model constructor for this tile.
- + `modelOpts {object}` ---Optional, the options to add the the constructor of the model.
+ + `modelOpts {object}` ---Optional, the options to pass to the constructor of the model.
  + `tileSet {array|object}` ---The bits to apply when drawing, see below for more details.
  + `minWidth {number)` ---The minimal width of the selected area which is accepted.
  + `minHeight {number)` ---The minimal height of the selected area which is accepted.
@@ -27,7 +26,7 @@ Eech key in the `editorSettings` object represent a tool for modifying the grid.
 
 ## Tile sets
 
-If a line or area is drawn on the map then the bits to set have to be configured, the line and area types have different data structure:
+If a line or area is drawn on the map then the bits to set have to be configured, the line and area types have a different data structure:
 
 A tile set for drawing areas:
 ~~~

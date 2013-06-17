@@ -1,5 +1,4 @@
 Back to [isometric documentation](../readme.md).
-
 # Particles settings
 
 Documentation for the `ParticleSystem` class which is used in the isometric engine can
