@@ -16,14 +16,12 @@
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
 import lib.Enum as Enum;
-import event.Emitter as Emitter;
 
-exports = Class(Emitter, function (supr) {
+exports = Class(function () {
 	this.init = function (opts) {
-		supr(this, 'init', arguments);
-
 		this._gridModel = opts.gridModel;
 		this._startPoint = null;
+		this._selectionCB = null;
 	};
 
 	this.onStart = function (point) {
@@ -37,13 +35,9 @@ exports = Class(Emitter, function (supr) {
 		this._gridModel.setSelection(startPoint, this._gridModel.pointToGrid(point));
 	};
 
-	//this.onSelectCancel = function () {
-	//	this._gridModel.clearSelection();
-	//};
-
 	this.onEnd = function () {
 		var selection = this._gridModel.getSelection();
-		selection && selection.accept && this.emit('Selection', selection);
+		selection && selection.accept && this._selectionCB && this._selectionCB(selection);
 
 		this._gridModel.clearSelection();
 		this._sideIndex = -1;
@@ -54,5 +48,9 @@ exports = Class(Emitter, function (supr) {
 		var gridModel = this._gridModel;
 		(x < 0) ? gridModel.scrollLeft(-x) : gridModel.scrollRight(x);
 		(y < 0) ? gridModel.scrollUp(-y) : gridModel.scrollDown(y);
+	};
+
+	this.setSelectionCB = function (selectionCB) {
+		this._selectionCB = selectionCB;
 	};
 });

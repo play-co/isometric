@@ -21,7 +21,7 @@ exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
 		supr(this, 'init', arguments);
 
-		this._model = opts.model;
+		this._gridModel = opts.gridModel;
 		this._settings = opts.settings || {};
 
 		this._map = opts.map;
@@ -196,7 +196,7 @@ exports = Class(Emitter, function (supr) {
 			this._step();
 		}
 
-		this._model.emit('Progress', this._currentCount / this._totalCount);
+		this._gridModel.getProgressCB()(this._currentCount / this._totalCount);
 
 		return false;
 	};

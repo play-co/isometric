@@ -17,8 +17,6 @@
  */
 import lib.Enum as Enum;
 
-import event.Emitter as Emitter;
-
 import .map.Map as Map;
 import .map.MapGenerator as MapGenerator;
 import .map.AStar as AStar;
@@ -31,10 +29,8 @@ var selectModes = Enum(
 		'FIXED'
 	);
 
-exports = Class(Emitter, function (supr) {
+exports = Class(function () {
 	this.init = function (opts) {
-		supr(this, 'init', arguments);
-
 		if (!opts.gridSettings.width) {
 			opts.gridSettings.width = 64;
 		}
@@ -99,7 +95,7 @@ exports = Class(Emitter, function (supr) {
 		data.grid = data.map.getGrid();
 
 		this._mapGenerator = new MapGenerator({
-			model: this,
+			gridModel: this,
 			settings: opts.mapSettings,
 			map: data.map
 		});
@@ -110,7 +106,7 @@ exports = Class(Emitter, function (supr) {
 			map: data.map
 		});
 
-		this._emitReady = true;
+		this._ready = true;
 		this._lockHorizontal = -1;
 		this._selectMode = selectModes.AREA;
 		this._aStar = new AStar({map: data.map});
@@ -121,6 +117,11 @@ exports = Class(Emitter, function (supr) {
 		this._refreshMapCB = null;
 		this._addParticlesCB = null;
 		this._clearParticlesCB = null;
+		this._selectionChangeCB = null;
+		this._readyCB = null;
+		this._scrolledCB = null;
+		this._progressCB = null;
+		this._addModelCB = null;
 	};
 
 	this.pointToGrid = function (point) {
@@ -153,12 +154,12 @@ exports = Class(Emitter, function (supr) {
 			this._updateCB && this._updateCB(this._data);
 			this._staticModels.tick(dt);
 
-			if (this._emitReady) {
-				this._emitReady = false;
-				this.emit('Ready');
+			if (this._ready) {
+				this._ready = false;
+				this._readyCB();
 			}
 		} else {
-			this._emitReady = true;
+			this._ready = true;
 		}
 	};
 
@@ -178,7 +179,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		didScroll && this.emit('Scrolled');
+		didScroll && this._scrolledCB && this._scrolledCB();
 	};
 
 	this.scrollRight = function (speed) {
@@ -193,7 +194,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		didScroll && this.emit('Scrolled');
+		didScroll && this._scrolledCB && this._scrolledCB();
 	};
 
 	this.scrollUp = function (speed) {
@@ -208,7 +209,7 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		didScroll && this.emit('Scrolled');
+		didScroll && this._scrolledCB && this._scrolledCB();
 	};
 
 	this.scrollDown = function (speed) {
@@ -223,13 +224,12 @@ exports = Class(Emitter, function (supr) {
 			didScroll = true;
 		}
 
-		didScroll && this.emit('Scrolled');
+		didScroll && this._scrolledCB && this._scrolledCB();
 	};
 
 	this.scrollBy = function (x, y) {
 		(x > 0) ? this.scrollLeft(x) : this.scrollRight(-x);
 		(y > 0) ? this.scrollUp(y) : this.scrollDown(-y);
-		logger.log('scrollBy:' + this._data.x + ',' + this._data.y);
 	};
 
 	this.setSelection = function (startPoint, endPoint) {
@@ -292,7 +292,7 @@ exports = Class(Emitter, function (supr) {
 			}
 		}
 
-		this.emit('SelectionChange', selection);
+		this._selectionChangeCB && this._selectionChangeCB(selection);
 	};
 
 	this.getRect = function (point1, point2) {
@@ -393,6 +393,34 @@ exports = Class(Emitter, function (supr) {
 
 	this.setClearParticlesCB = function (clearParticlesCB) {
 		this._clearParticlesCB = clearParticlesCB;
+	};
+
+	this.setSelectionChangeCB = function (selectionChangeCB) {
+		this._selectionChangeCB = selectionChangeCB;
+	};
+
+	this.setReadyCB = function (readyCB) {
+		this._readyCB = readyCB;
+	};
+
+	this.setScrolledCB = function (scrolledCB) {
+		this._scrolledCB = scrolledCB;
+	};
+
+	this.getProgressCB = function () {
+		return this._progressCB;
+	};
+
+	this.setProgressCB = function (progressCB) {
+		this._progressCB = progressCB;
+	};
+
+	this.getAddModelCB = function () {
+		return this._addModelCB;
+	};
+
+	this.setAddModelCB = function (addModelCB) {
+		this._addModelCB = addModelCB;
 	};
 
 	this.clearSelection = function () {

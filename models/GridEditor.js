@@ -15,14 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
-import event.Emitter as Emitter;
-
 import .GridModel;
 
-exports = Class(Emitter, function (supr) {
+exports = Class(function (supr) {
 	this.init = function (opts) {
-		supr(this, 'init', arguments);
-
 		this._gridModel = opts.gridModel;
 		this._modelType = '';
 		this._tool = null;
@@ -30,6 +26,8 @@ exports = Class(Emitter, function (supr) {
 
 		this._refreshMapCB = null;
 		this._addModelCB = null;
+		this._selectionCountCB = null;
+		this._editCB = null;
 	};
 
 	this.onSelectionApply = function (selection) {
@@ -44,7 +42,7 @@ exports = Class(Emitter, function (supr) {
 		var selected;
 
 		if (!('layer' in tool)) {
-			this._gridModel.emit('Edit', {rect: rect});
+			this._editCB && this._editCB({rect: rect});
 			return;
 		}
 
@@ -109,7 +107,7 @@ exports = Class(Emitter, function (supr) {
 
 		if (selected) {
 			selected.rect = rect;
-			this._gridModel.emit('Edit', selected);
+			this._editCB && this._editCB(selected);
 		}
 	};
 
@@ -140,7 +138,7 @@ exports = Class(Emitter, function (supr) {
 			if (count) {
 				count.accept = true;
 			}
-			this.emit('SelectionCount', count);
+			this._selectionCountCB && this._selectionCountCB(count);
 			if (count && (count.accept === false)) {
 				selection.accept = false;
 			}
@@ -184,5 +182,13 @@ exports = Class(Emitter, function (supr) {
 
 	this.setAddModelCB = function (addModelCB) {
 		this._addModelCB = addModelCB;
+	};
+
+	this.setSelectionCountCB = function (selectionCountCB) {
+		this._selectionCountCB = selectionCountCB;
+	};
+
+	this.setEditCB = function (editCB) {
+		this._editCB = editCB;
 	};
 });

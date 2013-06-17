@@ -33,14 +33,41 @@ import .ModelViewConnector;
  *  - SelectionCount
  *      Published when an area is selected for drawing.
  *      Parameter: null|{total,changed}
- * - SelectionEnd
- *      End of selecting an area.
- * - SelectItem
- *      Select an item.
- * - UnselectItem
- *      Unselect by clicking on an "empty" spot.
- * - Edit
+ *
+ *  - Edit
  *      Published when map is editted.
+ *
+ *  - Ready
+ *      Published when map is ready.
+ *
+ *  - Scrolled
+ *      Published when map tileX or tileY is changed.
+ *
+ *  - InputStart
+ *      Published on mouse or touch down.
+ *      Parameters: {MouseEvent}
+ *
+ *  - InputEnd
+ *      Published when mouse up, touch up or drag end.
+ *
+ *  - SelectItem
+ *      Published when an item is selected.
+ *      Parameter: {StaticModel}
+ *
+ *  - UnselectItem
+ *      Published when an item is unselected by clicking on an "empty" spot.
+ *
+ *  - AddStaticModel
+ *      Parameter: {StaticModel}
+ * 
+ *  - AddDynamicModel
+ *      Parameter: {DynamicModel}
+ *
+ *  - WakeupDynamicModel
+ *      Parameter: {DynamicModel}
+ *
+ *  - SleepDynamicModel
+ *      Parameter: {DynamicModel}
  */
 exports = Class(Emitter, function (supr) {
 	this.init = function (opts) {
@@ -72,41 +99,34 @@ exports = Class(Emitter, function (supr) {
 			gridModel: this._gridModel,
 			settings: opts.editorSettings || {}
 		});
-		this._gridEditor.
-			on('SelectionCount', bind(this, 'emit', 'SelectionCount'));
-
+		this._gridEditor.setSelectionCountCB(bind(this, 'emit', 'SelectionCount')); // Public
+		this._gridEditor.setEditCB(bind(this, 'emit', 'Edit')); // Public
 		this._gridEditor.setRefreshMapCB(bind(gridView, 'onRefreshMap'));
 		this._gridEditor.setAddModelCB(bind(this, 'onAddStaticModel'));
 
-		this._gridModel.
-			on('Ready', bind(this, 'emit', 'Ready')).
-			on('AddModel', bind(this, 'onAddStaticModel')).
-			on('Edit', bind(this, 'emit', 'Edit')).
-			on('Scrolled', bind(this, 'emit', 'Scrolled')).
-			on('SelectionChange', bind(this._gridEditor, 'onSelectionChange')).
-			on('Selection', bind(this._gridEditor, 'onSelectionApply')).
-			on('Progress', bind(this, 'onProgress')).
-			on('Point', bind(this, 'onPoint'));
-
+		this._gridModel.setProgressCB(bind(this, 'onProgress'));
+		this._gridModel.setSelectionChangeCB(bind(this._gridEditor, 'onSelectionChange'));
 		this._gridModel.setClearCB(bind(gridView, 'onClear'));
 		this._gridModel.setUpdateCB(bind(gridView, 'onUpdate'));
 		this._gridModel.setAddParticlesCB(bind(gridView, 'onAddParticles'));
 		this._gridModel.setClearParticlesCB(bind(gridView, 'onClearParticles'));
 		this._gridModel.setRefreshMapCB(bind(gridView, 'onRefreshMap'));
+		this._gridModel.setAddModelCB(bind(this, 'onAddStaticModel'));
+		this._gridModel.setReadyCB(bind(this, 'emit', 'Ready')); // Public
+		this._gridModel.setScrolledCB(bind(this, 'emit', 'Scrolled')); // Public
 
 		this._gridInputModel = new GridInputModel({
 			gridModel: this._gridModel
 		});
-		this._gridInputModel.
-			on('Selection', bind(this._gridEditor, 'onSelectionApply'));
+		this._gridInputModel.setSelectionCB(bind(this._gridEditor, 'onSelectionApply'));
 
 		// Connect views...
 		gridInputView.
-			on('InputStart', bind(this, 'emit', 'InputStart')).
-			on('InputSelect', bind(this, 'emit', 'InputEnd')).
-			on('EndDrag', bind(this, 'emit', 'InputEnd')).
-			on('SelectItem', bind(this, 'emit', 'SelectItem')).
-			on('UnselectItem', bind(this, 'emit', 'UnselectItem'));
+			on('InputStart', bind(this, 'emit', 'InputStart')). // Public
+			on('InputSelect', bind(this, 'emit', 'InputEnd')). // Public
+			on('EndDrag', bind(this, 'emit', 'InputEnd')). // Public
+			on('SelectItem', bind(this, 'emit', 'SelectItem')). // Public
+			on('UnselectItem', bind(this, 'emit', 'UnselectItem')); // Public
 
 		gridInputView.setStartCB(bind(this._gridInputModel, 'onStart'));
 		gridInputView.setDragCB(bind(this._gridInputModel, 'onDrag'));
@@ -116,6 +136,7 @@ exports = Class(Emitter, function (supr) {
 		this._modelViewConnector = new ModelViewConnector({
 			gridView: gridView
 		});
+		this._modelViewConnector.setSleepCB(bind(this, 'emit', 'SleepDynamicModel')); // Public
 	};
 
 	this.tick = function (dt) {
@@ -134,21 +155,22 @@ exports = Class(Emitter, function (supr) {
 	this.onAddStaticModel = function (model) {
 		this._gridModel.getStaticModels().add(model);
 
-		model.on('SpawnedModel', bind(this, 'onAddDynamicModel'));
-		model.on('SpawnedModel', bind(this, 'emit', 'DynamicModel'));
-		model.on('WakeupModel', bind(this, 'onWakeupDynamicModel'));
+		model.setSpawnedModelCB(bind(this, 'onAddDynamicModel'));
+		model.setWakeupModelCB(bind(this, 'onWakeupDynamicModel'));
 
-		this.emit('StaticModel', model);		
+		this.emit('AddStaticModel', model);		
 	};
 
 	this.onAddDynamicModel = function (model) {
 		this._modelViewConnector.registerModel(model, 1);
 
-		this.emit('DynamicModel', model);
+		this.emit('AddDynamicModel', model);
 	};
 
 	this.onWakeupDynamicModel = function (model) {
 		this._modelViewConnector.wakeupModel(model);
+
+		this.emit('WakeupDynamicModel', model);
 	};
 
 	this.getGridModel = function () {

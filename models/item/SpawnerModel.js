@@ -43,6 +43,9 @@ exports = Class(StaticModel, function (supr) {
 
 		this._canSpawn = true;
 
+		this._wakeupModelCB = null;
+		this._spawnedModelCB = null;
+
 		supr(this, 'init', arguments);
 	};
 
@@ -181,7 +184,8 @@ exports = Class(StaticModel, function (supr) {
 		if (this._models.length) {
 			model = this._models.pop();
 			model.updateOpts(this._pathOpts());
-			this.emit('WakeupModel', model);
+
+			this._wakeupModelCB && this._wakeupModelCB(model);
 		} else {
 			var modelInfo = this._randomInfo();
 			if (!modelInfo) {
@@ -196,7 +200,7 @@ exports = Class(StaticModel, function (supr) {
 
 			model = new modelInfo.ctor(opts);
 			model.setSleepCB(bind(this, 'onModelSleep'));
-			this.emit('SpawnedModel', model);
+			this._spawnedModelCB && this._spawnedModelCB(model);
 		}
 
 		model && this._modelsAwake.push(model);
@@ -230,5 +234,13 @@ exports = Class(StaticModel, function (supr) {
 
 	this.setCanSpawn = function (canSpawn) {
 		this._canSpawn = canSpawn;
+	};
+
+	this.setWakeupModelCB = function (wakeupModelCB) {
+		this._wakeupModelCB = wakeupModelCB;
+	};
+
+	this.setSpawnedModelCB = function (spawnedModelCB) {
+		this._spawnedModelCB = spawnedModelCB;
 	};
 });

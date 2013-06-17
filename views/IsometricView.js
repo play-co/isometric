@@ -54,7 +54,7 @@ exports = Class(View, function (supr) {
 
 		this._gridView = new GridView(childOpts).
 			on('Populated', bind(this, 'onPopulated')).
-			on('ChangeOffset', bind(this, 'emit', 'ChangeOffset'));
+			on('ChangeOffset', bind(this, 'ChangeOffset'));
 
 		var loadingViewCtor = opts.loadingViewCtor || LoadingView;
 		this._loadingView = new loadingViewCtor(childOpts);
@@ -63,6 +63,8 @@ exports = Class(View, function (supr) {
 		this._gridView.style.zIndex = 0;
 		this._loadingView.style.zIndex = 1;
 		this._gridInputView.style.zIndex = 2;
+
+		this._changeOffsetCB = null;
 	};
 
 	this.getGridView = function () {

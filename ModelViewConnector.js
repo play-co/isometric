@@ -15,17 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with the Game Closure SDK.  If not, see <http://www.gnu.org/licenses/>.
  */
-import event.Emitter as Emitter;
-
 import .models.item.DynamicModel as DynamicModel;
 
-exports = Class(Emitter, function (supr) {
+exports = Class(function () {
 	this.init = function (opts) {
-		supr(this, 'init', arguments);
-
 		this._gridView = opts.gridView;
 		this._activeList = [];
+
 		this._sleepList = [];
+		this._sleepCB = null;
 	};
 
 	this.tick = function (dt) {
@@ -45,6 +43,7 @@ exports = Class(Emitter, function (supr) {
 			switch (result) {
 				case tickResult.SLEEP:
 					sleepList[model.getId()] = modelInfo;
+					this._sleepCB && this._sleepCB(model);
 					// Do not break!
 
 				case tickResult.REMOVE:
@@ -133,5 +132,9 @@ exports = Class(Emitter, function (supr) {
 
 	this.getList = function () {
 		return this._activeList;
+	};
+
+	this.setSleepCB = function (sleepCB) {
+		this._sleepCB = sleepCB;
 	};
 });

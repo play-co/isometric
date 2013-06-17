@@ -119,7 +119,7 @@ exports = Class(Emitter, function (supr) {
 			item = data[--i];
 			var model = map.putItem(item.modelType, item.tileX, item.tileY, item);
 			if (model) {
-				this._gridModel.emit('AddModel', model);
+				this._gridModel.getAddModelCB()(model);
 				this._list.push(model);
 			}
 		}
