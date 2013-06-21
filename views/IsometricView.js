@@ -39,32 +39,34 @@ exports = Class(View, function (supr) {
 		);
 		supr(this, 'init', [opts]);
 
-		var childOpts = {
-				superview: this,
-				x: 0,
-				y: 0,
-				width: this.style.width,
-				height: this.style.height,
-				gridSettings: opts.gridSettings,
-				itemSettings: opts.itemSettings || {},
-				tileSettings: opts.tileSettings,
-				particleSettings: opts.particleSettings || {},
-				visible: false
-			};
-
-		this._gridView = new GridView(childOpts).
+		this._gridView = new GridView(this._createOpts(opts)).
 			on('Populated', bind(this, 'onPopulated')).
 			on('ChangeOffset', bind(this, 'ChangeOffset'));
 
 		var loadingViewCtor = opts.loadingViewCtor || LoadingView;
-		this._loadingView = new loadingViewCtor(childOpts);
-		this._gridInputView = new GridInputView(merge(childOpts, {gridView: this._gridView}));
+		this._loadingView = new loadingViewCtor(this._createOpts(opts));
+		this._gridInputView = new GridInputView(merge(this._createOpts(opts), {gridView: this._gridView}));
 
 		this._gridView.style.zIndex = 0;
 		this._loadingView.style.zIndex = 1;
 		this._gridInputView.style.zIndex = 2;
 
 		this._changeOffsetCB = null;
+	};
+
+	this._createOpts = function (opts) {
+		return {
+			superview: this,
+			x: 0,
+			y: 0,
+			width: this.style.width,
+			height: this.style.height,
+			gridSettings: opts.gridSettings,
+			itemSettings: opts.itemSettings || {},
+			tileSettings: opts.tileSettings,
+			particleSettings: opts.particleSettings || {},
+			visible: false
+		};
 	};
 
 	this.getGridView = function () {
