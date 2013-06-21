@@ -261,7 +261,8 @@ exports = Class(function () {
 		var index = editorSetting.index;
 
 		if (editorSetting.model) {
-			var opts = merge(
+			opts = merge(
+				opts,
 				{
 					modelType: modelType,
 					gridModel: this._itemOwner,
@@ -274,7 +275,10 @@ exports = Class(function () {
 					height: editorSetting.height,
 					surrounding: editorSetting.surrounding,
 					refreshMapCB: this._itemOwner.getRefreshMapCB()
-				},
+				}
+			);
+			opts = merge(
+				opts,
 				editorSetting.modelOpts || {}
 			);
 			model = new editorSetting.model(opts);
