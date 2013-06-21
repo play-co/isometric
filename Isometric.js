@@ -155,8 +155,8 @@ exports = Class(Emitter, function (supr) {
 	this.onAddStaticModel = function (model) {
 		this._gridModel.getStaticModels().add(model);
 
-		model.setSpawnedModelCB(bind(this, 'onAddDynamicModel'));
-		model.setWakeupModelCB(bind(this, 'onWakeupDynamicModel'));
+		model.setSpawnedModelCB && model.setSpawnedModelCB(bind(this, 'onAddDynamicModel'));
+		model.setWakeupModelCB && model.setWakeupModelCB(bind(this, 'onWakeupDynamicModel'));
 
 		this.emit('AddStaticModel', model);		
 	};
@@ -210,7 +210,7 @@ exports = Class(Emitter, function (supr) {
 		this._gridModel.clear();
 		!dontGenerate && this._gridModel.generate();
 		this._modelViewConnector.clear();
-		this._isometricView.startLoading();
+		!dontGenerate && this._isometricView.startLoading();
 	};
 
 	this.putItem = function (modelType, tileX, tileY, opts) {
