@@ -18,7 +18,7 @@ passed to the constructor of the `Isometric` class.
  + [Path finding: Finding a path with aStar](https://github.com/gameclosure/examples/tree/master/src/isometric/pathfinding)
  + [Save, load: Saving and loading a map](https://github.com/gameclosure/examples/tree/master/src/isometric/saveload)
  + [Walking: Items walking random paths](https://github.com/gameclosure/examples/tree/master/src/isometric/walking)
- + [Particles: Particle systems](https://github.com/gameclosure/examples/src/tree/master/isometric/particle)
+ + [Particles: Particle systems](https://github.com/gameclosure/examples/tree/master/src/isometric/particle)
  + [Item images: Setting images on dynamic items](https://github.com/gameclosure/examples/tree/master/src/isometric/itemimages)
 
 ### Tile conditions
