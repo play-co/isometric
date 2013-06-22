@@ -9,17 +9,17 @@ passed to the constructor of the `Isometric` class.
 
 ## Examples
 
- + [Map: a grid with random areas on it](https://github.com/gameclosure/examples/src/isometric/map)
- + [Selecting: selecting points, lines or areas](https://github.com/gameclosure/examples/src/isometric/selecting)
- + [Drawing: drawing lines on the grid](https://github.com/gameclosure/examples/src/isometric/drawing)
- + [Drawing rules: rules for drawing lines on the grid](https://github.com/gameclosure/examples/src/isometric/rules)
- + [Items: putting items on the grid](https://github.com/gameclosure/examples/src/isometric/items)
- + [Item selecting: Selecting an item](https://github.com/gameclosure/examples/src/isometric/itemselecting)
- + [Path finding: Finding a path with aStar](https://github.com/gameclosure/examples/src/isometric/pathfinding)
- + [Save, load: Saving and loading a map](https://github.com/gameclosure/examples/src/isometric/saveload)
- + [Walking: Items walking random paths](https://github.com/gameclosure/examples/src/isometric/walking)
- + [Particles: Particle systems](https://github.com/gameclosure/examples/src/isometric/particle)
- + [Item images: Setting images on dynamic items](https://github.com/gameclosure/examples/src/isometric/itemimages)
+ + [Map: a grid with random areas on it](https://github.com/gameclosure/tree/master/examples/src/isometric/map)
+ + [Selecting: selecting points, lines or areas](https://github.com/gameclosure/tree/master/examples/src/isometric/selecting)
+ + [Drawing: drawing lines on the grid](https://github.com/gameclosure/tree/master/examples/src/isometric/drawing)
+ + [Drawing rules: rules for drawing lines on the grid](https://github.com/gameclosure/examples/tree/master/src/isometric/rules)
+ + [Items: putting items on the grid](https://github.com/gameclosure/examples/tree/master/src/isometric/items)
+ + [Item selecting: Selecting an item](https://github.com/gameclosure/examples/tree/master/src/isometric/itemselecting)
+ + [Path finding: Finding a path with aStar](https://github.com/gameclosure/examples/tree/master/src/isometric/pathfinding)
+ + [Save, load: Saving and loading a map](https://github.com/gameclosure/examples/tree/master/src/isometric/saveload)
+ + [Walking: Items walking random paths](https://github.com/gameclosure/examples/tree/master/src/isometric/walking)
+ + [Particles: Particle systems](https://github.com/gameclosure/examples/src/tree/master/isometric/particle)
+ + [Item images: Setting images on dynamic items](https://github.com/gameclosure/examples/tree/master/src/isometric/itemimages)
 
 ### Tile conditions
 
