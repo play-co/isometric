@@ -101,7 +101,13 @@ exports = Class(function (supr) {
 				var model = map.putItem(this._modelType, rect.x, rect.y);
 				model && this._addModelCB && this._addModelCB(model);
 
-				this._refreshMapCB && this._refreshMapCB(rect.x, rect.y);
+				if (this._refreshMapCB) {
+					for (var y = 0; y < rect.h; y++) {
+						for (var x = 0; x < rect.x; x++) {
+							this._refreshMapCB(rect.x + x, rect.y + y);
+						}
+					}
+				}
 				break;
 		}
 

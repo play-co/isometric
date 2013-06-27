@@ -312,7 +312,7 @@ exports = Class([View, GridProperties], function (supr) {
 					var style = tileView.style;
 					var tile = gridTile[i];
 
-					if (tile.index === -1) {
+					if ((tile.index === -1) || (tile.group >= 10000)) {
 						style.visible = false;
 					} else {
 						var size = this._sizes[tile.group];
