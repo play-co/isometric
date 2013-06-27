@@ -103,7 +103,7 @@ exports = Class(function (supr) {
 
 				if (this._refreshMapCB) {
 					for (var y = 0; y < rect.h; y++) {
-						for (var x = 0; x < rect.x; x++) {
+						for (var x = 0; x < rect.w; x++) {
 							this._refreshMapCB(rect.x + x, rect.y + y);
 						}
 					}
