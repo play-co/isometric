@@ -135,7 +135,7 @@ exports = Class(function (supr) {
 
 			selection.accept = map.acceptRect(rect, conditions) && !map.declineRect(rect, conditions);
 
-			if (tool.layer) {
+			if ('layer' in tool) {
 				var count = selection.accept ? map.countTiles(tool.layer, tool.group, rect) : false;
 				if (count) {
 					count.accept = true;
