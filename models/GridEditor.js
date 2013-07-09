@@ -124,11 +124,6 @@ exports = Class(function (supr) {
 
 		var tool = this._tool;
 
-		if (!('layer' in tool)) {
-			selection.accept = true;
-			return;
-		}
-
 		var gridModel = this._gridModel;
 		var rect = gridModel.getRect(selection.startPoint, selection.endPoint);
 
@@ -140,13 +135,15 @@ exports = Class(function (supr) {
 
 			selection.accept = map.acceptRect(rect, conditions) && !map.declineRect(rect, conditions);
 
-			var count = selection.accept ? map.countTiles(tool.layer, tool.group, rect) : false;
-			if (count) {
-				count.accept = true;
-			}
-			this._selectionCountCB && this._selectionCountCB(count);
-			if (count && (count.accept === false)) {
-				selection.accept = false;
+			if ('layer' in tool) {
+				var count = selection.accept ? map.countTiles(tool.layer, tool.group, rect) : false;
+				if (count) {
+					count.accept = true;
+				}
+				this._selectionCountCB && this._selectionCountCB(count);
+				if (count && (count.accept === false)) {
+					selection.accept = false;
+				}				
 			}
 		} else {
 			selection.accept = true;
