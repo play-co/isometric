@@ -161,10 +161,11 @@ exports = Class(Emitter, function (supr) {
 		this.emit('AddStaticModel', model);		
 	};
 
-	this.onAddDynamicModel = function (model) {
-		this._modelViewConnector.registerModel(model, 1);
+	this.onAddDynamicModel = function (model, layer) {
+		layer = typeof layer === 'undefined' ? 1 : layer;
+		this._modelViewConnector.registerModel(model, layer);
 
-		this.emit('AddDynamicModel', model);
+		this.emit('AddDynamicModel', model, layer);
 	};
 
 	this.onWakeupDynamicModel = function (model) {
