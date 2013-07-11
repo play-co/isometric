@@ -219,7 +219,7 @@ exports = Class(Emitter, function (supr) {
 		model && this.onAddStaticModel(model);
 	};
 
-	this.putDynamicItem = function (ctor, opts) {
+	this.putDynamicItem = function (ctor, opts, layer) {
 		var model = new ctor(
 				merge(
 					opts,
@@ -229,7 +229,7 @@ exports = Class(Emitter, function (supr) {
 				)
 			);
 
-		this.onAddDynamicModel(model);
+		this.onAddDynamicModel(model, layer);
 
 		return model;
 	};
