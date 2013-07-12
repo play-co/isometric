@@ -123,7 +123,7 @@ Parameters
  + `tileY {number}` ---The y-position.
  + `opts {object}` ---Constructor opts for the new item.
 
-__putDynamicItem(ctor, opts)__
+__putDynamicItem(ctor, opts, layer)__
 
 Put a new dynamic item on the map.
 
@@ -134,6 +134,7 @@ Parameters
   + `tileY {number} = 0` ---The y-position.
   + `x {number} = 0.5` ---The x-position within the tile.
   + `y {number} = 0.5` ---The y-position within the tile.
+ + `layer {number}` ---The layer to put the model on
 
 __refreshMap(tileX, tileY)__
 
@@ -247,12 +248,13 @@ Called when a static model was added to the map.
 Parameters
  + `model {StaticModel}` ---An instance of `StaticModel` which was added.
 
-__'AddDynamicModel', callback(model)__
+__'AddDynamicModel', callback(model, layer)__
 
 Called when a dynamic model was added to the map.
 
 Parameters
  + `model {DynamicModel}` ---An instance of `DynamicModel` which was added.
+ + `layer {number}` --- The layer to put the DynamicModel on
 
 __'WakeupDynamicModel', callback(model)__
 
