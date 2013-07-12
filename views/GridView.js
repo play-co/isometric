@@ -150,16 +150,21 @@ exports = Class([View, GridProperties], function (supr) {
 		this._layers = [];
 
 		var layers = this._gridSettings.layers;
+		// if selectionLayer is set on a layer, make GridSelection pool the child of this layer
+		var selectionLayer = 0;
 		for (var i = 0; i < layers.length; i++) {
 			var opts = merge(this.getProperties(), layers[i]);
 			opts.superview = this;
 			opts.index = i;
 			opts.tileViews = this._tileViews;
 			this._layers.push(new GridLayerView(opts));
+			if (layers[i].selectionLayer) {
+				selectionLayer = i;
+			}
 		}
 
 		this._selection = new GridSelection({
-			superview: this._layers[0],
+			superview: this._layers[selectionLayer],
 			gridView: this,
 			tileSettings: this._opts.tileSettings
 		});
