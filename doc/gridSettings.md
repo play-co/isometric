@@ -34,7 +34,8 @@ a property for the layer.
   + `dynamicViews {number} = 0` ---Optional, the number of dynamic views on the layer.
   + `particleSystems {number} = 0` ---Optional, the number of particle systems on the layer.
   + `particleStytemSize {number} = 0` ---Optional, the number if particles in each particle system on the layer.
-  + `overDrawY {number} = 3` --Optional, the bottom-vertical overdraw for the layer.
+  + `overDrawY {number} = 3` ---Optional, the bottom-vertical overdraw for the layer.
+  + `selectionLayer {boolean}` ---Optional, designates this layer as the one on which the selection will appear.  Defaults to first layer (0).
 
 ~~~
 var gridSettings = {
@@ -55,6 +56,9 @@ var gridSettings = {
 			particleSystems: 0,
 			particleSystemSize: 0,
 			overDrawY: 3
+		},
+		{
+			selectionLayer: true
 		},
 		{
 			dynamicViews: 30,
