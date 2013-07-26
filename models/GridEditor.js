@@ -150,6 +150,10 @@ exports = Class(function (supr) {
 		}
 	};
 
+    this.getTool = function() {
+        return this._tool;
+    };
+
 	this.setTool = function (modelType) {
 		var gridModel = this._gridModel;
 
