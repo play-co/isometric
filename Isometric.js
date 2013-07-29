@@ -194,6 +194,10 @@ exports = Class(Emitter, function (supr) {
 		return this._isometricView.getGridInputView();
 	};
 
+    this.getTool = function() {
+        return this._gridEditor.getTool();
+    };
+
 	this.getMap = function () {
 		return this._gridModel.getMap();
 	};
