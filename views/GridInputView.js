@@ -148,6 +148,10 @@ exports = Class(View, function (supr) {
 		var index = 'p' + evt.id;
 		var point = this._dragPoints[index];
 
+		//F3P: Manage when point is null
+		if(!point)
+			return;
+			
 		point.x = mouseEvt.srcPoint.x;
 		point.y = mouseEvt.srcPoint.y;
 
@@ -161,6 +165,11 @@ exports = Class(View, function (supr) {
 		if (this.getDragPointCount() === 2) {
 			var p1 = this._dragPoints[this._dragPointFirst];
 			var p2 = this._dragPoints[this._dragPointSecond];
+			
+			//F3P: Manage when point is null
+			if(!p1 || !p2) 
+				return;
+			
 			var dx = p2.x - p1.x;
 			var dy = p2.y - p1.y;
 			var d = Math.sqrt(dx * dx + dy * dy) * GC.app.scale;
