@@ -566,19 +566,43 @@ exports = Class(function () {
 
 		var result = false;
 		var accept = conditions.accept;
+		
+		if(accept) {
+			for (var i = 0; i < accept.length && !result; i++) {
+				var condition = accept[i];
+				switch (condition.type) {
+					case 'emptyOrZero':
+						result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator);
+						break;
 
-		for (var i = 0; i < accept.length && !result; i++) {
-			var condition = accept[i];
-			switch (condition.type) {
-				case 'emptyOrZero':
-					result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator);
-					break;
+					case 'group':
+						result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator);
+						break;
+						
+					case 'empty':
+						if (this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator)) {
+							result = true;
+						}
+						break;
+						
+					case 'notEmpty':
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator)) {
+							result = true;
+						}
+						break;
 
-				case 'group':
-					result = this.isGroup(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator);
-					break;
+					case 'notEmptyAndNotGroup':
+						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator)) {
+							if (!this.isGroupOrEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.groups, condition.validator)) {
+								result = true;
+							}
+						}
+						break;
+				}
 			}
 		}
+		else
+			result = true;
 
 		return result;
 	};
@@ -595,6 +619,10 @@ exports = Class(function () {
 			for (var i = 0; i < decline.length && !result; i++) {
 				var condition = decline[i];
 				switch (condition.type) {
+					case 'emptyOrZero':
+						result = this.isEmptyOrZero(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator);
+					break;
+					
 					case 'notEmpty':
 						if (!this.isEmpty(condition.layer, rect.x, rect.y, rect.w, rect.h, condition.validator)) {
 							result = true;
