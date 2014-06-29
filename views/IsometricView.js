@@ -40,8 +40,8 @@ exports = Class(View, function (supr) {
 		supr(this, 'init', [opts]);
 
 		this._gridView = new GridView(this._createOpts(opts)).
-			on('Populated', bind(this, 'onPopulated')).
-			on('ChangeOffset', bind(this, 'ChangeOffset'));
+			on('Populated', bind(this, 'onPopulated'));
+			//on('ChangeOffset', bind(this, 'ChangeOffset')); F3P
 
 		var loadingViewCtor = opts.loadingViewCtor || LoadingView;
 		this._loadingView = new loadingViewCtor(this._createOpts(opts));
@@ -65,7 +65,9 @@ exports = Class(View, function (supr) {
 			itemSettings: opts.itemSettings || {},
 			tileSettings: opts.tileSettings,
 			particleSettings: opts.particleSettings || {},
-			visible: false
+			visible: false,
+			minScale: opts.minScale, //F3P
+			maxScale: opts.maxScale //F3P
 		};
 	};
 
