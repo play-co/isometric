@@ -18,6 +18,9 @@
 import lib.Enum as Enum;
 
 exports = Class(function () {
+	//F3P: save last select point
+	this._lastSelectedPoint;
+	
 	this.init = function (opts) {
 		this._gridModel = opts.gridModel;
 		this._startPoint = null;
@@ -33,6 +36,7 @@ exports = Class(function () {
 		var startPoint = this._startPoint;
 
 		this._gridModel.setSelection(startPoint, this._gridModel.pointToGrid(point));
+		this._lastSelectedPoint = point;
 	};
 
 	this.onEnd = function () {
@@ -52,5 +56,10 @@ exports = Class(function () {
 
 	this.setSelectionCB = function (selectionCB) {
 		this._selectionCB = selectionCB;
+	};
+	
+	//F3P
+	this.getLastSelectedPoint = function (){
+		return this._lastSelectedPoint;
 	};
 });
