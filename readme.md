@@ -1,11 +1,12 @@
 # Isometric engine
 
-The isometric engine allows you to use 'fake 3d'. It renders diamond shaped tiles.
+The isometric engine enables you to easily create 'fake 3d' isometric
+perspective games.
 
 ## Configuration
 
-The isometric engine has has a lot of features which can be configured through a number of setting options
-passed to the constructor of the `Isometric` class.
+The isometric engine has a lot of features which can be configured through a
+number of options passed to the constructor of the `Isometric` class.
 
 ## Examples
 
@@ -23,13 +24,15 @@ passed to the constructor of the `Isometric` class.
 
 ### Tile conditions
 
-A lot of items test the validity of a move or a draw action, all these checkes are done by the `Map` class.
-Details about the condition validator can be found [here](doc/conditions.md).
+A lot of items test the validity of a move or a draw action; all these checks
+are done by the `Map` class.  Details about the condition validator can be found
+[here](doc/conditions.md).
 
 ### Isometric Class
 
-The isometric class wraps the models and views of the isometric engine. It exposes a number of methods and 
-emit events informing the user about state changed.
+The isometric class wraps the models and views of the isometric engine. It
+exposes a number of methods and emits events informing the user about state
+changes.
 
 More details about settings can be found here:
  + [Grid settings, defining the size of the grid, the size of the tiles and the layers](doc/gridSettings.md)
@@ -41,24 +44,31 @@ More details about settings can be found here:
 
 Parameters
  + `superview {View}` ---The view which contains the isometric view.
- + `gridSettings {object}` ---General grid settings like width, height and number of layers.
+ + `gridSettings {object}` ---General grid settings like width, height, and number of layers.
  + `tileSettings {object}` ---Definitions for tile images.
- + `mapSettings {object} = {}` ---Optional, definitions to generate a map, random images, tile rules.
- + `editorSettings {object} = {}` ---Optional, tools for modifying the grid.
- + `itemSettings {object} = {}` ---Optional, view properties for items on the grid.
- + `particleSettings {object} = {}` ---Optional, settings for particle systems on teh grid.
+ + `mapSettings {object} = {}` ---(Optional) Definitions to generate a map, random images, tile rules.
+ + `editorSettings {object} = {}` ---(Optional) Tools for modifying the grid.
+ + `itemSettings {object} = {}` ---(Optional) View properties for items on the grid.
+ + `particleSettings {object} = {}` ---(Optional) Settings for particle systems on the grid.
 
+
+### Installation
+Install the isometric module in your game with
+`devkit install https://github.com/gameclosure/isometric`
+
+
+### Usage
 ~~~
-import isometric.Isometric as Isometric;
+import isometric as Isometric;
 
 var isometric = new Isometric({
-	superview: this,
-	gridSettings: gridSettings,
-	tileSettings: tileSettings,
-	mapSettings: mapSettings
-}).
-	generate().
-	show();
+    superview: this,
+    gridSettings: gridSettings,
+    tileSettings: tileSettings,
+    mapSettings: mapSettings
+});
+isometric.generate();
+isometric.show();
 ~~~
 
 #### Methods
@@ -72,7 +82,8 @@ Returns
 
 __getStaticModels()__
 
-Get the `StaticModels` instance wich contains a list of all models on the grid with a fixed position.
+Get the `StaticModels` instance wich contains a list of all models on the grid
+with a fixed position.
 
 Returns
  {StaticModels} ---`StaticModels` instance.
@@ -93,15 +104,18 @@ Returns
 
 __setBackgroundColor(backgroundColor)__
 
-Set the background color of the grid view, is only visible through tiles which contain transparent parts.
+Set the background color of the grid view. This is only visible through tiles
+which contain transparent parts.
 
 Parameters
  + `backgroundColor {string}` ---Set the background color.
 
 __setTool(tool)__
 
-Set the tool, if the tool parameter is false then the grid is put into drag mode if it's a string
-then the value should match one of the keys in the `editorSettings`.
+Set the tool.
+If the tool parameter is false then the grid is put into drag mode
+If the tool parameter is a string then the value should match one of the keys in
+the `editorSettings`.
 
 Parameters
  + `tool {string|boolean}` ---Set the tool.
