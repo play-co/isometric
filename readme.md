@@ -59,7 +59,7 @@ Install the isometric module in your game with
 
 ### Usage
 ~~~
-import isometric as Isometric;
+import isometric.Isometric as Isometric;
 
 var isometric = new Isometric({
     superview: this,
