@@ -1,0 +1,18 @@
+{
+  "name": "devkit-isometric",
+  "author": "Game Closure",
+  "description": "An isometric rendering library for DevKit",
+  "version": "2.0.0",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/gameclosure/isometric.git"
+  },
+  "dependencies": {},
+  "scripts": {},
+  "devkit": {
+    "buildTargets": {},
+      "clientPaths": {
+        "isometric": "src"
+      }
+  }
+}
